@@ -1,0 +1,32 @@
+{
+  "name": "@maitredb/cli",
+  "version": "0.0.1",
+  "description": "The mdb CLI binary",
+  "type": "module",
+  "bin": {
+    "mdb": "./dist/cli.js",
+    "maitredb": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "lint": "tsc --noEmit",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@maitredb/core": "workspace:*",
+    "@maitredb/plugin-api": "workspace:*",
+    "@maitredb/driver-sqlite": "workspace:*",
+    "yargs": "^17.7.2",
+    "cli-table3": "^0.6.5",
+    "csv-stringify": "^6.5.2"
+  },
+  "devDependencies": {
+    "@types/yargs": "^17.0.33",
+    "vitest": "^3.1.1",
+    "typescript": "^5.8.3",
+    "@types/node": "^22.15.2",
+    "execa": "^9.5.2"
+  }
+}
