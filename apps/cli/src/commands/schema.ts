@@ -94,7 +94,9 @@ export const schemaCommand: CommandModule = {
 
       const format = (argv.format as OutputFormat) ?? autoDetectFormat();
       const formatter = getFormatter(format);
-      console.log(formatter.format({ rows, fields, rowCount: rows.length, durationMs: 0 }));
+      const start = performance.now();
+      const result = { rows, fields, rowCount: rows.length, durationMs: performance.now() - start };
+      console.log(formatter.format(result));
 
       await adapter.disconnect(conn);
     } catch (err) {

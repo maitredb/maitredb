@@ -23,7 +23,12 @@ export function autoDetectFormat(): OutputFormat {
 
 class JsonFormatter implements Formatter {
   format(result: QueryResult): string {
-    return JSON.stringify(result.rows, null, 2);
+    return JSON.stringify({
+      rows: result.rows,
+      fields: result.fields,
+      rowCount: result.rowCount,
+      durationMs: result.durationMs
+    }, null, 2);
   }
 }
 
@@ -64,7 +69,7 @@ class CsvFormatter implements Formatter {
 
 class TableFormatter implements Formatter {
   format(result: QueryResult): string {
-    if (result.rows.length === 0) return '(0 rows)';
+    if (result.rows.length === 0) return `(0 rows) (${result.durationMs.toFixed(2)} ms)`;
 
     const cols = result.fields.map(f => f.name);
 
@@ -85,7 +90,7 @@ class TableFormatter implements Formatter {
     );
 
     const lines = [header, sep, ...rows];
-    lines.push(`(${result.rowCount} row${result.rowCount === 1 ? '' : 's'})`);
+    lines.push(`(${result.rowCount} row${result.rowCount === 1 ? '' : 's'}) (${result.durationMs.toFixed(2)} ms)`);
     return lines.join('\n');
   }
 

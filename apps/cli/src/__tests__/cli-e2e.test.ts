@@ -75,9 +75,12 @@ describe('CLI e2e', () => {
 
     it('query with json format', async () => {
       const { stdout } = await mdb('query', 'qdb', 'SELECT * FROM items ORDER BY id', '--format', 'json');
-      const rows = JSON.parse(stdout);
-      expect(rows).toHaveLength(2);
-      expect(rows[0].name).toBe('Widget');
+      const result = JSON.parse(stdout);
+      expect(result.rows).toHaveLength(2);
+      expect(result.rows[0].name).toBe('Widget');
+      expect(result).toHaveProperty('fields');
+      expect(result).toHaveProperty('rowCount');
+      expect(result).toHaveProperty('durationMs');
     });
 
     it('query with csv format', async () => {
@@ -95,22 +98,22 @@ describe('CLI e2e', () => {
 
     it('query with parameterized WHERE', async () => {
       const { stdout } = await mdb('query', 'qdb', 'SELECT * FROM items WHERE price > 10', '--format', 'json');
-      const rows = JSON.parse(stdout);
-      expect(rows).toHaveLength(1);
-      expect(rows[0].name).toBe('Gadget');
+      const result = JSON.parse(stdout);
+      expect(result.rows).toHaveLength(1);
+      expect(result.rows[0].name).toBe('Gadget');
     });
 
     it('schema tables', async () => {
       const { stdout } = await mdb('schema', 'qdb', 'tables', '--format', 'json');
-      const tables = JSON.parse(stdout);
-      expect(tables.some((t: { name: string }) => t.name === 'items')).toBe(true);
+      const result = JSON.parse(stdout);
+      expect(result.rows.some((t: { name: string }) => t.name === 'items')).toBe(true);
     });
 
     it('schema columns', async () => {
       const { stdout } = await mdb('schema', 'qdb', 'columns', 'items', '--format', 'json');
-      const cols = JSON.parse(stdout);
-      expect(cols).toHaveLength(3);
-      expect(cols.find((c: { name: string }) => c.name === 'id')).toBeTruthy();
+      const result = JSON.parse(stdout);
+      expect(result.rows).toHaveLength(3);
+      expect(result.rows.find((c: { name: string }) => c.name === 'id')).toBeTruthy();
     });
   });
 

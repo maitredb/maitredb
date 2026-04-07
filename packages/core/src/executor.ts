@@ -19,6 +19,7 @@ export class QueryExecutor {
     const start = performance.now();
     try {
       const result = await this.adapter.execute(conn, sql, params);
+      result.durationMs = performance.now() - start;
       return result;
     } catch (err) {
       throw this.wrapError(err, conn);

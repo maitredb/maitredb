@@ -28,8 +28,11 @@ describe('formatters', () => {
     it('formats as pretty JSON', () => {
       const out = getFormatter('json').format(sampleResult);
       const parsed = JSON.parse(out);
-      expect(parsed).toHaveLength(2);
-      expect(parsed[0].name).toBe('Alice');
+      expect(parsed.rows).toHaveLength(2);
+      expect(parsed.rows[0].name).toBe('Alice');
+      expect(parsed).toHaveProperty('fields');
+      expect(parsed).toHaveProperty('rowCount');
+      expect(parsed).toHaveProperty('durationMs');
     });
   });
 
@@ -77,7 +80,7 @@ describe('formatters', () => {
 
     it('shows (0 rows) for empty result', () => {
       const out = getFormatter('table').format(emptyResult);
-      expect(out).toBe('(0 rows)');
+      expect(out).toBe('(0 rows) (0.00 ms)');
     });
   });
 
