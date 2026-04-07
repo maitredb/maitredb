@@ -5,16 +5,23 @@ const DEFAULT_MAX_BUFFERED_ROWS = 10000;
 
 const DDL_PATTERN = /^\s*(CREATE|ALTER|DROP|GRANT|REVOKE|TRUNCATE)\b/i;
 
+/** Lightweight DDL detector used for cache invalidation. */
 export function isDDL(sql: string): boolean {
   return DDL_PATTERN.test(sql);
 }
 
+/**
+ * Wraps a DriverAdapter to provide consistent error handling and
+ * timing metadata. The executor enforces the "streaming-first" guarantee by
+ * delegating to the driver for both buffered and streamed paths.
+ */
 export class QueryExecutor {
   constructor(
     private adapter: DriverAdapter,
     private maxBufferedRows: number = DEFAULT_MAX_BUFFERED_ROWS,
   ) {}
 
+  /** Execute a SQL statement and capture timing metadata. */
   async execute(conn: Connection, sql: string, params?: unknown[]): Promise<QueryResult> {
     const start = performance.now();
     try {
@@ -26,6 +33,7 @@ export class QueryExecutor {
     }
   }
 
+  /** Stream rows directly from the adapter while preserving error semantics. */
   async *stream(
     conn: Connection,
     sql: string,

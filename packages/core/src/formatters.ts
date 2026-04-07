@@ -1,11 +1,14 @@
 import type { FieldInfo, QueryResult } from '@maitredb/plugin-api';
 
+/** Supported output formats for CLI + programmatic consumers. */
 export type OutputFormat = 'table' | 'json' | 'csv' | 'ndjson' | 'yaml' | 'raw';
 
+/** Minimal contract implemented by every formatter. */
 export interface Formatter {
   format(result: QueryResult): string;
 }
 
+/** Factory that returns the formatter matching a requested {@link OutputFormat}. */
 export function getFormatter(format: OutputFormat): Formatter {
   switch (format) {
     case 'table': return new TableFormatter();
@@ -17,6 +20,7 @@ export function getFormatter(format: OutputFormat): Formatter {
   }
 }
 
+/** Pick a sensible default formatter depending on whether stdout is a TTY. */
 export function autoDetectFormat(): OutputFormat {
   return process.stdout.isTTY ? 'table' : 'ndjson';
 }

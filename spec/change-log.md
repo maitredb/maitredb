@@ -3,6 +3,29 @@
 > Chronological record of all changes, improvements, and fixes.
 > Follows [Keep a Changelog](https://keepachangelog.com/) format.
 
+## [v0.1.0b] — 2026-04-08
+
+### Added
+
+- **PostgreSQL driver with full feature support (Phase 1b)**
+  - `packages/driver-postgres/` implements the complete `DriverAdapter` lifecycle: `connect()`, `disconnect()`, `testConnection()`, `validateConnection()`, streaming `execute()/stream()`, `cancelQuery()`, and transaction helpers.
+  - `getSchemas()/getTables()/getColumns()/getIndexes()` plus `getFunctions()/getProcedures()/getRoles()/getGrants()` cover catalog + permission introspection; `explain()` parses JSON output, normalizes plans, and surfaces warnings.
+  - Driver capabilities expose streaming, transactions, cancellation, and listen/notify support to the CLI/GUI.
+
+- **Driver authoring template**
+  - Added `@maitredb/driver-template` with `TODO(driver)` guidance, helper hooks, and a `DRIVER_BOOTSTRAP_CHECKLIST` tied to the architecture spec so planned/community drivers share a common baseline.
+  - Template ships with tsconfig, vitest config, and README instructions for quick duplication.
+
+- **Auto-generated API reference**
+  - Integrated TypeDoc + `typedoc-plugin-markdown` and added `pnpm docs:reference`; docs land in `docs/reference/` for Read the Docs/MkDocs pipelines.
+  - Annotated CLI commands, ConfigManager, QueryExecutor, formatters, PluginRegistry, DSN parser, and driver classes with TSDoc so the generated docs stay current.
+
+### Changed
+
+- **Driver adapter contract alignment**
+  - `DriverAdapter` now includes `validateConnection()` and `cancelQuery()`; `@maitredb/driver-sqlite` implements the new hooks.
+  - Repo-wide TS path aliases (`@maitredb/*`) and an ES module vitest workspace (`vitest.workspace.mts`) unblock TypeDoc/TypeScript tooling.
+
 ## [v0.1.0a] — 2026-04-07
 
 ### Added
@@ -58,6 +81,7 @@
 - **Machine fingerprint** prevents credential file portability
 - **File permissions 0600** ensures only owner can read credentials
 - **No plaintext secrets** in configuration files or logs
+
 
 ## [v0.0.2] — 2026-04-07
 

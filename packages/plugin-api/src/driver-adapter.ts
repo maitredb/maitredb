@@ -20,6 +20,7 @@ import type {
   DriverCapabilities,
 } from './types.js';
 
+/** Contract that every database driver must implement. */
 export interface DriverAdapter {
   readonly dialect: DatabaseDialect;
 
@@ -27,10 +28,12 @@ export interface DriverAdapter {
   connect(config: ConnectionConfig): Promise<Connection>;
   disconnect(conn: Connection): Promise<void>;
   testConnection(config: ConnectionConfig): Promise<ConnectionTestResult>;
+  validateConnection(conn: Connection): Promise<boolean>;
 
   // Execution
   execute(conn: Connection, query: string, params?: unknown[]): Promise<QueryResult>;
   stream(conn: Connection, query: string, params?: unknown[]): AsyncIterable<Record<string, unknown>>;
+  cancelQuery(conn: Connection, queryId: string): Promise<void>;
 
   // Transactions
   beginTransaction(conn: Connection, options?: TransactionOptions): Promise<Transaction>;

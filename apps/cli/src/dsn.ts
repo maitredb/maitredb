@@ -15,6 +15,7 @@ import { MaitreError, MaitreErrorCode } from '@maitredb/core';
 // DSN parser — handles all 11 driver connection string formats
 // ---------------------------------------------------------------------------
 
+/** Result from {@link parseDsn}. */
 export interface ParsedDsn {
   config: ConnectionConfig;
   password?: string;
@@ -45,6 +46,10 @@ const PROTOCOL_TO_DIALECT: Record<string, DatabaseDialect> = {
   'athena': 'athena',
 };
 
+/**
+ * Parse a connection string into a connection config plus an optional
+ * password that should be stored in the credential manager.
+ */
 export function parseDsn(name: string, dsn: string): ParsedDsn {
   const url = new URL(dsn);
   const rawProtocol = url.protocol.replace(/:$/, '');

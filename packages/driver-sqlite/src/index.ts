@@ -24,6 +24,7 @@ import type {
   FieldInfo,
 } from '@maitredb/plugin-api';
 
+/** SQLite driver built on top of better-sqlite3 for in-process speed. */
 export class SqliteDriver implements DriverAdapter {
   readonly dialect = 'sqlite' as const;
 
@@ -64,6 +65,16 @@ export class SqliteDriver implements DriverAdapter {
         latencyMs: performance.now() - start,
         error: err instanceof Error ? err.message : String(err),
       };
+    }
+  }
+
+  async validateConnection(conn: Connection): Promise<boolean> {
+    try {
+      const db = conn.native as Database.Database;
+      db.prepare('SELECT 1').get();
+      return true;
+    } catch {
+      return false;
     }
   }
 
@@ -109,6 +120,10 @@ export class SqliteDriver implements DriverAdapter {
     for (const row of iter) {
       yield row as Record<string, unknown>;
     }
+  }
+
+  async cancelQuery(_conn: Connection, _queryId: string): Promise<void> {
+    throw new Error('SQLite driver does not support canceling queries.');
   }
 
   async beginTransaction(conn: Connection, _options?: TransactionOptions): Promise<Transaction> {

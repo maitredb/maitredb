@@ -1,0 +1,24 @@
+{
+  "name": "@maitredb/driver-postgres",
+  "version": "0.1.0",
+  "description": "PostgreSQL driver for Maître d'B",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@maitredb/plugin-api": "workspace:*",
+    "@maitredb/core": "workspace:*",
+    "pg": "^8.12.0"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.11.6",
+    "vitest": "^3.2.4"
+  },
+  "peerDependencies": {
+    "@maitredb/plugin-api": "0.1.0"
+  }
+}

@@ -94,8 +94,9 @@ mdb dump dev users --to csv --output users.csv
 
 ## Documentation
 
-- [Implementation Plan](pm/implementation-plan.md)
-- [Architecture](pm/architecture.md)
+- [Implementation Plan](spec/implementation-plan.md)
+- [Architecture](spec/architecture.md)
+- API Reference — `pnpm docs:reference` (generates Markdown into `docs/reference/`)
 
 ## License
 

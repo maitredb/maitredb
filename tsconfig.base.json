@@ -4,6 +4,10 @@
     "module": "Node16",
     "moduleResolution": "Node16",
     "lib": ["ES2022"],
+    "baseUrl": ".",
+    "paths": {
+      "@maitredb/*": ["packages/*/src"]
+    },
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,

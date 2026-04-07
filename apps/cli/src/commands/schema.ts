@@ -4,6 +4,7 @@ import type { OutputFormat } from '@maitredb/core';
 import type { FieldInfo } from '@maitredb/plugin-api';
 import { getRegistry } from '../bootstrap.js';
 
+/** `mdb schema` command — wraps the introspection sub-commands. */
 export const schemaCommand: CommandModule = {
   command: 'schema <conn> <action> [object]',
   describe: 'Inspect database schema',

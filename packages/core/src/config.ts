@@ -41,6 +41,7 @@ function loadJsonFile<T>(path: string): T | undefined {
   }
 }
 
+/** Resolves Maître d'B configuration, connections, and credentials. */
 export class ConfigManager {
   private userDir: string;
   private projectDir: string | undefined;
@@ -61,6 +62,7 @@ export class ConfigManager {
     return this._credentialManager;
   }
 
+  /** Load the merged config using the precedence described in the architecture spec. */
   getConfig(overrides?: Partial<MaitreConfig>): MaitreConfig {
     const userConfig = loadJsonFile<Partial<MaitreConfig>>(join(this.userDir, 'config.json'));
     const projectConfig = this.projectDir
@@ -88,6 +90,7 @@ export class ConfigManager {
     };
   }
 
+  /** Return every saved connection from both user + project config scopes. */
   getConnections(): Record<string, ConnectionConfig> {
     const userConns = this.loadConnections(join(this.userDir, 'connections.json'));
     const projectConns = this.projectDir
@@ -96,6 +99,7 @@ export class ConfigManager {
     return { ...userConns, ...projectConns };
   }
 
+  /** Retrieve a connection by name or raise a typed {@link MaitreError}. */
   getConnection(name: string): ConnectionConfig {
     const all = this.getConnections();
     const conn = all[name];
@@ -126,6 +130,7 @@ export class ConfigManager {
     return this.credentials.store(connectionName, credential);
   }
 
+  /** Persist a connection definition to the user config directory. */
   saveConnection(name: string, config: ConnectionConfig): void {
     const dir = this.userDir;
     if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
@@ -136,6 +141,7 @@ export class ConfigManager {
     writeFileSync(filePath, JSON.stringify({ connections: existing }, null, 2) + '\n');
   }
 
+  /** Remove a saved connection without touching stored credentials. */
   removeConnection(name: string): boolean {
     const filePath = join(this.userDir, 'connections.json');
     const existing = this.loadConnections(filePath);

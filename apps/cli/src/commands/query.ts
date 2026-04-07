@@ -3,6 +3,7 @@ import { ConfigManager, QueryExecutor, getFormatter, autoDetectFormat, MaitreErr
 import type { OutputFormat } from '@maitredb/core';
 import { getRegistry } from '../bootstrap.js';
 
+/** `mdb query` command — runs adhoc SQL against a saved connection. */
 export const queryCommand: CommandModule = {
   command: 'query <conn> [sql]',
   describe: 'Execute a SQL query',

@@ -14,6 +14,7 @@ import type {
 import { getRegistry } from '../bootstrap.js';
 import { parseDsn as parseDsnFunc } from '../dsn.js';
 
+/** Top-level `mdb connect` command — wraps add/test/list/remove sub-commands. */
 export const connectCommand: CommandModule = {
   command: 'connect <action>',
   describe: 'Manage database connections',

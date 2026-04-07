@@ -8,10 +8,13 @@
     "test": "turbo run test",
     "lint": "turbo run lint",
     "dev": "turbo run dev",
-    "clean": "turbo run clean"
+    "clean": "turbo run clean",
+    "docs:reference": "typedoc --options typedoc.json"
   },
   "devDependencies": {
     "@types/node": "^22.15.2",
+    "typedoc": "^0.28.0",
+    "typedoc-plugin-markdown": "^4.11.0",
     "turbo": "^2.5.0",
     "typescript": "^5.8.3",
     "vitest": "^3.1.1"
