@@ -3,6 +3,8 @@ import { join, resolve } from 'node:path';
 import { homedir } from 'node:os';
 import type { ConnectionConfig } from '@maitredb/plugin-api';
 import { MaitreError, MaitreErrorCode } from './errors.js';
+import { CredentialManager } from './credentials.js';
+import type { Credential, CredentialManagerOptions } from './credentials.js';
 
 export interface MaitreConfig {
   defaultFormat: 'table' | 'json' | 'csv' | 'ndjson' | 'yaml' | 'raw';
@@ -42,10 +44,21 @@ function loadJsonFile<T>(path: string): T | undefined {
 export class ConfigManager {
   private userDir: string;
   private projectDir: string | undefined;
+  private _credentialManager: CredentialManager | undefined;
+  private credentialOpts: CredentialManagerOptions | undefined;
 
-  constructor() {
+  constructor(options?: { credentialManager?: CredentialManagerOptions }) {
     this.userDir = userConfigDir();
     this.projectDir = projectConfigDir();
+    this.credentialOpts = options?.credentialManager;
+  }
+
+  /** Lazy-initialized credential manager. */
+  get credentials(): CredentialManager {
+    if (!this._credentialManager) {
+      this._credentialManager = new CredentialManager(this.credentialOpts);
+    }
+    return this._credentialManager;
   }
 
   getConfig(overrides?: Partial<MaitreConfig>): MaitreConfig {
@@ -98,6 +111,21 @@ export class ConfigManager {
     return conn;
   }
 
+  /**
+   * Retrieve the credential for a connection from the credential store.
+   * Returns undefined if no credential is stored (e.g. embedded DBs).
+   */
+  async getCredential(connectionName: string): Promise<Credential | undefined> {
+    return this.credentials.get(connectionName);
+  }
+
+  /**
+   * Store a credential securely. Never writes secrets to connections.json.
+   */
+  async storeCredential(connectionName: string, credential: Credential): Promise<void> {
+    return this.credentials.store(connectionName, credential);
+  }
+
   saveConnection(name: string, config: ConnectionConfig): void {
     const dir = this.userDir;
     if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
@@ -115,6 +143,15 @@ export class ConfigManager {
     delete existing[name];
     writeFileSync(filePath, JSON.stringify({ connections: existing }, null, 2) + '\n');
     return true;
+  }
+
+  /**
+   * Remove a connection and its stored credentials.
+   */
+  async removeConnectionWithCredentials(name: string): Promise<boolean> {
+    const removed = this.removeConnection(name);
+    await this.credentials.delete(name);
+    return removed;
   }
 
   private loadConnections(filePath: string): Record<string, ConnectionConfig> {

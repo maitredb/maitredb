@@ -1,4 +1,5 @@
 export type {
+  AuthMethod,
   DatabaseDialect,
   MaitreType,
   ConnectionConfig,
@@ -20,6 +21,19 @@ export type {
   TransactionOptions,
   Transaction,
   DriverCapabilities,
+  SslOptions,
+  TunnelConfig,
+  DriverOptions,
+  SqliteOptions,
+  PostgresOptions,
+  MysqlOptions,
+  SnowflakeOptions,
+  MongoOptions,
+  ClickHouseOptions,
+  DuckDbOptions,
+  BigQueryOptions,
+  RedshiftOptions,
+  AthenaOptions,
 } from './types.js';
 
 export type { DriverAdapter } from './driver-adapter.js';

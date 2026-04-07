@@ -20,6 +20,41 @@ A cross-platform, open-source database client with native CLI and GUI — built 
 - **Universal Dump**: Export data to Iceberg, Parquet, CSV, and SQL.
 - **Data Bootstrapping**: Generate realistic fake data for testing.
 
+## v0.1.0 Highlights (2026-04-07)
+
+### ✅ Secure Credential Store
+
+**Never store passwords in plaintext again!**
+
+```bash
+# Add a connection with secure credential storage
+mdb connect add prod --type postgres --host db.example.com --password secret123
+
+# Credentials are encrypted and stored separately from connection metadata
+mdb connect list
+# prod — postgresql @ db.example.com:5432 [creds: encrypted-file]
+```
+
+**Features:**
+- 🔐 **AES-256-GCM encryption** with PBKDF2 key derivation (310K iterations)
+- 📱 **Cross-platform**: Windows, macOS, Linux, containers
+- 🔑 **Multiple backends**: System keychain, encrypted file, environment variables
+- 🔄 **Graceful fallback**: Automatically uses best available method
+- 🧪 **31 comprehensive tests** covering all scenarios
+
+### 🌐 Platform Support
+
+| Platform | Keychain | Encrypted File | Environment Vars |
+|----------|----------|----------------|------------------|
+| Windows 10/11 | ✅ Credential Vault | ✅ Full support | ✅ Full support |
+| macOS | ✅ Keychain Access | ✅ Full support | ✅ Full support |
+| Ubuntu/Debian | ⚠️ Requires libsecret | ✅ Full support | ✅ Full support |
+| Fedora/RHEL | ⚠️ Requires libsecret | ✅ Full support | ✅ Full support |
+| Docker/Containers | ❌ Not available | ✅ Full support | ✅ Full support |
+| CI/CD | ❌ Not available | ✅ Full support | ✅ Full support |
+
+*Keychain backend is optional - encrypted file backend works everywhere!*
+
 ## Installation
 
 ```bash

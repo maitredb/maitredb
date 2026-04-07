@@ -2,6 +2,12 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Code Quality
+- Prefer correct, complete implementations over minimal ones.
+- Use appropriate data structures and algorithms — don't brute-force what has a known better solution.
+- When fixing a bug, fix the root cause, not the symptom.
+- If something I asked for requires error handling or validation to work reliably, include it without asking.
+
 ## Project Overview
 
 **Maître d'B** (`maitredb`) — a cross-platform database client (CLI + GUI) for humans and AI agents. Handles pooling, query sequencing, credential isolation, and schema introspection as middleware between consumers and databases.

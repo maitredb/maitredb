@@ -4,3 +4,20 @@ export type { MaitreConfig } from './config.js';
 export { QueryExecutor, isDDL } from './executor.js';
 export { getFormatter, autoDetectFormat } from './formatters.js';
 export type { OutputFormat, Formatter } from './formatters.js';
+export {
+  CredentialManager,
+  EnvironmentCredentialBackend,
+  KeychainCredentialBackend,
+  EncryptedFileCredentialBackend,
+} from './credentials.js';
+export type {
+  Credential,
+  PasswordCredential,
+  KeyPairCredential,
+  TokenCredential,
+  ServiceAccountCredential,
+  IamCredential,
+  DsnCredential,
+  CredentialBackend,
+  CredentialManagerOptions,
+} from './credentials.js';
