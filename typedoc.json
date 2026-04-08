@@ -3,6 +3,7 @@
   "tsconfig": "tsconfig.base.json",
   "entryPoints": [
     "apps/cli/src/bootstrap.ts",
+    "apps/cli/src/connection-config.ts",
     "apps/cli/src/dsn.ts",
     "apps/cli/src/commands/connect.ts",
     "apps/cli/src/commands/query.ts",
@@ -10,7 +11,8 @@
     "packages/core/src/index.ts",
     "packages/plugin-api/src/index.ts",
     "packages/driver-sqlite/src/index.ts",
-    "packages/driver-postgres/src/index.ts"
+    "packages/driver-postgres/src/index.ts",
+    "packages/driver-mysql/src/index.ts"
   ],
   "out": "docs/reference",
   "plugin": ["typedoc-plugin-markdown"],

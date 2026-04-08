@@ -45,6 +45,11 @@ export interface ConnectionConfig {
   host?: string;
   port?: number;
   user?: string;
+  /**
+   * Runtime-only password resolved from credential backends.
+   * Must never be persisted to `connections.json`.
+   */
+  password?: string;
   database?: string;
   ssl?: boolean | SslOptions;
   path?: string; // for embedded DBs (SQLite, DuckDB)

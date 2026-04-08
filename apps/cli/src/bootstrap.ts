@@ -21,6 +21,16 @@ export function getRegistry(): PluginRegistry {
       const { PostgresDriver } = await import('@maitredb/driver-postgres');
       return new PostgresDriver();
     });
+
+    registry.registerFactory('mysql', async () => {
+      const { MysqlDriver } = await import('@maitredb/driver-mysql');
+      return new MysqlDriver('mysql');
+    });
+
+    registry.registerFactory('mariadb', async () => {
+      const { MysqlDriver } = await import('@maitredb/driver-mysql');
+      return new MysqlDriver('mariadb');
+    });
   }
   return registry;
 }

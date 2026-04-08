@@ -16,6 +16,8 @@
   },
   "dependencies": {
     "@maitredb/core": "workspace:*",
+    "@maitredb/driver-mysql": "workspace:*",
+    "@maitredb/driver-postgres": "workspace:*",
     "@maitredb/plugin-api": "workspace:*",
     "@maitredb/driver-sqlite": "workspace:*",
     "yargs": "^17.7.2",

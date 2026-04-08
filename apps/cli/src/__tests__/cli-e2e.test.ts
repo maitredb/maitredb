@@ -59,6 +59,18 @@ describe('CLI e2e', () => {
     expect(rmOut).toContain('removed');
   });
 
+  it('supports adding a sqlite connection from DSN', async () => {
+    const { stdout: addOut } = await mdb('connect', 'add', 'dsn-sqlite', '--dsn', 'sqlite:///:memory:');
+    expect(addOut).toContain('saved');
+
+    const { stdout: queryOut } = await mdb('query', 'dsn-sqlite', 'SELECT 1 as ok', '--format', 'json');
+    const parsed = JSON.parse(queryOut);
+    expect(parsed.rows[0].ok).toBe(1);
+
+    const { stdout: rmOut } = await mdb('connect', 'remove', 'dsn-sqlite');
+    expect(rmOut).toContain('removed');
+  });
+
   describe('query and schema (with data)', () => {
     beforeAll(async () => {
       await mdb('connect', 'add', 'qdb', '--type', 'sqlite', '--path', DB_PATH);

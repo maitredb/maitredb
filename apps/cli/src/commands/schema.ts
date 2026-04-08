@@ -3,6 +3,7 @@ import { ConfigManager, getFormatter, autoDetectFormat, MaitreError, exitCodeFor
 import type { OutputFormat } from '@maitredb/core';
 import type { FieldInfo } from '@maitredb/plugin-api';
 import { getRegistry } from '../bootstrap.js';
+import { resolveConnectionConfig } from '../connection-config.js';
 
 /** `mdb schema` command — wraps the introspection sub-commands. */
 export const schemaCommand: CommandModule = {
@@ -28,7 +29,7 @@ export const schemaCommand: CommandModule = {
   handler: async (argv) => {
     try {
       const configMgr = new ConfigManager();
-      const connConfig = configMgr.getConnection(argv.conn as string);
+      const connConfig = await resolveConnectionConfig(configMgr, argv.conn as string);
       const registry = getRegistry();
       const adapter = await registry.get(connConfig.type);
       const conn = await adapter.connect(connConfig);

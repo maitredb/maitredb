@@ -2,6 +2,7 @@ import type { CommandModule } from 'yargs';
 import { ConfigManager, QueryExecutor, getFormatter, autoDetectFormat, MaitreError, exitCodeForError } from '@maitredb/core';
 import type { OutputFormat } from '@maitredb/core';
 import { getRegistry } from '../bootstrap.js';
+import { resolveConnectionConfig } from '../connection-config.js';
 
 /** `mdb query` command — runs adhoc SQL against a saved connection. */
 export const queryCommand: CommandModule = {
@@ -31,7 +32,7 @@ export const queryCommand: CommandModule = {
     try {
       const connName = argv.conn as string;
       const configMgr = new ConfigManager();
-      const connConfig = configMgr.getConnection(connName);
+      const connConfig = await resolveConnectionConfig(configMgr, connName);
       const registry = getRegistry();
       const adapter = await registry.get(connConfig.type);
       const conn = await adapter.connect(connConfig);

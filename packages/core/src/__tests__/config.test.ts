@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { mkdirSync, writeFileSync, rmSync, existsSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync, rmSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { ConfigManager } from '../config.js';
@@ -67,5 +67,21 @@ describe('ConfigManager', () => {
     mgr.saveConnection('tmp', { name: 'tmp', type: 'sqlite', path: ':memory:' });
     expect(mgr.removeConnection('tmp')).toBe(true);
     expect(mgr.removeConnection('tmp')).toBe(false);
+  });
+
+  it('never persists runtime password fields into connections.json', () => {
+    const mgr = new ConfigManager();
+    mgr.saveConnection('secure', {
+      name: 'secure',
+      type: 'mysql',
+      host: 'localhost',
+      user: 'alice',
+      database: 'app',
+      password: 'should-not-be-written',
+    });
+
+    const raw = readFileSync(join(homeDir, 'connections.json'), 'utf8');
+    expect(raw).not.toContain('should-not-be-written');
+    expect(JSON.parse(raw).connections.secure.password).toBeUndefined();
   });
 });

@@ -46,6 +46,15 @@ const PROTOCOL_TO_DIALECT: Record<string, DatabaseDialect> = {
   'athena': 'athena',
 };
 
+const DEFAULT_PORTS: Partial<Record<DatabaseDialect, number>> = {
+  postgresql: 5432,
+  mysql: 3306,
+  mariadb: 3306,
+  mongodb: 27017,
+  clickhouse: 8123,
+  redshift: 5439,
+};
+
 /**
  * Parse a connection string into a connection config plus an optional
  * password that should be stored in the credential manager.
@@ -75,7 +84,7 @@ export function parseDsn(name: string, dsn: string): ParsedDsn {
     name,
     type: dialect,
     host: url.hostname || undefined,
-    port: url.port ? parseInt(url.port, 10) : undefined,
+    port: url.port ? parseInt(url.port, 10) : DEFAULT_PORTS[dialect],
     user: url.username ? decodeURIComponent(url.username) : undefined,
   };
 
@@ -180,8 +189,14 @@ function parseEmbeddedDsn(
   qp: Record<string, string>,
   dialect: 'sqlite' | 'duckdb',
 ): void {
-  // sqlite:///path/to/db.sqlite or sqlite://:memory:
-  config.path = url.pathname === '/:memory:' ? ':memory:' : url.pathname;
+  // sqlite:///path/to/db.sqlite, sqlite://relative.db, or sqlite:///:memory:
+  if (url.pathname === '/:memory:' || (url.hostname === ':memory:' && (!url.pathname || url.pathname === '/'))) {
+    config.path = ':memory:';
+  } else if (url.hostname && (!url.pathname || url.pathname === '/')) {
+    config.path = decodeURIComponent(url.hostname);
+  } else {
+    config.path = decodeURIComponent(url.pathname);
+  }
 
   const opts: Record<string, unknown> = {};
   if (dialect === 'sqlite') {

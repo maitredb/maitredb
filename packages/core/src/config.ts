@@ -137,7 +137,8 @@ export class ConfigManager {
 
     const filePath = join(dir, 'connections.json');
     const existing = this.loadConnections(filePath);
-    existing[name] = { ...config, name };
+    const { password: _password, ...persisted } = { ...config, name };
+    existing[name] = persisted;
     writeFileSync(filePath, JSON.stringify({ connections: existing }, null, 2) + '\n');
   }
 
