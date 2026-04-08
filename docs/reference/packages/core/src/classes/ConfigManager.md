@@ -4,7 +4,7 @@
 
 # Class: ConfigManager
 
-Defined in: [packages/core/src/config.ts:45](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/config.ts#L45)
+Defined in: [packages/core/src/config.ts:45](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/config.ts#L45)
 
 Resolves Maître d'B configuration, connections, and credentials.
 
@@ -14,7 +14,7 @@ Resolves Maître d'B configuration, connections, and credentials.
 
 > **new ConfigManager**(`options?`): `ConfigManager`
 
-Defined in: [packages/core/src/config.ts:51](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/config.ts#L51)
+Defined in: [packages/core/src/config.ts:51](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/config.ts#L51)
 
 #### Parameters
 
@@ -36,7 +36,7 @@ Defined in: [packages/core/src/config.ts:51](https://github.com/sgoley/maitredb/
 
 > **get** **credentials**(): [`CredentialManager`](CredentialManager.md)
 
-Defined in: [packages/core/src/config.ts:58](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/config.ts#L58)
+Defined in: [packages/core/src/config.ts:58](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/config.ts#L58)
 
 Lazy-initialized credential manager.
 
@@ -50,7 +50,7 @@ Lazy-initialized credential manager.
 
 > **getConfig**(`overrides?`): [`MaitreConfig`](../interfaces/MaitreConfig.md)
 
-Defined in: [packages/core/src/config.ts:66](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/config.ts#L66)
+Defined in: [packages/core/src/config.ts:66](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/config.ts#L66)
 
 Load the merged config using the precedence described in the architecture spec.
 
@@ -70,7 +70,7 @@ Load the merged config using the precedence described in the architecture spec.
 
 > **getConnection**(`name`): `ConnectionConfig`
 
-Defined in: [packages/core/src/config.ts:103](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/config.ts#L103)
+Defined in: [packages/core/src/config.ts:103](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/config.ts#L103)
 
 Retrieve a connection by name or raise a typed [MaitreError](MaitreError.md).
 
@@ -90,7 +90,7 @@ Retrieve a connection by name or raise a typed [MaitreError](MaitreError.md).
 
 > **getConnections**(): `Record`\<`string`, `ConnectionConfig`\>
 
-Defined in: [packages/core/src/config.ts:94](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/config.ts#L94)
+Defined in: [packages/core/src/config.ts:94](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/config.ts#L94)
 
 Return every saved connection from both user + project config scopes.
 
@@ -104,7 +104,7 @@ Return every saved connection from both user + project config scopes.
 
 > **getCredential**(`connectionName`): `Promise`\<[`Credential`](../type-aliases/Credential.md) \| `undefined`\>
 
-Defined in: [packages/core/src/config.ts:122](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/config.ts#L122)
+Defined in: [packages/core/src/config.ts:122](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/config.ts#L122)
 
 Retrieve the credential for a connection from the credential store.
 Returns undefined if no credential is stored (e.g. embedded DBs).
@@ -125,7 +125,7 @@ Returns undefined if no credential is stored (e.g. embedded DBs).
 
 > **removeConnection**(`name`): `boolean`
 
-Defined in: [packages/core/src/config.ts:145](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/config.ts#L145)
+Defined in: [packages/core/src/config.ts:145](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/config.ts#L145)
 
 Remove a saved connection without touching stored credentials.
 
@@ -145,7 +145,7 @@ Remove a saved connection without touching stored credentials.
 
 > **removeConnectionWithCredentials**(`name`): `Promise`\<`boolean`\>
 
-Defined in: [packages/core/src/config.ts:157](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/config.ts#L157)
+Defined in: [packages/core/src/config.ts:157](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/config.ts#L157)
 
 Remove a connection and its stored credentials.
 
@@ -165,7 +165,7 @@ Remove a connection and its stored credentials.
 
 > **saveConnection**(`name`, `config`): `void`
 
-Defined in: [packages/core/src/config.ts:134](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/config.ts#L134)
+Defined in: [packages/core/src/config.ts:134](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/config.ts#L134)
 
 Persist a connection definition to the user config directory.
 
@@ -189,7 +189,7 @@ Persist a connection definition to the user config directory.
 
 > **storeCredential**(`connectionName`, `credential`): `Promise`\<`void`\>
 
-Defined in: [packages/core/src/config.ts:129](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/config.ts#L129)
+Defined in: [packages/core/src/config.ts:129](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/config.ts#L129)
 
 Store a credential securely. Never writes secrets to connections.json.
 

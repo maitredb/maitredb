@@ -4,7 +4,7 @@
 
 # Class: SqliteDriver
 
-Defined in: [packages/driver-sqlite/src/index.ts:28](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/driver-sqlite/src/index.ts#L28)
+Defined in: [packages/driver-sqlite/src/index.ts:28](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-sqlite/src/index.ts#L28)
 
 SQLite driver built on top of better-sqlite3 for in-process speed.
 
@@ -28,7 +28,7 @@ SQLite driver built on top of better-sqlite3 for in-process speed.
 
 > `readonly` **dialect**: `"sqlite"`
 
-Defined in: [packages/driver-sqlite/src/index.ts:29](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/driver-sqlite/src/index.ts#L29)
+Defined in: [packages/driver-sqlite/src/index.ts:29](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-sqlite/src/index.ts#L29)
 
 #### Implementation of
 
@@ -40,7 +40,7 @@ Defined in: [packages/driver-sqlite/src/index.ts:29](https://github.com/sgoley/m
 
 > **beginTransaction**(`conn`, `_options?`): `Promise`\<`Transaction`\>
 
-Defined in: [packages/driver-sqlite/src/index.ts:129](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/driver-sqlite/src/index.ts#L129)
+Defined in: [packages/driver-sqlite/src/index.ts:129](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-sqlite/src/index.ts#L129)
 
 #### Parameters
 
@@ -66,7 +66,7 @@ Defined in: [packages/driver-sqlite/src/index.ts:129](https://github.com/sgoley/
 
 > **cancelQuery**(`_conn`, `_queryId`): `Promise`\<`void`\>
 
-Defined in: [packages/driver-sqlite/src/index.ts:125](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/driver-sqlite/src/index.ts#L125)
+Defined in: [packages/driver-sqlite/src/index.ts:125](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-sqlite/src/index.ts#L125)
 
 #### Parameters
 
@@ -92,7 +92,7 @@ Defined in: [packages/driver-sqlite/src/index.ts:125](https://github.com/sgoley/
 
 > **capabilities**(): `DriverCapabilities`
 
-Defined in: [packages/driver-sqlite/src/index.ts:257](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/driver-sqlite/src/index.ts#L257)
+Defined in: [packages/driver-sqlite/src/index.ts:257](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-sqlite/src/index.ts#L257)
 
 #### Returns
 
@@ -108,7 +108,7 @@ Defined in: [packages/driver-sqlite/src/index.ts:257](https://github.com/sgoley/
 
 > **connect**(`config`): `Promise`\<`Connection`\>
 
-Defined in: [packages/driver-sqlite/src/index.ts:31](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/driver-sqlite/src/index.ts#L31)
+Defined in: [packages/driver-sqlite/src/index.ts:31](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-sqlite/src/index.ts#L31)
 
 #### Parameters
 
@@ -130,7 +130,7 @@ Defined in: [packages/driver-sqlite/src/index.ts:31](https://github.com/sgoley/m
 
 > **disconnect**(`conn`): `Promise`\<`void`\>
 
-Defined in: [packages/driver-sqlite/src/index.ts:45](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/driver-sqlite/src/index.ts#L45)
+Defined in: [packages/driver-sqlite/src/index.ts:45](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-sqlite/src/index.ts#L45)
 
 #### Parameters
 
@@ -152,7 +152,7 @@ Defined in: [packages/driver-sqlite/src/index.ts:45](https://github.com/sgoley/m
 
 > **execute**(`conn`, `query`, `params?`): `Promise`\<`QueryResult`\>
 
-Defined in: [packages/driver-sqlite/src/index.ts:81](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/driver-sqlite/src/index.ts#L81)
+Defined in: [packages/driver-sqlite/src/index.ts:81](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-sqlite/src/index.ts#L81)
 
 #### Parameters
 
@@ -182,7 +182,7 @@ Defined in: [packages/driver-sqlite/src/index.ts:81](https://github.com/sgoley/m
 
 > **explain**(`conn`, `query`, `_options?`): `Promise`\<`ExplainResult`\>
 
-Defined in: [packages/driver-sqlite/src/index.ts:227](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/driver-sqlite/src/index.ts#L227)
+Defined in: [packages/driver-sqlite/src/index.ts:227](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-sqlite/src/index.ts#L227)
 
 #### Parameters
 
@@ -212,7 +212,7 @@ Defined in: [packages/driver-sqlite/src/index.ts:227](https://github.com/sgoley/
 
 > **getColumns**(`conn`, `_schema`, `table`): `Promise`\<`ColumnInfo`[]\>
 
-Defined in: [packages/driver-sqlite/src/index.ts:174](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/driver-sqlite/src/index.ts#L174)
+Defined in: [packages/driver-sqlite/src/index.ts:174](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-sqlite/src/index.ts#L174)
 
 #### Parameters
 
@@ -242,7 +242,7 @@ Defined in: [packages/driver-sqlite/src/index.ts:174](https://github.com/sgoley/
 
 > **getFunctions**(`_conn`, `_schema?`): `Promise`\<`FunctionInfo`[]\>
 
-Defined in: [packages/driver-sqlite/src/index.ts:211](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/driver-sqlite/src/index.ts#L211)
+Defined in: [packages/driver-sqlite/src/index.ts:211](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-sqlite/src/index.ts#L211)
 
 #### Parameters
 
@@ -268,7 +268,7 @@ Defined in: [packages/driver-sqlite/src/index.ts:211](https://github.com/sgoley/
 
 > **getGrants**(`_conn`, `_role?`): `Promise`\<`GrantInfo`[]\>
 
-Defined in: [packages/driver-sqlite/src/index.ts:223](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/driver-sqlite/src/index.ts#L223)
+Defined in: [packages/driver-sqlite/src/index.ts:223](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-sqlite/src/index.ts#L223)
 
 #### Parameters
 
@@ -294,7 +294,7 @@ Defined in: [packages/driver-sqlite/src/index.ts:223](https://github.com/sgoley/
 
 > **getIndexes**(`conn`, `_schema`, `table`): `Promise`\<`IndexInfo`[]\>
 
-Defined in: [packages/driver-sqlite/src/index.ts:192](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/driver-sqlite/src/index.ts#L192)
+Defined in: [packages/driver-sqlite/src/index.ts:192](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-sqlite/src/index.ts#L192)
 
 #### Parameters
 
@@ -324,7 +324,7 @@ Defined in: [packages/driver-sqlite/src/index.ts:192](https://github.com/sgoley/
 
 > **getProcedures**(`_conn`, `_schema?`): `Promise`\<`ProcedureInfo`[]\>
 
-Defined in: [packages/driver-sqlite/src/index.ts:215](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/driver-sqlite/src/index.ts#L215)
+Defined in: [packages/driver-sqlite/src/index.ts:215](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-sqlite/src/index.ts#L215)
 
 #### Parameters
 
@@ -350,7 +350,7 @@ Defined in: [packages/driver-sqlite/src/index.ts:215](https://github.com/sgoley/
 
 > **getRoles**(`_conn`): `Promise`\<`RoleInfo`[]\>
 
-Defined in: [packages/driver-sqlite/src/index.ts:219](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/driver-sqlite/src/index.ts#L219)
+Defined in: [packages/driver-sqlite/src/index.ts:219](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-sqlite/src/index.ts#L219)
 
 #### Parameters
 
@@ -372,7 +372,7 @@ Defined in: [packages/driver-sqlite/src/index.ts:219](https://github.com/sgoley/
 
 > **getSchemas**(`_conn`): `Promise`\<`SchemaInfo`[]\>
 
-Defined in: [packages/driver-sqlite/src/index.ts:157](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/driver-sqlite/src/index.ts#L157)
+Defined in: [packages/driver-sqlite/src/index.ts:157](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-sqlite/src/index.ts#L157)
 
 #### Parameters
 
@@ -394,7 +394,7 @@ Defined in: [packages/driver-sqlite/src/index.ts:157](https://github.com/sgoley/
 
 > **getTables**(`conn`, `_schema?`): `Promise`\<`TableInfo`[]\>
 
-Defined in: [packages/driver-sqlite/src/index.ts:161](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/driver-sqlite/src/index.ts#L161)
+Defined in: [packages/driver-sqlite/src/index.ts:161](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-sqlite/src/index.ts#L161)
 
 #### Parameters
 
@@ -420,7 +420,7 @@ Defined in: [packages/driver-sqlite/src/index.ts:161](https://github.com/sgoley/
 
 > **mapNativeType**(`nativeType`): `MaitreType`
 
-Defined in: [packages/driver-sqlite/src/index.ts:253](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/driver-sqlite/src/index.ts#L253)
+Defined in: [packages/driver-sqlite/src/index.ts:253](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-sqlite/src/index.ts#L253)
 
 #### Parameters
 
@@ -442,7 +442,7 @@ Defined in: [packages/driver-sqlite/src/index.ts:253](https://github.com/sgoley/
 
 > **stream**(`conn`, `query`, `params?`): `AsyncIterable`\<`Record`\<`string`, `unknown`\>\>
 
-Defined in: [packages/driver-sqlite/src/index.ts:112](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/driver-sqlite/src/index.ts#L112)
+Defined in: [packages/driver-sqlite/src/index.ts:112](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-sqlite/src/index.ts#L112)
 
 #### Parameters
 
@@ -472,7 +472,7 @@ Defined in: [packages/driver-sqlite/src/index.ts:112](https://github.com/sgoley/
 
 > **testConnection**(`config`): `Promise`\<`ConnectionTestResult`\>
 
-Defined in: [packages/driver-sqlite/src/index.ts:50](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/driver-sqlite/src/index.ts#L50)
+Defined in: [packages/driver-sqlite/src/index.ts:50](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-sqlite/src/index.ts#L50)
 
 #### Parameters
 
@@ -494,7 +494,7 @@ Defined in: [packages/driver-sqlite/src/index.ts:50](https://github.com/sgoley/m
 
 > **validateConnection**(`conn`): `Promise`\<`boolean`\>
 
-Defined in: [packages/driver-sqlite/src/index.ts:71](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/driver-sqlite/src/index.ts#L71)
+Defined in: [packages/driver-sqlite/src/index.ts:71](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-sqlite/src/index.ts#L71)
 
 #### Parameters
 

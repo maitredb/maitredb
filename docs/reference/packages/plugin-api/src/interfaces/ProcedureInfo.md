@@ -4,7 +4,7 @@
 
 # Interface: ProcedureInfo
 
-Defined in: [packages/plugin-api/src/types.ts:315](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L315)
+Defined in: [packages/plugin-api/src/types.ts:315](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L315)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [packages/plugin-api/src/types.ts:315](https://github.com/sgoley/mai
 
 > **arguments**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:318](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L318)
+Defined in: [packages/plugin-api/src/types.ts:318](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L318)
 
 ***
 
@@ -20,7 +20,7 @@ Defined in: [packages/plugin-api/src/types.ts:318](https://github.com/sgoley/mai
 
 > `optional` **language?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:319](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L319)
+Defined in: [packages/plugin-api/src/types.ts:319](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L319)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [packages/plugin-api/src/types.ts:319](https://github.com/sgoley/mai
 
 > **name**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:317](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L317)
+Defined in: [packages/plugin-api/src/types.ts:317](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L317)
 
 ***
 
@@ -36,4 +36,4 @@ Defined in: [packages/plugin-api/src/types.ts:317](https://github.com/sgoley/mai
 
 > **schema**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:316](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L316)
+Defined in: [packages/plugin-api/src/types.ts:316](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L316)

@@ -4,7 +4,7 @@
 
 # Interface: MaitreConfig
 
-Defined in: [packages/core/src/config.ts:9](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/config.ts#L9)
+Defined in: [packages/core/src/config.ts:9](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/config.ts#L9)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [packages/core/src/config.ts:9](https://github.com/sgoley/maitredb/b
 
 > `optional` **defaultConnection?**: `string`
 
-Defined in: [packages/core/src/config.ts:11](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/config.ts#L11)
+Defined in: [packages/core/src/config.ts:11](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/config.ts#L11)
 
 ***
 
@@ -20,7 +20,7 @@ Defined in: [packages/core/src/config.ts:11](https://github.com/sgoley/maitredb/
 
 > **defaultFormat**: `"json"` \| `"table"` \| `"csv"` \| `"ndjson"` \| `"yaml"` \| `"raw"`
 
-Defined in: [packages/core/src/config.ts:10](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/config.ts#L10)
+Defined in: [packages/core/src/config.ts:10](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/config.ts#L10)
 
 ***
 
@@ -28,4 +28,4 @@ Defined in: [packages/core/src/config.ts:10](https://github.com/sgoley/maitredb/
 
 > **maxRows**: `number`
 
-Defined in: [packages/core/src/config.ts:12](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/config.ts#L12)
+Defined in: [packages/core/src/config.ts:12](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/config.ts#L12)

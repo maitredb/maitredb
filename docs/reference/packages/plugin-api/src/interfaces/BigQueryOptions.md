@@ -4,7 +4,7 @@
 
 # Interface: BigQueryOptions
 
-Defined in: [packages/plugin-api/src/types.ts:196](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L196)
+Defined in: [packages/plugin-api/src/types.ts:196](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L196)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [packages/plugin-api/src/types.ts:196](https://github.com/sgoley/mai
 
 > `optional` **defaultDataset?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:202](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L202)
+Defined in: [packages/plugin-api/src/types.ts:202](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L202)
 
 Default dataset
 
@@ -22,7 +22,7 @@ Default dataset
 
 > `optional` **jobTimeout?**: `number`
 
-Defined in: [packages/plugin-api/src/types.ts:206](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L206)
+Defined in: [packages/plugin-api/src/types.ts:206](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L206)
 
 Job timeout in ms
 
@@ -32,7 +32,7 @@ Job timeout in ms
 
 > `optional` **location?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:200](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L200)
+Defined in: [packages/plugin-api/src/types.ts:200](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L200)
 
 Dataset location (e.g. 'US', 'EU', 'us-east1')
 
@@ -42,7 +42,7 @@ Dataset location (e.g. 'US', 'EU', 'us-east1')
 
 > `optional` **maximumBytesBilled?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:204](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L204)
+Defined in: [packages/plugin-api/src/types.ts:204](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L204)
 
 Maximum bytes billed per query (cost control)
 
@@ -52,7 +52,7 @@ Maximum bytes billed per query (cost control)
 
 > **projectId**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:198](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L198)
+Defined in: [packages/plugin-api/src/types.ts:198](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L198)
 
 GCP project ID
 
@@ -62,6 +62,6 @@ GCP project ID
 
 > `optional` **useStorageApi?**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:208](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L208)
+Defined in: [packages/plugin-api/src/types.ts:208](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L208)
 
 Use Storage Read API for Arrow results

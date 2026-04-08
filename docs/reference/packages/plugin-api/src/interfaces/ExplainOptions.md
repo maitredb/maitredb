@@ -4,7 +4,7 @@
 
 # Interface: ExplainOptions
 
-Defined in: [packages/plugin-api/src/types.ts:335](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L335)
+Defined in: [packages/plugin-api/src/types.ts:335](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L335)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [packages/plugin-api/src/types.ts:335](https://github.com/sgoley/mai
 
 > `optional` **analyze?**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:336](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L336)
+Defined in: [packages/plugin-api/src/types.ts:336](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L336)
 
 ***
 
@@ -20,4 +20,4 @@ Defined in: [packages/plugin-api/src/types.ts:336](https://github.com/sgoley/mai
 
 > `optional` **format?**: `"json"` \| `"text"` \| `"tree"`
 
-Defined in: [packages/plugin-api/src/types.ts:337](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L337)
+Defined in: [packages/plugin-api/src/types.ts:337](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L337)

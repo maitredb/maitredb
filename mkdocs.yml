@@ -1,0 +1,23 @@
+site_name: Maître d'B Docs
+site_description: Developer documentation and API reference for Maître d'B
+site_url: https://maitredb.local/docs
+repo_url: https://github.com/sgoley/maitredb
+nav:
+  - Home: index.md
+  - Spec:
+      - Architecture: spec/architecture.md
+      - Implementation Plan: spec/implementation-plan.md
+      - Change Log: spec/change-log.md
+  - Reference:
+      - API Reference: docs/reference/README.md
+theme:
+  name: mkdocs
+  features:
+    - navigation.sections
+    - navigation.instant
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+plugins:
+  - search

@@ -4,7 +4,7 @@
 
 # Interface: Transaction
 
-Defined in: [packages/plugin-api/src/types.ts:366](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L366)
+Defined in: [packages/plugin-api/src/types.ts:366](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L366)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [packages/plugin-api/src/types.ts:366](https://github.com/sgoley/mai
 
 > **id**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:367](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L367)
+Defined in: [packages/plugin-api/src/types.ts:367](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L367)
 
 ## Methods
 
@@ -20,7 +20,7 @@ Defined in: [packages/plugin-api/src/types.ts:367](https://github.com/sgoley/mai
 
 > **commit**(): `Promise`\<`void`\>
 
-Defined in: [packages/plugin-api/src/types.ts:369](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L369)
+Defined in: [packages/plugin-api/src/types.ts:369](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L369)
 
 #### Returns
 
@@ -32,7 +32,7 @@ Defined in: [packages/plugin-api/src/types.ts:369](https://github.com/sgoley/mai
 
 > **query**(`sql`, `params?`): `Promise`\<[`QueryResult`](QueryResult.md)\>
 
-Defined in: [packages/plugin-api/src/types.ts:368](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L368)
+Defined in: [packages/plugin-api/src/types.ts:368](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L368)
 
 #### Parameters
 
@@ -54,7 +54,7 @@ Defined in: [packages/plugin-api/src/types.ts:368](https://github.com/sgoley/mai
 
 > **rollback**(): `Promise`\<`void`\>
 
-Defined in: [packages/plugin-api/src/types.ts:370](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L370)
+Defined in: [packages/plugin-api/src/types.ts:370](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L370)
 
 #### Returns
 

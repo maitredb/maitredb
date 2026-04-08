@@ -4,7 +4,7 @@
 
 # Class: MaitreError
 
-Defined in: [packages/core/src/errors.ts:43](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/errors.ts#L43)
+Defined in: [packages/core/src/errors.ts:43](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L43)
 
 ## Extends
 
@@ -16,7 +16,7 @@ Defined in: [packages/core/src/errors.ts:43](https://github.com/sgoley/maitredb/
 
 > **new MaitreError**(`code`, `message`, `dialect?`, `nativeCode?`, `suggestion?`): `MaitreError`
 
-Defined in: [packages/core/src/errors.ts:44](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/errors.ts#L44)
+Defined in: [packages/core/src/errors.ts:44](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L44)
 
 #### Parameters
 
@@ -54,7 +54,7 @@ Defined in: [packages/core/src/errors.ts:44](https://github.com/sgoley/maitredb/
 
 > `readonly` **code**: [`MaitreErrorCode`](../enumerations/MaitreErrorCode.md)
 
-Defined in: [packages/core/src/errors.ts:45](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/errors.ts#L45)
+Defined in: [packages/core/src/errors.ts:45](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L45)
 
 ***
 
@@ -62,7 +62,7 @@ Defined in: [packages/core/src/errors.ts:45](https://github.com/sgoley/maitredb/
 
 > `readonly` `optional` **dialect?**: [`DatabaseDialect`](../../../plugin-api/src/type-aliases/DatabaseDialect.md)
 
-Defined in: [packages/core/src/errors.ts:47](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/errors.ts#L47)
+Defined in: [packages/core/src/errors.ts:47](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L47)
 
 ***
 
@@ -70,7 +70,7 @@ Defined in: [packages/core/src/errors.ts:47](https://github.com/sgoley/maitredb/
 
 > `readonly` `optional` **nativeCode?**: `string` \| `number`
 
-Defined in: [packages/core/src/errors.ts:48](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/errors.ts#L48)
+Defined in: [packages/core/src/errors.ts:48](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L48)
 
 ***
 
@@ -78,7 +78,7 @@ Defined in: [packages/core/src/errors.ts:48](https://github.com/sgoley/maitredb/
 
 > `readonly` `optional` **suggestion?**: `string`
 
-Defined in: [packages/core/src/errors.ts:49](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/errors.ts#L49)
+Defined in: [packages/core/src/errors.ts:49](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L49)
 
 ## Methods
 
@@ -86,7 +86,7 @@ Defined in: [packages/core/src/errors.ts:49](https://github.com/sgoley/maitredb/
 
 > **toJSON**(): `object`
 
-Defined in: [packages/core/src/errors.ts:55](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/errors.ts#L55)
+Defined in: [packages/core/src/errors.ts:55](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L55)
 
 #### Returns
 

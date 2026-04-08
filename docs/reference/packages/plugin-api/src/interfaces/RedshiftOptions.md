@@ -4,7 +4,7 @@
 
 # Interface: RedshiftOptions
 
-Defined in: [packages/plugin-api/src/types.ts:211](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L211)
+Defined in: [packages/plugin-api/src/types.ts:211](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L211)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [packages/plugin-api/src/types.ts:211](https://github.com/sgoley/mai
 
 > `optional` **awsProfile?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:221](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L221)
+Defined in: [packages/plugin-api/src/types.ts:221](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L221)
 
 AWS profile name (for credential resolution)
 
@@ -22,7 +22,7 @@ AWS profile name (for credential resolution)
 
 > `optional` **clusterIdentifier?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:213](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L213)
+Defined in: [packages/plugin-api/src/types.ts:213](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L213)
 
 Redshift cluster identifier (for Data API)
 
@@ -32,7 +32,7 @@ Redshift cluster identifier (for Data API)
 
 > `optional` **dbUser?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:217](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L217)
+Defined in: [packages/plugin-api/src/types.ts:217](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L217)
 
 Database user for IAM-based auth via Data API
 
@@ -42,7 +42,7 @@ Database user for IAM-based auth via Data API
 
 > `optional` **region?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:219](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L219)
+Defined in: [packages/plugin-api/src/types.ts:219](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L219)
 
 AWS region
 
@@ -52,7 +52,7 @@ AWS region
 
 > `optional` **secretArn?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:225](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L225)
+Defined in: [packages/plugin-api/src/types.ts:225](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L225)
 
 Secrets Manager ARN for credentials
 
@@ -62,7 +62,7 @@ Secrets Manager ARN for credentials
 
 > `optional` **useDirect?**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:223](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L223)
+Defined in: [packages/plugin-api/src/types.ts:223](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L223)
 
 Use direct pg wire protocol instead of Data API
 
@@ -72,6 +72,6 @@ Use direct pg wire protocol instead of Data API
 
 > `optional` **workgroupName?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:215](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L215)
+Defined in: [packages/plugin-api/src/types.ts:215](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L215)
 
 Redshift Serverless workgroup name

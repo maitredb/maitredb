@@ -4,7 +4,7 @@
 
 # Interface: PasswordCredential
 
-Defined in: [packages/core/src/credentials.ts:12](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/credentials.ts#L12)
+Defined in: [packages/core/src/credentials.ts:12](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L12)
 
 Simple username/password auth (Postgres, MySQL, etc.)
 
@@ -14,7 +14,7 @@ Simple username/password auth (Postgres, MySQL, etc.)
 
 > `readonly` **kind**: `"password"`
 
-Defined in: [packages/core/src/credentials.ts:13](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/credentials.ts#L13)
+Defined in: [packages/core/src/credentials.ts:13](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L13)
 
 ***
 
@@ -22,4 +22,4 @@ Defined in: [packages/core/src/credentials.ts:13](https://github.com/sgoley/mait
 
 > `readonly` **password**: `string`
 
-Defined in: [packages/core/src/credentials.ts:14](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/credentials.ts#L14)
+Defined in: [packages/core/src/credentials.ts:14](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L14)

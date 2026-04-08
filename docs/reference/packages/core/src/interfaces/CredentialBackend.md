@@ -4,7 +4,7 @@
 
 # Interface: CredentialBackend
 
-Defined in: [packages/core/src/credentials.ts:66](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/credentials.ts#L66)
+Defined in: [packages/core/src/credentials.ts:66](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L66)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [packages/core/src/credentials.ts:66](https://github.com/sgoley/mait
 
 > `readonly` **name**: `string`
 
-Defined in: [packages/core/src/credentials.ts:67](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/credentials.ts#L67)
+Defined in: [packages/core/src/credentials.ts:67](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L67)
 
 ## Methods
 
@@ -20,7 +20,7 @@ Defined in: [packages/core/src/credentials.ts:67](https://github.com/sgoley/mait
 
 > **delete**(`connectionName`): `Promise`\<`boolean`\>
 
-Defined in: [packages/core/src/credentials.ts:79](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/credentials.ts#L79)
+Defined in: [packages/core/src/credentials.ts:79](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L79)
 
 Delete a credential. Returns true if it existed.
 
@@ -40,7 +40,7 @@ Delete a credential. Returns true if it existed.
 
 > **get**(`connectionName`): `Promise`\<[`Credential`](../type-aliases/Credential.md) \| `undefined`\>
 
-Defined in: [packages/core/src/credentials.ts:73](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/credentials.ts#L73)
+Defined in: [packages/core/src/credentials.ts:73](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L73)
 
 Retrieve a credential by connection name. Returns undefined if not found.
 
@@ -60,7 +60,7 @@ Retrieve a credential by connection name. Returns undefined if not found.
 
 > **isAvailable**(): `Promise`\<`boolean`\>
 
-Defined in: [packages/core/src/credentials.ts:70](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/credentials.ts#L70)
+Defined in: [packages/core/src/credentials.ts:70](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L70)
 
 Return true if this backend is available in the current environment.
 
@@ -74,7 +74,7 @@ Return true if this backend is available in the current environment.
 
 > **list**(): `Promise`\<`string`[]\>
 
-Defined in: [packages/core/src/credentials.ts:82](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/credentials.ts#L82)
+Defined in: [packages/core/src/credentials.ts:82](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L82)
 
 List all connection names that have stored credentials.
 
@@ -88,7 +88,7 @@ List all connection names that have stored credentials.
 
 > **store**(`connectionName`, `credential`): `Promise`\<`void`\>
 
-Defined in: [packages/core/src/credentials.ts:76](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/credentials.ts#L76)
+Defined in: [packages/core/src/credentials.ts:76](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L76)
 
 Store a credential for a connection. Not all backends support writes.
 

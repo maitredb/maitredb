@@ -6,4 +6,4 @@
 
 > `const` **EXIT\_GOVERNANCE\_VIOLATION**: `2` = `2`
 
-Defined in: [packages/core/src/errors.ts:69](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/errors.ts#L69)
+Defined in: [packages/core/src/errors.ts:69](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L69)

@@ -6,6 +6,6 @@
 
 > `const` **schemaCommand**: `CommandModule`
 
-Defined in: [apps/cli/src/commands/schema.ts:8](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/apps/cli/src/commands/schema.ts#L8)
+Defined in: [apps/cli/src/commands/schema.ts:8](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/apps/cli/src/commands/schema.ts#L8)
 
 `mdb schema` command — wraps the introspection sub-commands.

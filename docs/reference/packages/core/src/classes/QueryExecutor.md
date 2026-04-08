@@ -4,7 +4,7 @@
 
 # Class: QueryExecutor
 
-Defined in: [packages/core/src/executor.ts:18](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/executor.ts#L18)
+Defined in: [packages/core/src/executor.ts:18](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/executor.ts#L18)
 
 Wraps a DriverAdapter to provide consistent error handling and
 timing metadata. The executor enforces the "streaming-first" guarantee by
@@ -16,7 +16,7 @@ delegating to the driver for both buffered and streamed paths.
 
 > **new QueryExecutor**(`adapter`, `maxBufferedRows?`): `QueryExecutor`
 
-Defined in: [packages/core/src/executor.ts:19](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/executor.ts#L19)
+Defined in: [packages/core/src/executor.ts:19](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/executor.ts#L19)
 
 #### Parameters
 
@@ -38,7 +38,7 @@ Defined in: [packages/core/src/executor.ts:19](https://github.com/sgoley/maitred
 
 > **execute**(`conn`, `sql`, `params?`): `Promise`\<`QueryResult`\>
 
-Defined in: [packages/core/src/executor.ts:25](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/executor.ts#L25)
+Defined in: [packages/core/src/executor.ts:25](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/executor.ts#L25)
 
 Execute a SQL statement and capture timing metadata.
 
@@ -66,7 +66,7 @@ Execute a SQL statement and capture timing metadata.
 
 > **stream**(`conn`, `sql`, `params?`): `AsyncIterable`\<`Record`\<`string`, `unknown`\>\>
 
-Defined in: [packages/core/src/executor.ts:37](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/core/src/executor.ts#L37)
+Defined in: [packages/core/src/executor.ts:37](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/executor.ts#L37)
 
 Stream rows directly from the adapter while preserving error semantics.
 

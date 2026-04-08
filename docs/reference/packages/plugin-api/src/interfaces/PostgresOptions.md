@@ -4,7 +4,7 @@
 
 # Interface: PostgresOptions
 
-Defined in: [packages/plugin-api/src/types.ts:110](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L110)
+Defined in: [packages/plugin-api/src/types.ts:110](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L110)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [packages/plugin-api/src/types.ts:110](https://github.com/sgoley/mai
 
 > `optional` **applicationName?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:112](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L112)
+Defined in: [packages/plugin-api/src/types.ts:112](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L112)
 
 Application name reported to pg_stat_activity
 
@@ -22,7 +22,7 @@ Application name reported to pg_stat_activity
 
 > `optional` **binaryResults?**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:120](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L120)
+Defined in: [packages/plugin-api/src/types.ts:120](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L120)
 
 Prefer binary protocol for results
 
@@ -32,7 +32,7 @@ Prefer binary protocol for results
 
 > `optional` **connectTimeout?**: `number`
 
-Defined in: [packages/plugin-api/src/types.ts:116](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L116)
+Defined in: [packages/plugin-api/src/types.ts:116](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L116)
 
 Connect timeout in ms
 
@@ -42,7 +42,7 @@ Connect timeout in ms
 
 > `optional` **preparedStatementCacheSize?**: `number`
 
-Defined in: [packages/plugin-api/src/types.ts:122](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L122)
+Defined in: [packages/plugin-api/src/types.ts:122](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L122)
 
 Prepared statement cache size (0 = disabled)
 
@@ -52,7 +52,7 @@ Prepared statement cache size (0 = disabled)
 
 > `optional` **searchPath?**: `string`[]
 
-Defined in: [packages/plugin-api/src/types.ts:118](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L118)
+Defined in: [packages/plugin-api/src/types.ts:118](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L118)
 
 search_path schemas
 
@@ -62,6 +62,6 @@ search_path schemas
 
 > `optional` **statementTimeout?**: `number`
 
-Defined in: [packages/plugin-api/src/types.ts:114](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L114)
+Defined in: [packages/plugin-api/src/types.ts:114](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L114)
 
 Statement timeout in ms (SET statement_timeout)

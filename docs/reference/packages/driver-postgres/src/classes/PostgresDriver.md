@@ -4,7 +4,7 @@
 
 # Class: PostgresDriver
 
-Defined in: packages/driver-postgres/src/index.ts:34
+Defined in: [packages/driver-postgres/src/index.ts:34](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L34)
 
 PostgreSQL driver implemented via the native `pg` client.
 
@@ -18,7 +18,7 @@ PostgreSQL driver implemented via the native `pg` client.
 
 > **new PostgresDriver**(): `PostgresDriver`
 
-Defined in: packages/driver-postgres/src/index.ts:39
+Defined in: [packages/driver-postgres/src/index.ts:39](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L39)
 
 #### Returns
 
@@ -30,7 +30,7 @@ Defined in: packages/driver-postgres/src/index.ts:39
 
 > `readonly` **dialect**: `"postgresql"` = `'postgresql'`
 
-Defined in: packages/driver-postgres/src/index.ts:35
+Defined in: [packages/driver-postgres/src/index.ts:35](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L35)
 
 #### Implementation of
 
@@ -42,7 +42,7 @@ Defined in: packages/driver-postgres/src/index.ts:35
 
 > **beginTransaction**(`conn`, `options?`): `Promise`\<`Transaction`\>
 
-Defined in: packages/driver-postgres/src/index.ts:187
+Defined in: [packages/driver-postgres/src/index.ts:187](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L187)
 
 #### Parameters
 
@@ -68,7 +68,7 @@ Defined in: packages/driver-postgres/src/index.ts:187
 
 > **cancelQuery**(`conn`, `queryId`): `Promise`\<`void`\>
 
-Defined in: packages/driver-postgres/src/index.ts:164
+Defined in: [packages/driver-postgres/src/index.ts:164](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L164)
 
 #### Parameters
 
@@ -94,7 +94,7 @@ Defined in: packages/driver-postgres/src/index.ts:164
 
 > **capabilities**(): `DriverCapabilities`
 
-Defined in: packages/driver-postgres/src/index.ts:594
+Defined in: [packages/driver-postgres/src/index.ts:594](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L594)
 
 #### Returns
 
@@ -110,7 +110,7 @@ Defined in: packages/driver-postgres/src/index.ts:594
 
 > **connect**(`config`): `Promise`\<`Connection`\>
 
-Defined in: packages/driver-postgres/src/index.ts:49
+Defined in: [packages/driver-postgres/src/index.ts:49](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L49)
 
 #### Parameters
 
@@ -132,7 +132,7 @@ Defined in: packages/driver-postgres/src/index.ts:49
 
 > **disconnect**(`conn`): `Promise`\<`void`\>
 
-Defined in: packages/driver-postgres/src/index.ts:61
+Defined in: [packages/driver-postgres/src/index.ts:61](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L61)
 
 #### Parameters
 
@@ -154,7 +154,7 @@ Defined in: packages/driver-postgres/src/index.ts:61
 
 > **execute**(`conn`, `query`, `params?`): `Promise`\<`QueryResult`\>
 
-Defined in: packages/driver-postgres/src/index.ts:123
+Defined in: [packages/driver-postgres/src/index.ts:123](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L123)
 
 #### Parameters
 
@@ -184,7 +184,7 @@ Defined in: packages/driver-postgres/src/index.ts:123
 
 > **explain**(`conn`, `query`, `options?`): `Promise`\<`ExplainResult`\>
 
-Defined in: packages/driver-postgres/src/index.ts:526
+Defined in: [packages/driver-postgres/src/index.ts:526](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L526)
 
 #### Parameters
 
@@ -214,7 +214,7 @@ Defined in: packages/driver-postgres/src/index.ts:526
 
 > **getColumns**(`conn`, `schema`, `table`): `Promise`\<`ColumnInfo`[]\>
 
-Defined in: packages/driver-postgres/src/index.ts:286
+Defined in: [packages/driver-postgres/src/index.ts:286](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L286)
 
 #### Parameters
 
@@ -244,7 +244,7 @@ Defined in: packages/driver-postgres/src/index.ts:286
 
 > **getFunctions**(`conn`, `schema`): `Promise`\<`FunctionInfo`[]\>
 
-Defined in: packages/driver-postgres/src/index.ts:371
+Defined in: [packages/driver-postgres/src/index.ts:371](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L371)
 
 #### Parameters
 
@@ -270,7 +270,7 @@ Defined in: packages/driver-postgres/src/index.ts:371
 
 > **getGrants**(`conn`, `role?`): `Promise`\<`GrantInfo`[]\>
 
-Defined in: packages/driver-postgres/src/index.ts:486
+Defined in: [packages/driver-postgres/src/index.ts:486](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L486)
 
 #### Parameters
 
@@ -296,7 +296,7 @@ Defined in: packages/driver-postgres/src/index.ts:486
 
 > **getIndexes**(`conn`, `schema`, `table`): `Promise`\<`IndexInfo`[]\>
 
-Defined in: packages/driver-postgres/src/index.ts:331
+Defined in: [packages/driver-postgres/src/index.ts:331](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L331)
 
 #### Parameters
 
@@ -326,7 +326,7 @@ Defined in: packages/driver-postgres/src/index.ts:331
 
 > **getProcedures**(`conn`, `schema`): `Promise`\<`ProcedureInfo`[]\>
 
-Defined in: packages/driver-postgres/src/index.ts:409
+Defined in: [packages/driver-postgres/src/index.ts:409](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L409)
 
 #### Parameters
 
@@ -352,7 +352,7 @@ Defined in: packages/driver-postgres/src/index.ts:409
 
 > **getRoles**(`conn`): `Promise`\<`RoleInfo`[]\>
 
-Defined in: packages/driver-postgres/src/index.ts:446
+Defined in: [packages/driver-postgres/src/index.ts:446](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L446)
 
 #### Parameters
 
@@ -374,7 +374,7 @@ Defined in: packages/driver-postgres/src/index.ts:446
 
 > **getSchemas**(`conn`): `Promise`\<`SchemaInfo`[]\>
 
-Defined in: packages/driver-postgres/src/index.ts:220
+Defined in: [packages/driver-postgres/src/index.ts:220](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L220)
 
 #### Parameters
 
@@ -396,7 +396,7 @@ Defined in: packages/driver-postgres/src/index.ts:220
 
 > **getTables**(`conn`, `schema`): `Promise`\<`TableInfo`[]\>
 
-Defined in: packages/driver-postgres/src/index.ts:249
+Defined in: [packages/driver-postgres/src/index.ts:249](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L249)
 
 #### Parameters
 
@@ -422,7 +422,7 @@ Defined in: packages/driver-postgres/src/index.ts:249
 
 > **mapNativeType**(`nativeType`): `MaitreType`
 
-Defined in: packages/driver-postgres/src/index.ts:570
+Defined in: [packages/driver-postgres/src/index.ts:570](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L570)
 
 #### Parameters
 
@@ -444,7 +444,7 @@ Defined in: packages/driver-postgres/src/index.ts:570
 
 > **stream**(`conn`, `query`, `params?`): `AsyncIterable`\<`Row`\>
 
-Defined in: packages/driver-postgres/src/index.ts:144
+Defined in: [packages/driver-postgres/src/index.ts:144](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L144)
 
 #### Parameters
 
@@ -474,7 +474,7 @@ Defined in: packages/driver-postgres/src/index.ts:144
 
 > **testConnection**(`config`): `Promise`\<`ConnectionTestResult`\>
 
-Defined in: packages/driver-postgres/src/index.ts:68
+Defined in: [packages/driver-postgres/src/index.ts:68](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L68)
 
 #### Parameters
 
@@ -496,7 +496,7 @@ Defined in: packages/driver-postgres/src/index.ts:68
 
 > **validateConnection**(`conn`): `Promise`\<`boolean`\>
 
-Defined in: packages/driver-postgres/src/index.ts:104
+Defined in: [packages/driver-postgres/src/index.ts:104](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L104)
 
 #### Parameters
 

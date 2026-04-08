@@ -4,7 +4,7 @@
 
 # Interface: PlanNode
 
-Defined in: [packages/plugin-api/src/types.ts:340](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L340)
+Defined in: [packages/plugin-api/src/types.ts:340](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L340)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [packages/plugin-api/src/types.ts:340](https://github.com/sgoley/mai
 
 > **children**: `PlanNode`[]
 
-Defined in: [packages/plugin-api/src/types.ts:347](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L347)
+Defined in: [packages/plugin-api/src/types.ts:347](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L347)
 
 ***
 
@@ -20,7 +20,7 @@ Defined in: [packages/plugin-api/src/types.ts:347](https://github.com/sgoley/mai
 
 > `optional` **cost?**: `object`
 
-Defined in: [packages/plugin-api/src/types.ts:344](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L344)
+Defined in: [packages/plugin-api/src/types.ts:344](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L344)
 
 #### startup
 
@@ -36,7 +36,7 @@ Defined in: [packages/plugin-api/src/types.ts:344](https://github.com/sgoley/mai
 
 > `optional` **index?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:343](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L343)
+Defined in: [packages/plugin-api/src/types.ts:343](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L343)
 
 ***
 
@@ -44,7 +44,7 @@ Defined in: [packages/plugin-api/src/types.ts:343](https://github.com/sgoley/mai
 
 > **operation**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:341](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L341)
+Defined in: [packages/plugin-api/src/types.ts:341](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L341)
 
 ***
 
@@ -52,7 +52,7 @@ Defined in: [packages/plugin-api/src/types.ts:341](https://github.com/sgoley/mai
 
 > **properties**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/plugin-api/src/types.ts:348](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L348)
+Defined in: [packages/plugin-api/src/types.ts:348](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L348)
 
 ***
 
@@ -60,7 +60,7 @@ Defined in: [packages/plugin-api/src/types.ts:348](https://github.com/sgoley/mai
 
 > `optional` **rows?**: `object`
 
-Defined in: [packages/plugin-api/src/types.ts:345](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L345)
+Defined in: [packages/plugin-api/src/types.ts:345](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L345)
 
 #### actual?
 
@@ -76,7 +76,7 @@ Defined in: [packages/plugin-api/src/types.ts:345](https://github.com/sgoley/mai
 
 > `optional` **table?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:342](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L342)
+Defined in: [packages/plugin-api/src/types.ts:342](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L342)
 
 ***
 
@@ -84,7 +84,7 @@ Defined in: [packages/plugin-api/src/types.ts:342](https://github.com/sgoley/mai
 
 > `optional` **timeMs?**: `object`
 
-Defined in: [packages/plugin-api/src/types.ts:346](https://github.com/sgoley/maitredb/blob/8ee35fc203da6e50988895a0c2e93182cde94d1d/packages/plugin-api/src/types.ts#L346)
+Defined in: [packages/plugin-api/src/types.ts:346](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L346)
 
 #### actual?
 
