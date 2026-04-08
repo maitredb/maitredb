@@ -6,6 +6,6 @@
 
 > `const` **connectCommand**: `CommandModule`
 
-Defined in: [apps/cli/src/commands/connect.ts:18](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/apps/cli/src/commands/connect.ts#L18)
+Defined in: [apps/cli/src/commands/connect.ts:19](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/apps/cli/src/commands/connect.ts#L19)
 
 Top-level `mdb connect` command — wraps add/test/list/remove sub-commands.

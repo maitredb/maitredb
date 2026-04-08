@@ -4,7 +4,7 @@
 
 # Interface: ClickHouseOptions
 
-Defined in: [packages/plugin-api/src/types.ts:172](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L172)
+Defined in: [packages/plugin-api/src/types.ts:195](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L195)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [packages/plugin-api/src/types.ts:172](https://github.com/sgoley/mai
 
 > `optional` **compression?**: `"none"` \| `"lz4"` \| `"zstd"`
 
-Defined in: [packages/plugin-api/src/types.ts:178](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L178)
+Defined in: [packages/plugin-api/src/types.ts:201](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L201)
 
 Enable compression (lz4, zstd)
 
@@ -22,7 +22,7 @@ Enable compression (lz4, zstd)
 
 > `optional` **protocol?**: `"http"` \| `"https"` \| `"native"`
 
-Defined in: [packages/plugin-api/src/types.ts:174](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L174)
+Defined in: [packages/plugin-api/src/types.ts:197](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L197)
 
 Connection protocol
 
@@ -32,7 +32,7 @@ Connection protocol
 
 > `optional` **requestTimeout?**: `number`
 
-Defined in: [packages/plugin-api/src/types.ts:176](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L176)
+Defined in: [packages/plugin-api/src/types.ts:199](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L199)
 
 Request timeout in ms
 
@@ -42,7 +42,7 @@ Request timeout in ms
 
 > `optional` **resultFormat?**: `"JSON"` \| `"JSONEachRow"` \| `"ArrowStream"`
 
-Defined in: [packages/plugin-api/src/types.ts:182](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L182)
+Defined in: [packages/plugin-api/src/types.ts:205](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L205)
 
 Preferred result format
 
@@ -52,6 +52,6 @@ Preferred result format
 
 > `optional` **sessionSettings?**: `Record`\<`string`, `string`\>
 
-Defined in: [packages/plugin-api/src/types.ts:180](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L180)
+Defined in: [packages/plugin-api/src/types.ts:203](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L203)
 
 ClickHouse settings applied per session

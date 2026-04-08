@@ -4,7 +4,7 @@
 
 # Interface: TunnelConfig
 
-Defined in: [packages/plugin-api/src/types.ts:76](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L76)
+Defined in: [packages/plugin-api/src/types.ts:99](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L99)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [packages/plugin-api/src/types.ts:76](https://github.com/sgoley/mait
 
 > **host**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:77](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L77)
+Defined in: [packages/plugin-api/src/types.ts:100](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L100)
 
 ***
 
@@ -20,7 +20,7 @@ Defined in: [packages/plugin-api/src/types.ts:77](https://github.com/sgoley/mait
 
 > `optional` **port?**: `number`
 
-Defined in: [packages/plugin-api/src/types.ts:78](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L78)
+Defined in: [packages/plugin-api/src/types.ts:101](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L101)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [packages/plugin-api/src/types.ts:78](https://github.com/sgoley/mait
 
 > `optional` **privateKey?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:80](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L80)
+Defined in: [packages/plugin-api/src/types.ts:103](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L103)
 
 ***
 
@@ -36,4 +36,4 @@ Defined in: [packages/plugin-api/src/types.ts:80](https://github.com/sgoley/mait
 
 > `optional` **user?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:79](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L79)
+Defined in: [packages/plugin-api/src/types.ts:102](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L102)

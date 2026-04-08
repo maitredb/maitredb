@@ -4,7 +4,7 @@
 
 # Interface: QueryResult
 
-Defined in: [packages/plugin-api/src/types.ts:268](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L268)
+Defined in: [packages/plugin-api/src/types.ts:291](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L291)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [packages/plugin-api/src/types.ts:268](https://github.com/sgoley/mai
 
 > **durationMs**: `number`
 
-Defined in: [packages/plugin-api/src/types.ts:272](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L272)
+Defined in: [packages/plugin-api/src/types.ts:295](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L295)
 
 ***
 
@@ -20,7 +20,7 @@ Defined in: [packages/plugin-api/src/types.ts:272](https://github.com/sgoley/mai
 
 > **fields**: [`FieldInfo`](FieldInfo.md)[]
 
-Defined in: [packages/plugin-api/src/types.ts:270](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L270)
+Defined in: [packages/plugin-api/src/types.ts:293](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L293)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [packages/plugin-api/src/types.ts:270](https://github.com/sgoley/mai
 
 > **rowCount**: `number`
 
-Defined in: [packages/plugin-api/src/types.ts:271](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L271)
+Defined in: [packages/plugin-api/src/types.ts:294](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L294)
 
 ***
 
@@ -36,4 +36,4 @@ Defined in: [packages/plugin-api/src/types.ts:271](https://github.com/sgoley/mai
 
 > **rows**: `Record`\<`string`, `unknown`\>[]
 
-Defined in: [packages/plugin-api/src/types.ts:269](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L269)
+Defined in: [packages/plugin-api/src/types.ts:292](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L292)

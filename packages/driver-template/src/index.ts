@@ -9,6 +9,7 @@ import type {
   QueryResult,
   SchemaInfo,
   TableInfo,
+  TypeInfo,
   ColumnInfo,
   IndexInfo,
   FunctionInfo,
@@ -133,6 +134,11 @@ export class DriverTemplate implements DriverAdapter {
     throw notImplemented('getProcedures', 'Return procedure name + argument info.');
   }
 
+  async getTypes(_conn: Connection, _schema?: string): Promise<TypeInfo[]> {
+    // TODO(driver): list user-defined type objects (enums/domains/composites/ranges) where available.
+    return [];
+  }
+
   async getRoles(_conn: Connection): Promise<RoleInfo[]> {
     // TODO(driver): enumerate database roles/users + their capabilities.
     throw notImplemented('getRoles', 'Populate login + superuser-like attributes when the dialect supports roles.');
@@ -161,6 +167,7 @@ export class DriverTemplate implements DriverAdapter {
       explain: false,
       explainAnalyze: false,
       procedures: false,
+      userDefinedTypes: false,
       roles: false,
       schemas: false,
       cancelQuery: false,

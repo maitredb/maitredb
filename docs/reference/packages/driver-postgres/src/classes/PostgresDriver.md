@@ -4,7 +4,7 @@
 
 # Class: PostgresDriver
 
-Defined in: [packages/driver-postgres/src/index.ts:34](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L34)
+Defined in: [packages/driver-postgres/src/index.ts:31](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/driver-postgres/src/index.ts#L31)
 
 PostgreSQL driver implemented via the native `pg` client.
 
@@ -18,7 +18,7 @@ PostgreSQL driver implemented via the native `pg` client.
 
 > **new PostgresDriver**(): `PostgresDriver`
 
-Defined in: [packages/driver-postgres/src/index.ts:39](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L39)
+Defined in: [packages/driver-postgres/src/index.ts:34](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/driver-postgres/src/index.ts#L34)
 
 #### Returns
 
@@ -30,7 +30,7 @@ Defined in: [packages/driver-postgres/src/index.ts:39](https://github.com/sgoley
 
 > `readonly` **dialect**: `"postgresql"` = `'postgresql'`
 
-Defined in: [packages/driver-postgres/src/index.ts:35](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L35)
+Defined in: [packages/driver-postgres/src/index.ts:32](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/driver-postgres/src/index.ts#L32)
 
 #### Implementation of
 
@@ -42,7 +42,9 @@ Defined in: [packages/driver-postgres/src/index.ts:35](https://github.com/sgoley
 
 > **beginTransaction**(`conn`, `options?`): `Promise`\<`Transaction`\>
 
-Defined in: [packages/driver-postgres/src/index.ts:187](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L187)
+Defined in: [packages/driver-postgres/src/index.ts:131](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/driver-postgres/src/index.ts#L131)
+
+Begin a transaction and return helpers bound to one client session.
 
 #### Parameters
 
@@ -68,7 +70,9 @@ Defined in: [packages/driver-postgres/src/index.ts:187](https://github.com/sgole
 
 > **cancelQuery**(`conn`, `queryId`): `Promise`\<`void`\>
 
-Defined in: [packages/driver-postgres/src/index.ts:164](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L164)
+Defined in: [packages/driver-postgres/src/index.ts:115](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/driver-postgres/src/index.ts#L115)
+
+Cancel a backend query by PID using `pg_cancel_backend`.
 
 #### Parameters
 
@@ -94,7 +98,9 @@ Defined in: [packages/driver-postgres/src/index.ts:164](https://github.com/sgole
 
 > **capabilities**(): `DriverCapabilities`
 
-Defined in: [packages/driver-postgres/src/index.ts:594](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L594)
+Defined in: [packages/driver-postgres/src/index.ts:561](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/driver-postgres/src/index.ts#L561)
+
+Expose PostgreSQL feature flags for CLI/runtime gating.
 
 #### Returns
 
@@ -110,7 +116,9 @@ Defined in: [packages/driver-postgres/src/index.ts:594](https://github.com/sgole
 
 > **connect**(`config`): `Promise`\<`Connection`\>
 
-Defined in: [packages/driver-postgres/src/index.ts:49](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L49)
+Defined in: [packages/driver-postgres/src/index.ts:42](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/driver-postgres/src/index.ts#L42)
+
+Create a pooled PostgreSQL connection and validate with `SELECT 1`.
 
 #### Parameters
 
@@ -132,7 +140,9 @@ Defined in: [packages/driver-postgres/src/index.ts:49](https://github.com/sgoley
 
 > **disconnect**(`conn`): `Promise`\<`void`\>
 
-Defined in: [packages/driver-postgres/src/index.ts:61](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L61)
+Defined in: [packages/driver-postgres/src/index.ts:57](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/driver-postgres/src/index.ts#L57)
+
+Dispose the underlying `pg.Pool`.
 
 #### Parameters
 
@@ -154,7 +164,9 @@ Defined in: [packages/driver-postgres/src/index.ts:61](https://github.com/sgoley
 
 > **execute**(`conn`, `query`, `params?`): `Promise`\<`QueryResult`\>
 
-Defined in: [packages/driver-postgres/src/index.ts:123](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L123)
+Defined in: [packages/driver-postgres/src/index.ts:97](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/driver-postgres/src/index.ts#L97)
+
+Execute a SQL statement and return buffered rows + field metadata.
 
 #### Parameters
 
@@ -184,7 +196,9 @@ Defined in: [packages/driver-postgres/src/index.ts:123](https://github.com/sgole
 
 > **explain**(`conn`, `query`, `options?`): `Promise`\<`ExplainResult`\>
 
-Defined in: [packages/driver-postgres/src/index.ts:526](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L526)
+Defined in: [packages/driver-postgres/src/index.ts:495](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/driver-postgres/src/index.ts#L495)
+
+Run EXPLAIN and normalize the returned plan tree.
 
 #### Parameters
 
@@ -214,7 +228,9 @@ Defined in: [packages/driver-postgres/src/index.ts:526](https://github.com/sgole
 
 > **getColumns**(`conn`, `schema`, `table`): `Promise`\<`ColumnInfo`[]\>
 
-Defined in: [packages/driver-postgres/src/index.ts:286](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L286)
+Defined in: [packages/driver-postgres/src/index.ts:219](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/driver-postgres/src/index.ts#L219)
+
+List columns with PK/nullability/default metadata.
 
 #### Parameters
 
@@ -242,9 +258,11 @@ Defined in: [packages/driver-postgres/src/index.ts:286](https://github.com/sgole
 
 ### getFunctions()
 
-> **getFunctions**(`conn`, `schema`): `Promise`\<`FunctionInfo`[]\>
+> **getFunctions**(`conn`, `schema?`): `Promise`\<`FunctionInfo`[]\>
 
-Defined in: [packages/driver-postgres/src/index.ts:371](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L371)
+Defined in: [packages/driver-postgres/src/index.ts:321](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/driver-postgres/src/index.ts#L321)
+
+List SQL functions.
 
 #### Parameters
 
@@ -252,7 +270,7 @@ Defined in: [packages/driver-postgres/src/index.ts:371](https://github.com/sgole
 
 `Connection`
 
-##### schema
+##### schema?
 
 `string`
 
@@ -270,7 +288,9 @@ Defined in: [packages/driver-postgres/src/index.ts:371](https://github.com/sgole
 
 > **getGrants**(`conn`, `role?`): `Promise`\<`GrantInfo`[]\>
 
-Defined in: [packages/driver-postgres/src/index.ts:486](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L486)
+Defined in: [packages/driver-postgres/src/index.ts:457](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/driver-postgres/src/index.ts#L457)
+
+List table grants grouped as one row per role/schema/table.
 
 #### Parameters
 
@@ -296,7 +316,9 @@ Defined in: [packages/driver-postgres/src/index.ts:486](https://github.com/sgole
 
 > **getIndexes**(`conn`, `schema`, `table`): `Promise`\<`IndexInfo`[]\>
 
-Defined in: [packages/driver-postgres/src/index.ts:331](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L331)
+Defined in: [packages/driver-postgres/src/index.ts:279](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/driver-postgres/src/index.ts#L279)
+
+List indexes and ordered index columns for a table.
 
 #### Parameters
 
@@ -324,9 +346,11 @@ Defined in: [packages/driver-postgres/src/index.ts:331](https://github.com/sgole
 
 ### getProcedures()
 
-> **getProcedures**(`conn`, `schema`): `Promise`\<`ProcedureInfo`[]\>
+> **getProcedures**(`conn`, `schema?`): `Promise`\<`ProcedureInfo`[]\>
 
-Defined in: [packages/driver-postgres/src/index.ts:409](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L409)
+Defined in: [packages/driver-postgres/src/index.ts:356](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/driver-postgres/src/index.ts#L356)
+
+List stored procedures.
 
 #### Parameters
 
@@ -334,7 +358,7 @@ Defined in: [packages/driver-postgres/src/index.ts:409](https://github.com/sgole
 
 `Connection`
 
-##### schema
+##### schema?
 
 `string`
 
@@ -352,7 +376,9 @@ Defined in: [packages/driver-postgres/src/index.ts:409](https://github.com/sgole
 
 > **getRoles**(`conn`): `Promise`\<`RoleInfo`[]\>
 
-Defined in: [packages/driver-postgres/src/index.ts:446](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L446)
+Defined in: [packages/driver-postgres/src/index.ts:434](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/driver-postgres/src/index.ts#L434)
+
+List roles/users visible to the caller.
 
 #### Parameters
 
@@ -374,7 +400,9 @@ Defined in: [packages/driver-postgres/src/index.ts:446](https://github.com/sgole
 
 > **getSchemas**(`conn`): `Promise`\<`SchemaInfo`[]\>
 
-Defined in: [packages/driver-postgres/src/index.ts:220](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L220)
+Defined in: [packages/driver-postgres/src/index.ts:174](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/driver-postgres/src/index.ts#L174)
+
+List non-system schemas.
 
 #### Parameters
 
@@ -394,9 +422,11 @@ Defined in: [packages/driver-postgres/src/index.ts:220](https://github.com/sgole
 
 ### getTables()
 
-> **getTables**(`conn`, `schema`): `Promise`\<`TableInfo`[]\>
+> **getTables**(`conn`, `schema?`): `Promise`\<`TableInfo`[]\>
 
-Defined in: [packages/driver-postgres/src/index.ts:249](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L249)
+Defined in: [packages/driver-postgres/src/index.ts:187](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/driver-postgres/src/index.ts#L187)
+
+List tables/views with optional schema filtering.
 
 #### Parameters
 
@@ -404,7 +434,7 @@ Defined in: [packages/driver-postgres/src/index.ts:249](https://github.com/sgole
 
 `Connection`
 
-##### schema
+##### schema?
 
 `string`
 
@@ -418,11 +448,41 @@ Defined in: [packages/driver-postgres/src/index.ts:249](https://github.com/sgole
 
 ***
 
+### getTypes()
+
+> **getTypes**(`conn`, `schema?`): `Promise`\<`TypeInfo`[]\>
+
+Defined in: [packages/driver-postgres/src/index.ts:388](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/driver-postgres/src/index.ts#L388)
+
+List user-defined PostgreSQL types (enum/composite/domain/range/base).
+
+#### Parameters
+
+##### conn
+
+`Connection`
+
+##### schema?
+
+`string`
+
+#### Returns
+
+`Promise`\<`TypeInfo`[]\>
+
+#### Implementation of
+
+`DriverAdapter.getTypes`
+
+***
+
 ### mapNativeType()
 
 > **mapNativeType**(`nativeType`): `MaitreType`
 
-Defined in: [packages/driver-postgres/src/index.ts:570](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L570)
+Defined in: [packages/driver-postgres/src/index.ts:537](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/driver-postgres/src/index.ts#L537)
+
+Map PostgreSQL native type names to the shared type system.
 
 #### Parameters
 
@@ -442,9 +502,11 @@ Defined in: [packages/driver-postgres/src/index.ts:570](https://github.com/sgole
 
 ### stream()
 
-> **stream**(`conn`, `query`, `params?`): `AsyncIterable`\<`Row`\>
+> **stream**(`conn`, `query`, `params?`): `AsyncIterable`\<`Record`\<`string`, `unknown`\>\>
 
-Defined in: [packages/driver-postgres/src/index.ts:144](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L144)
+Defined in: [packages/driver-postgres/src/index.ts:106](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/driver-postgres/src/index.ts#L106)
+
+Stream rows as an `AsyncIterable` without changing the caller contract.
 
 #### Parameters
 
@@ -462,7 +524,7 @@ Defined in: [packages/driver-postgres/src/index.ts:144](https://github.com/sgole
 
 #### Returns
 
-`AsyncIterable`\<`Row`\>
+`AsyncIterable`\<`Record`\<`string`, `unknown`\>\>
 
 #### Implementation of
 
@@ -474,7 +536,9 @@ Defined in: [packages/driver-postgres/src/index.ts:144](https://github.com/sgole
 
 > **testConnection**(`config`): `Promise`\<`ConnectionTestResult`\>
 
-Defined in: [packages/driver-postgres/src/index.ts:68](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L68)
+Defined in: [packages/driver-postgres/src/index.ts:62](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/driver-postgres/src/index.ts#L62)
+
+Probe database reachability and server version.
 
 #### Parameters
 
@@ -496,7 +560,9 @@ Defined in: [packages/driver-postgres/src/index.ts:68](https://github.com/sgoley
 
 > **validateConnection**(`conn`): `Promise`\<`boolean`\>
 
-Defined in: [packages/driver-postgres/src/index.ts:104](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/driver-postgres/src/index.ts#L104)
+Defined in: [packages/driver-postgres/src/index.ts:87](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/driver-postgres/src/index.ts#L87)
+
+Execute a lightweight health query for an existing connection.
 
 #### Parameters
 

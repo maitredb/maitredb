@@ -10,6 +10,7 @@ import type {
   IndexInfo,
   FunctionInfo,
   ProcedureInfo,
+  TypeInfo,
   RoleInfo,
   GrantInfo,
   ExplainOptions,
@@ -45,6 +46,7 @@ export interface DriverAdapter {
   getIndexes(conn: Connection, schema: string, table: string): Promise<IndexInfo[]>;
   getFunctions(conn: Connection, schema?: string): Promise<FunctionInfo[]>;
   getProcedures(conn: Connection, schema?: string): Promise<ProcedureInfo[]>;
+  getTypes(conn: Connection, schema?: string): Promise<TypeInfo[]>;
 
   // Permissions
   getRoles(conn: Connection): Promise<RoleInfo[]>;

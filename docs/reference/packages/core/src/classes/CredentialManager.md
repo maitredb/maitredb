@@ -4,7 +4,7 @@
 
 # Class: CredentialManager
 
-Defined in: [packages/core/src/credentials.ts:421](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L421)
+Defined in: [packages/core/src/credentials.ts:421](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/credentials.ts#L421)
 
 Resolves credentials by walking a chain of backends in priority order:
   1. Environment variables (fastest, no I/O)
@@ -20,7 +20,7 @@ Writes go to the first writable backend (keychain if available, else encrypted f
 
 > **new CredentialManager**(`options?`): `CredentialManager`
 
-Defined in: [packages/core/src/credentials.ts:424](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L424)
+Defined in: [packages/core/src/credentials.ts:424](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/credentials.ts#L424)
 
 #### Parameters
 
@@ -38,7 +38,7 @@ Defined in: [packages/core/src/credentials.ts:424](https://github.com/sgoley/mai
 
 > **delete**(`connectionName`): `Promise`\<`boolean`\>
 
-Defined in: [packages/core/src/credentials.ts:483](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L483)
+Defined in: [packages/core/src/credentials.ts:483](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/credentials.ts#L483)
 
 Delete a credential from all backends where it exists.
 Returns true if it was deleted from at least one backend.
@@ -59,7 +59,7 @@ Returns true if it was deleted from at least one backend.
 
 > **get**(`connectionName`): `Promise`\<[`Credential`](../type-aliases/Credential.md) \| `undefined`\>
 
-Defined in: [packages/core/src/credentials.ts:443](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L443)
+Defined in: [packages/core/src/credentials.ts:443](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/credentials.ts#L443)
 
 Resolve a credential for a connection by walking the backend chain.
 Returns undefined if no credential is found in any backend.
@@ -80,7 +80,7 @@ Returns undefined if no credential is found in any backend.
 
 > **list**(): `Promise`\<`string`[]\>
 
-Defined in: [packages/core/src/credentials.ts:499](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L499)
+Defined in: [packages/core/src/credentials.ts:499](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/credentials.ts#L499)
 
 List all connection names that have credentials in any backend.
 
@@ -94,7 +94,7 @@ List all connection names that have credentials in any backend.
 
 > **locateBackend**(`connectionName`): `Promise`\<`string` \| `undefined`\>
 
-Defined in: [packages/core/src/credentials.ts:514](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L514)
+Defined in: [packages/core/src/credentials.ts:514](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/credentials.ts#L514)
 
 Get the name of the backend that holds a given credential.
 Useful for `mdb connect list` to show where credentials are stored.
@@ -115,7 +115,7 @@ Useful for `mdb connect list` to show where credentials are stored.
 
 > **store**(`connectionName`, `credential`): `Promise`\<`void`\>
 
-Defined in: [packages/core/src/credentials.ts:456](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L456)
+Defined in: [packages/core/src/credentials.ts:456](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/credentials.ts#L456)
 
 Store a credential. Writes to the first available writable backend
 (skips environment, which is read-only).

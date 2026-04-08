@@ -4,7 +4,7 @@
 
 # Interface: SnowflakeOptions
 
-Defined in: [packages/plugin-api/src/types.ts:140](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L140)
+Defined in: [packages/plugin-api/src/types.ts:163](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L163)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [packages/plugin-api/src/types.ts:140](https://github.com/sgoley/mai
 
 > **account**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:142](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L142)
+Defined in: [packages/plugin-api/src/types.ts:165](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L165)
 
 Snowflake account identifier (e.g. 'xy12345.us-east-1')
 
@@ -22,7 +22,7 @@ Snowflake account identifier (e.g. 'xy12345.us-east-1')
 
 > `optional` **clientSessionKeepAlive?**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:150](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L150)
+Defined in: [packages/plugin-api/src/types.ts:173](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L173)
 
 Client session keep-alive
 
@@ -32,7 +32,7 @@ Client session keep-alive
 
 > `optional` **loginTimeout?**: `number`
 
-Defined in: [packages/plugin-api/src/types.ts:148](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L148)
+Defined in: [packages/plugin-api/src/types.ts:171](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L171)
 
 Login timeout in ms
 
@@ -42,7 +42,7 @@ Login timeout in ms
 
 > `optional` **role?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:146](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L146)
+Defined in: [packages/plugin-api/src/types.ts:169](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L169)
 
 Default role
 
@@ -52,7 +52,7 @@ Default role
 
 > `optional` **sessionParams?**: `Record`\<`string`, `string`\>
 
-Defined in: [packages/plugin-api/src/types.ts:152](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L152)
+Defined in: [packages/plugin-api/src/types.ts:175](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L175)
 
 Session parameters set at connect time (e.g. QUERY_TAG, TIMEZONE)
 
@@ -62,6 +62,6 @@ Session parameters set at connect time (e.g. QUERY_TAG, TIMEZONE)
 
 > `optional` **warehouse?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:144](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L144)
+Defined in: [packages/plugin-api/src/types.ts:167](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L167)
 
 Virtual warehouse

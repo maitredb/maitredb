@@ -5,16 +5,32 @@ import type { ConnectionConfig } from '@maitredb/plugin-api';
 import { MaitreError, MaitreErrorCode } from './errors.js';
 import { CredentialManager } from './credentials.js';
 import type { Credential, CredentialManagerOptions } from './credentials.js';
+import type { CacheOptions, HistoryOptions } from './types.js';
 
 export interface MaitreConfig {
   defaultFormat: 'table' | 'json' | 'csv' | 'ndjson' | 'yaml' | 'raw';
   defaultConnection?: string;
   maxRows: number;
+  cache?: CacheOptions;
+  history?: HistoryOptions;
 }
 
 const DEFAULTS: MaitreConfig = {
   defaultFormat: 'table',
   maxRows: 10000,
+  cache: {
+    enabled: true,
+    memoryMaxItems: 500,
+    diskEnabled: true,
+    schemaTtlMs: 300_000,
+    permissionTtlMs: 120_000,
+    queryResultCaching: false,
+  },
+  history: {
+    enabled: true,
+    maxSizeMb: 100,
+    logParamsForProduction: false,
+  },
 };
 
 function userConfigDir(): string {
@@ -81,12 +97,30 @@ export class ConfigManager {
       envOverrides.maxRows = parseInt(process.env['MDB_MAX_ROWS'], 10);
     }
 
+    const mergedCache: CacheOptions = {
+      ...(DEFAULTS.cache ?? {}),
+      ...(userConfig?.cache ?? {}),
+      ...(projectConfig?.cache ?? {}),
+      ...(envOverrides.cache ?? {}),
+      ...(overrides?.cache ?? {}),
+    };
+
+    const mergedHistory: HistoryOptions = {
+      ...(DEFAULTS.history ?? {}),
+      ...(userConfig?.history ?? {}),
+      ...(projectConfig?.history ?? {}),
+      ...(envOverrides.history ?? {}),
+      ...(overrides?.history ?? {}),
+    };
+
     return {
       ...DEFAULTS,
       ...userConfig,
       ...projectConfig,
       ...envOverrides,
       ...overrides,
+      cache: mergedCache,
+      history: mergedHistory,
     };
   }
 

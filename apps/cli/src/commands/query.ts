@@ -1,8 +1,8 @@
 import type { CommandModule } from 'yargs';
-import { ConfigManager, QueryExecutor, getFormatter, autoDetectFormat, MaitreError, exitCodeForError } from '@maitredb/core';
+import { QueryExecutor, getFormatter, autoDetectFormat, MaitreError, exitCodeForError } from '@maitredb/core';
 import type { OutputFormat } from '@maitredb/core';
-import { getRegistry } from '../bootstrap.js';
-import { resolveConnectionConfig } from '../connection-config.js';
+import type { ManagedConnection } from '@maitredb/core';
+import { getCacheManager, getConfigManager, getConnectionManager, getHistoryStore } from '../bootstrap.js';
 
 /** `mdb query` command — runs adhoc SQL against a saved connection. */
 export const queryCommand: CommandModule = {
@@ -29,13 +29,12 @@ export const queryCommand: CommandModule = {
         return true;
       }),
   handler: async (argv) => {
+    let conn: ManagedConnection | undefined;
+    const connMgr = getConnectionManager();
     try {
       const connName = argv.conn as string;
-      const configMgr = new ConfigManager();
-      const connConfig = await resolveConnectionConfig(configMgr, connName);
-      const registry = getRegistry();
-      const adapter = await registry.get(connConfig.type);
-      const conn = await adapter.connect(connConfig);
+      const configMgr = getConfigManager();
+      conn = await connMgr.getConnection(connName);
 
       let sql = argv.sql as string | undefined;
       const file = argv.file as string | undefined;
@@ -44,14 +43,21 @@ export const queryCommand: CommandModule = {
         sql = readFileSync(file, 'utf-8');
       }
 
-      const executor = new QueryExecutor(adapter, configMgr.getConfig().maxRows);
+      const config = configMgr.getConfig();
+      const executor = new QueryExecutor(conn.adapter, {
+        maxBufferedRows: config.maxRows,
+        cache: getCacheManager(),
+        history: getHistoryStore(),
+        connectionId: connName,
+        connectionName: connName,
+        caller: 'human',
+        logParamsForProduction: config.history?.logParamsForProduction,
+      });
       const result = await executor.execute(conn, sql!);
 
       const format = (argv.format as OutputFormat) ?? autoDetectFormat();
       const formatter = getFormatter(format);
       console.log(formatter.format(result));
-
-      await adapter.disconnect(conn);
     } catch (err) {
       if (err instanceof MaitreError) {
         process.stderr.write(JSON.stringify(err.toJSON()) + '\n');
@@ -59,6 +65,13 @@ export const queryCommand: CommandModule = {
       }
       process.stderr.write(JSON.stringify({ error: 'INTERNAL_ERROR', message: err instanceof Error ? err.message : String(err) }) + '\n');
       process.exit(3);
+    } finally {
+      if (conn) {
+        await connMgr.releaseConnection(conn);
+      }
+      await connMgr.closeAll();
+      getCacheManager().close();
+      getHistoryStore().close();
     }
   },
 };

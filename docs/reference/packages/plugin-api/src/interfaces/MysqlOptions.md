@@ -4,7 +4,7 @@
 
 # Interface: MysqlOptions
 
-Defined in: [packages/plugin-api/src/types.ts:125](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L125)
+Defined in: [packages/plugin-api/src/types.ts:148](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L148)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [packages/plugin-api/src/types.ts:125](https://github.com/sgoley/mai
 
 > `optional` **cachePreparedStatements?**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:137](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L137)
+Defined in: [packages/plugin-api/src/types.ts:160](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L160)
 
 Enable prepared statement caching
 
@@ -22,7 +22,7 @@ Enable prepared statement caching
 
 > `optional` **charset?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:127](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L127)
+Defined in: [packages/plugin-api/src/types.ts:150](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L150)
 
 Character set, e.g. 'utf8mb4'
 
@@ -32,7 +32,7 @@ Character set, e.g. 'utf8mb4'
 
 > `optional` **connectTimeout?**: `number`
 
-Defined in: [packages/plugin-api/src/types.ts:131](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L131)
+Defined in: [packages/plugin-api/src/types.ts:154](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L154)
 
 Connect timeout in ms
 
@@ -42,7 +42,7 @@ Connect timeout in ms
 
 > `optional` **localInfile?**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:135](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L135)
+Defined in: [packages/plugin-api/src/types.ts:158](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L158)
 
 Enable local LOAD DATA INFILE
 
@@ -52,7 +52,7 @@ Enable local LOAD DATA INFILE
 
 > `optional` **multipleStatements?**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:133](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L133)
+Defined in: [packages/plugin-api/src/types.ts:156](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L156)
 
 Allow multiple statements per query
 
@@ -62,6 +62,6 @@ Allow multiple statements per query
 
 > `optional` **timezone?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:129](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L129)
+Defined in: [packages/plugin-api/src/types.ts:152](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L152)
 
 Session timezone, e.g. '+00:00'

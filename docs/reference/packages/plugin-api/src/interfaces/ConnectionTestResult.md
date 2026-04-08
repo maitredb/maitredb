@@ -4,7 +4,7 @@
 
 # Interface: ConnectionTestResult
 
-Defined in: [packages/plugin-api/src/types.ts:247](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L247)
+Defined in: [packages/plugin-api/src/types.ts:270](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L270)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [packages/plugin-api/src/types.ts:247](https://github.com/sgoley/mai
 
 > `optional` **error?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:251](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L251)
+Defined in: [packages/plugin-api/src/types.ts:274](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L274)
 
 ***
 
@@ -20,7 +20,7 @@ Defined in: [packages/plugin-api/src/types.ts:251](https://github.com/sgoley/mai
 
 > **latencyMs**: `number`
 
-Defined in: [packages/plugin-api/src/types.ts:249](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L249)
+Defined in: [packages/plugin-api/src/types.ts:272](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L272)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [packages/plugin-api/src/types.ts:249](https://github.com/sgoley/mai
 
 > `optional` **serverVersion?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:250](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L250)
+Defined in: [packages/plugin-api/src/types.ts:273](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L273)
 
 ***
 
@@ -36,4 +36,4 @@ Defined in: [packages/plugin-api/src/types.ts:250](https://github.com/sgoley/mai
 
 > **success**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:248](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L248)
+Defined in: [packages/plugin-api/src/types.ts:271](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L271)

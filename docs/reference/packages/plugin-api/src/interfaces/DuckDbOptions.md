@@ -4,7 +4,7 @@
 
 # Interface: DuckDbOptions
 
-Defined in: [packages/plugin-api/src/types.ts:185](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L185)
+Defined in: [packages/plugin-api/src/types.ts:208](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L208)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [packages/plugin-api/src/types.ts:185](https://github.com/sgoley/mai
 
 > `optional` **accessMode?**: `"automatic"` \| `"read_only"` \| `"read_write"`
 
-Defined in: [packages/plugin-api/src/types.ts:193](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L193)
+Defined in: [packages/plugin-api/src/types.ts:216](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L216)
 
 Access mode
 
@@ -22,7 +22,7 @@ Access mode
 
 > `optional` **extensions?**: `string`[]
 
-Defined in: [packages/plugin-api/src/types.ts:191](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L191)
+Defined in: [packages/plugin-api/src/types.ts:214](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L214)
 
 Extensions to auto-load on connect
 
@@ -32,7 +32,7 @@ Extensions to auto-load on connect
 
 > `optional` **memoryLimit?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:187](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L187)
+Defined in: [packages/plugin-api/src/types.ts:210](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L210)
 
 Maximum memory usage (e.g. '4GB')
 
@@ -42,6 +42,6 @@ Maximum memory usage (e.g. '4GB')
 
 > `optional` **threads?**: `number`
 
-Defined in: [packages/plugin-api/src/types.ts:189](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L189)
+Defined in: [packages/plugin-api/src/types.ts:212](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L212)
 
 Number of threads (0 = auto)

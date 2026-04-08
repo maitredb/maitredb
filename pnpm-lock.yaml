@@ -29,6 +29,9 @@ importers:
 
   apps/cli:
     dependencies:
+      '@maitredb/cache':
+        specifier: workspace:*
+        version: link:../../packages/cache
       '@maitredb/core':
         specifier: workspace:*
         version: link:../../packages/core
@@ -69,6 +72,35 @@ importers:
       vitest:
         specifier: ^3.1.1
         version: 3.2.4(@types/node@22.19.17)(yaml@2.8.3)
+
+  packages/cache:
+    dependencies:
+      '@maitredb/core':
+        specifier: workspace:*
+        version: link:../core
+      '@maitredb/plugin-api':
+        specifier: workspace:*
+        version: link:../plugin-api
+      lru-cache:
+        specifier: ^10.4.3
+        version: 10.4.3
+    devDependencies:
+      '@types/better-sqlite3':
+        specifier: ^7.6.13
+        version: 7.6.13
+      '@types/node':
+        specifier: ^22.15.2
+        version: 22.19.17
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.1.1
+        version: 3.2.4(@types/node@22.19.17)(yaml@2.8.3)
+    optionalDependencies:
+      better-sqlite3:
+        specifier: ^11.9.1
+        version: 11.10.0
 
   packages/core:
     dependencies:
@@ -827,6 +859,9 @@ packages:
 
   loupe@3.2.1:
     resolution: {integrity: sha512-CdzqowRJCeLU72bHvWqwRBBlLcMEtIvGrlvef74kMnV2AolS9Y8xUv1I0U/MNAWMhBlKIoyuEgoJ0t/bbwHbLQ==}
+
+  lru-cache@10.4.3:
+    resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
 
   lru.min@1.1.4:
     resolution: {integrity: sha512-DqC6n3QQ77zdFpCMASA1a3Jlb64Hv2N2DciFGkO/4L9+q/IpIAuRlKOvCXabtRW6cQf8usbmM6BE/TOPysCdIA==}
@@ -1767,6 +1802,8 @@ snapshots:
   long@5.3.2: {}
 
   loupe@3.2.1: {}
+
+  lru-cache@10.4.3: {}
 
   lru.min@1.1.4: {}
 

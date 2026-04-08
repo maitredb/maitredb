@@ -108,6 +108,7 @@ describe('PostgresDriver', () => {
       explain: true,
       explainAnalyze: true,
       procedures: true,
+      userDefinedTypes: true,
       roles: true,
       schemas: true,
       cancelQuery: true,
@@ -357,7 +358,7 @@ describe('PostgresDriver', () => {
     ]);
   });
 
-  it('returns function/procedure/role/grant shapes with required fields', async () => {
+  it('returns function/procedure/type/role/grant shapes with required fields', async () => {
     const driver = new PostgresDriver();
     const pool = new MockPool(async (sql: string) => {
       if (sql.includes("p.prokind = 'f'")) {
@@ -395,6 +396,20 @@ describe('PostgresDriver', () => {
         };
       }
 
+      if (sql.includes('FROM pg_catalog.pg_type')) {
+        return {
+          rows: [{
+            schema_name: 'public',
+            type_name: 'user_status',
+            type_kind: 'enum',
+            enum_values: ['active', 'disabled'],
+            definition: 'user_status',
+          }],
+          rowCount: 1,
+          fields: [],
+        };
+      }
+
       return {
         rows: [
           { role_name: 'app_role', schema_name: 'public', table_name: 'users', privilege_type: 'SELECT' },
@@ -408,6 +423,7 @@ describe('PostgresDriver', () => {
     const conn = asConnection(pool);
     const functions = await driver.getFunctions(conn, 'public');
     const procedures = await driver.getProcedures(conn, 'public');
+    const types = await driver.getTypes(conn, 'public');
     const roles = await driver.getRoles(conn);
     const grants = await driver.getGrants(conn, 'app_role');
 
@@ -427,6 +443,16 @@ describe('PostgresDriver', () => {
         name: 'p_users',
         arguments: 'x integer',
         language: 'plpgsql',
+      },
+    ]);
+
+    expect(types).toEqual([
+      {
+        schema: 'public',
+        name: 'user_status',
+        type: 'enum',
+        values: ['active', 'disabled'],
+        definition: 'user_status',
       },
     ]);
 

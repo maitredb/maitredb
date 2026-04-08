@@ -4,7 +4,7 @@
 
 # Interface: Connection
 
-Defined in: [packages/plugin-api/src/types.ts:254](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L254)
+Defined in: [packages/plugin-api/src/types.ts:277](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L277)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [packages/plugin-api/src/types.ts:254](https://github.com/sgoley/mai
 
 > **config**: [`ConnectionConfig`](ConnectionConfig.md)
 
-Defined in: [packages/plugin-api/src/types.ts:256](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L256)
+Defined in: [packages/plugin-api/src/types.ts:279](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L279)
 
 ***
 
@@ -20,7 +20,7 @@ Defined in: [packages/plugin-api/src/types.ts:256](https://github.com/sgoley/mai
 
 > **dialect**: [`DatabaseDialect`](../type-aliases/DatabaseDialect.md)
 
-Defined in: [packages/plugin-api/src/types.ts:257](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L257)
+Defined in: [packages/plugin-api/src/types.ts:280](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L280)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [packages/plugin-api/src/types.ts:257](https://github.com/sgoley/mai
 
 > **id**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:255](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L255)
+Defined in: [packages/plugin-api/src/types.ts:278](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L278)
 
 ***
 
@@ -36,4 +36,4 @@ Defined in: [packages/plugin-api/src/types.ts:255](https://github.com/sgoley/mai
 
 > **native**: `unknown`
 
-Defined in: [packages/plugin-api/src/types.ts:258](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L258)
+Defined in: [packages/plugin-api/src/types.ts:281](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L281)

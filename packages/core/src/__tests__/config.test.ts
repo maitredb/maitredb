@@ -27,6 +27,8 @@ describe('ConfigManager', () => {
     const cfg = mgr.getConfig();
     expect(cfg.defaultFormat).toBe('table');
     expect(cfg.maxRows).toBe(10000);
+    expect(cfg.cache?.enabled).toBe(true);
+    expect(cfg.history?.enabled).toBe(true);
   });
 
   it('env vars override defaults', () => {

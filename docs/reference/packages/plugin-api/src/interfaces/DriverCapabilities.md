@@ -4,7 +4,7 @@
 
 # Interface: DriverCapabilities
 
-Defined in: [packages/plugin-api/src/types.ts:373](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L373)
+Defined in: [packages/plugin-api/src/types.ts:404](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L404)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [packages/plugin-api/src/types.ts:373](https://github.com/sgoley/mai
 
 > **asyncExecution**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:383](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L383)
+Defined in: [packages/plugin-api/src/types.ts:416](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L416)
 
 ***
 
@@ -20,7 +20,7 @@ Defined in: [packages/plugin-api/src/types.ts:383](https://github.com/sgoley/mai
 
 > **cancelQuery**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:381](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L381)
+Defined in: [packages/plugin-api/src/types.ts:414](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L414)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [packages/plugin-api/src/types.ts:381](https://github.com/sgoley/mai
 
 > **costEstimate**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:385](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L385)
+Defined in: [packages/plugin-api/src/types.ts:418](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L418)
 
 ***
 
@@ -36,7 +36,7 @@ Defined in: [packages/plugin-api/src/types.ts:385](https://github.com/sgoley/mai
 
 > **embedded**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:384](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L384)
+Defined in: [packages/plugin-api/src/types.ts:417](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L417)
 
 ***
 
@@ -44,7 +44,7 @@ Defined in: [packages/plugin-api/src/types.ts:384](https://github.com/sgoley/mai
 
 > **explain**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:376](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L376)
+Defined in: [packages/plugin-api/src/types.ts:407](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L407)
 
 ***
 
@@ -52,7 +52,7 @@ Defined in: [packages/plugin-api/src/types.ts:376](https://github.com/sgoley/mai
 
 > **explainAnalyze**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:377](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L377)
+Defined in: [packages/plugin-api/src/types.ts:408](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L408)
 
 ***
 
@@ -60,7 +60,7 @@ Defined in: [packages/plugin-api/src/types.ts:377](https://github.com/sgoley/mai
 
 > **listenNotify**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:382](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L382)
+Defined in: [packages/plugin-api/src/types.ts:415](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L415)
 
 ***
 
@@ -68,7 +68,7 @@ Defined in: [packages/plugin-api/src/types.ts:382](https://github.com/sgoley/mai
 
 > **procedures**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:378](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L378)
+Defined in: [packages/plugin-api/src/types.ts:409](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L409)
 
 ***
 
@@ -76,7 +76,7 @@ Defined in: [packages/plugin-api/src/types.ts:378](https://github.com/sgoley/mai
 
 > **roles**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:379](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L379)
+Defined in: [packages/plugin-api/src/types.ts:412](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L412)
 
 ***
 
@@ -84,7 +84,7 @@ Defined in: [packages/plugin-api/src/types.ts:379](https://github.com/sgoley/mai
 
 > **schemas**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:380](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L380)
+Defined in: [packages/plugin-api/src/types.ts:413](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L413)
 
 ***
 
@@ -92,7 +92,7 @@ Defined in: [packages/plugin-api/src/types.ts:380](https://github.com/sgoley/mai
 
 > **streaming**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:375](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L375)
+Defined in: [packages/plugin-api/src/types.ts:406](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L406)
 
 ***
 
@@ -100,4 +100,14 @@ Defined in: [packages/plugin-api/src/types.ts:375](https://github.com/sgoley/mai
 
 > **transactions**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:374](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L374)
+Defined in: [packages/plugin-api/src/types.ts:405](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L405)
+
+***
+
+### userDefinedTypes
+
+> **userDefinedTypes**: `boolean`
+
+Defined in: [packages/plugin-api/src/types.ts:411](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L411)
+
+Driver can introspect standalone user-defined types.

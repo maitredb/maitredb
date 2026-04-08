@@ -6,7 +6,7 @@
 
 > **getRegistry**(): `PluginRegistry`
 
-Defined in: [apps/cli/src/bootstrap.ts:10](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/apps/cli/src/bootstrap.ts#L10)
+Defined in: [apps/cli/src/bootstrap.ts:17](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/apps/cli/src/bootstrap.ts#L17)
 
 Resolve the singleton PluginRegistry used by the CLI.
 Drivers are registered lazily so simply importing the CLI does not pull

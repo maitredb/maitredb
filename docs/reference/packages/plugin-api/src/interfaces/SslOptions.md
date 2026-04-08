@@ -4,7 +4,7 @@
 
 # Interface: SslOptions
 
-Defined in: [packages/plugin-api/src/types.ts:64](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L64)
+Defined in: [packages/plugin-api/src/types.ts:87](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L87)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [packages/plugin-api/src/types.ts:64](https://github.com/sgoley/mait
 
 > `optional` **ca?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:66](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L66)
+Defined in: [packages/plugin-api/src/types.ts:89](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L89)
 
 ***
 
@@ -20,7 +20,7 @@ Defined in: [packages/plugin-api/src/types.ts:66](https://github.com/sgoley/mait
 
 > `optional` **cert?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:67](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L67)
+Defined in: [packages/plugin-api/src/types.ts:90](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L90)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [packages/plugin-api/src/types.ts:67](https://github.com/sgoley/mait
 
 > `optional` **key?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:68](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L68)
+Defined in: [packages/plugin-api/src/types.ts:91](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L91)
 
 ***
 
@@ -36,7 +36,7 @@ Defined in: [packages/plugin-api/src/types.ts:68](https://github.com/sgoley/mait
 
 > `optional` **mode?**: `"disable"` \| `"prefer"` \| `"require"` \| `"verify-ca"` \| `"verify-full"`
 
-Defined in: [packages/plugin-api/src/types.ts:65](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L65)
+Defined in: [packages/plugin-api/src/types.ts:88](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L88)
 
 ***
 
@@ -44,4 +44,4 @@ Defined in: [packages/plugin-api/src/types.ts:65](https://github.com/sgoley/mait
 
 > `optional` **rejectUnauthorized?**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:69](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L69)
+Defined in: [packages/plugin-api/src/types.ts:92](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L92)

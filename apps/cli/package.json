@@ -15,6 +15,7 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
+    "@maitredb/cache": "workspace:*",
     "@maitredb/core": "workspace:*",
     "@maitredb/driver-mysql": "workspace:*",
     "@maitredb/driver-postgres": "workspace:*",

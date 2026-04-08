@@ -6,4 +6,8 @@
 
 ## Functions
 
+- [getCacheManager](functions/getCacheManager.md)
+- [getConfigManager](functions/getConfigManager.md)
+- [getConnectionManager](functions/getConnectionManager.md)
+- [getHistoryStore](functions/getHistoryStore.md)
 - [getRegistry](functions/getRegistry.md)

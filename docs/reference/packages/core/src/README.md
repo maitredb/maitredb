@@ -11,23 +11,36 @@
 ## Classes
 
 - [ConfigManager](classes/ConfigManager.md)
+- [ConnectionManager](classes/ConnectionManager.md)
 - [CredentialManager](classes/CredentialManager.md)
 - [EncryptedFileCredentialBackend](classes/EncryptedFileCredentialBackend.md)
 - [EnvironmentCredentialBackend](classes/EnvironmentCredentialBackend.md)
+- [GenericPool](classes/GenericPool.md)
+- [HistoryStore](classes/HistoryStore.md)
 - [KeychainCredentialBackend](classes/KeychainCredentialBackend.md)
 - [MaitreError](classes/MaitreError.md)
 - [QueryExecutor](classes/QueryExecutor.md)
 
 ## Interfaces
 
+- [AuditEntry](interfaces/AuditEntry.md)
+- [CacheOptions](interfaces/CacheOptions.md)
+- [ConnectionManagerOptions](interfaces/ConnectionManagerOptions.md)
 - [CredentialBackend](interfaces/CredentialBackend.md)
 - [CredentialManagerOptions](interfaces/CredentialManagerOptions.md)
 - [DsnCredential](interfaces/DsnCredential.md)
+- [ExecutorOptions](interfaces/ExecutorOptions.md)
 - [Formatter](interfaces/Formatter.md)
+- [GenericPoolFactory](interfaces/GenericPoolFactory.md)
+- [HistoryOptions](interfaces/HistoryOptions.md)
+- [HistoryQueryOptions](interfaces/HistoryQueryOptions.md)
+- [HistoryStoreOptions](interfaces/HistoryStoreOptions.md)
 - [IamCredential](interfaces/IamCredential.md)
 - [KeyPairCredential](interfaces/KeyPairCredential.md)
 - [MaitreConfig](interfaces/MaitreConfig.md)
+- [ManagedConnection](interfaces/ManagedConnection.md)
 - [PasswordCredential](interfaces/PasswordCredential.md)
+- [PoolStats](interfaces/PoolStats.md)
 - [ServiceAccountCredential](interfaces/ServiceAccountCredential.md)
 - [TokenCredential](interfaces/TokenCredential.md)
 

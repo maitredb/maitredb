@@ -4,7 +4,7 @@
 
 # Interface: TokenCredential
 
-Defined in: [packages/core/src/credentials.ts:25](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L25)
+Defined in: [packages/core/src/credentials.ts:25](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/credentials.ts#L25)
 
 OAuth / SSO token with optional refresh (Snowflake SSO, BigQuery, etc.)
 
@@ -14,7 +14,7 @@ OAuth / SSO token with optional refresh (Snowflake SSO, BigQuery, etc.)
 
 > `readonly` **accessToken**: `string`
 
-Defined in: [packages/core/src/credentials.ts:27](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L27)
+Defined in: [packages/core/src/credentials.ts:27](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/credentials.ts#L27)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [packages/core/src/credentials.ts:27](https://github.com/sgoley/mait
 
 > `readonly` `optional` **expiresAt?**: `string`
 
-Defined in: [packages/core/src/credentials.ts:30](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L30)
+Defined in: [packages/core/src/credentials.ts:30](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/credentials.ts#L30)
 
 ISO-8601 expiry time for the access token
 
@@ -32,7 +32,7 @@ ISO-8601 expiry time for the access token
 
 > `readonly` **kind**: `"token"`
 
-Defined in: [packages/core/src/credentials.ts:26](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L26)
+Defined in: [packages/core/src/credentials.ts:26](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/credentials.ts#L26)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/core/src/credentials.ts:26](https://github.com/sgoley/mait
 
 > `readonly` `optional` **refreshExpiresAt?**: `string`
 
-Defined in: [packages/core/src/credentials.ts:32](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L32)
+Defined in: [packages/core/src/credentials.ts:32](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/credentials.ts#L32)
 
 ISO-8601 expiry time for the refresh token
 
@@ -50,4 +50,4 @@ ISO-8601 expiry time for the refresh token
 
 > `readonly` `optional` **refreshToken?**: `string`
 
-Defined in: [packages/core/src/credentials.ts:28](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L28)
+Defined in: [packages/core/src/credentials.ts:28](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/credentials.ts#L28)

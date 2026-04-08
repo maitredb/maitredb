@@ -4,7 +4,7 @@
 
 # Interface: TransactionOptions
 
-Defined in: [packages/plugin-api/src/types.ts:361](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L361)
+Defined in: [packages/plugin-api/src/types.ts:392](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L392)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [packages/plugin-api/src/types.ts:361](https://github.com/sgoley/mai
 
 > `optional` **isolationLevel?**: `"read-uncommitted"` \| `"read-committed"` \| `"repeatable-read"` \| `"serializable"`
 
-Defined in: [packages/plugin-api/src/types.ts:362](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L362)
+Defined in: [packages/plugin-api/src/types.ts:393](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L393)
 
 ***
 
@@ -20,4 +20,4 @@ Defined in: [packages/plugin-api/src/types.ts:362](https://github.com/sgoley/mai
 
 > `optional` **readOnly?**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:363](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L363)
+Defined in: [packages/plugin-api/src/types.ts:394](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L394)

@@ -72,6 +72,8 @@ function cloneConfig(config: ConnectionConfig): ConnectionConfig {
   return {
     ...config,
     auth: config.auth ? [...config.auth] : undefined,
+    tags: config.tags ? [...config.tags] : undefined,
+    pool: config.pool ? { ...config.pool } : undefined,
     options: config.options ? { ...(config.options as Record<string, unknown>) } : undefined,
   };
 }
@@ -87,6 +89,11 @@ function mergeConnectionConfigs(base: ConnectionConfig, override: ConnectionConf
     ...override,
     options: Object.keys(mergedOptions).length > 0 ? mergedOptions : undefined,
     auth: override.auth ?? base.auth,
+    tags: override.tags ?? base.tags,
+    pool: {
+      ...(base.pool ?? {}),
+      ...(override.pool ?? {}),
+    },
   };
 }
 

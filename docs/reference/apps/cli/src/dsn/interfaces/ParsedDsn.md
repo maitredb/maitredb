@@ -4,7 +4,7 @@
 
 # Interface: ParsedDsn
 
-Defined in: [apps/cli/src/dsn.ts:19](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/apps/cli/src/dsn.ts#L19)
+Defined in: [apps/cli/src/dsn.ts:19](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/apps/cli/src/dsn.ts#L19)
 
 Result from [parseDsn](../functions/parseDsn.md).
 
@@ -14,7 +14,7 @@ Result from [parseDsn](../functions/parseDsn.md).
 
 > **config**: `ConnectionConfig`
 
-Defined in: [apps/cli/src/dsn.ts:20](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/apps/cli/src/dsn.ts#L20)
+Defined in: [apps/cli/src/dsn.ts:20](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/apps/cli/src/dsn.ts#L20)
 
 ***
 
@@ -22,4 +22,4 @@ Defined in: [apps/cli/src/dsn.ts:20](https://github.com/sgoley/maitredb/blob/397
 
 > `optional` **password?**: `string`
 
-Defined in: [apps/cli/src/dsn.ts:21](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/apps/cli/src/dsn.ts#L21)
+Defined in: [apps/cli/src/dsn.ts:21](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/apps/cli/src/dsn.ts#L21)

@@ -4,7 +4,7 @@
 
 # Interface: MongoOptions
 
-Defined in: [packages/plugin-api/src/types.ts:155](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L155)
+Defined in: [packages/plugin-api/src/types.ts:178](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L178)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [packages/plugin-api/src/types.ts:155](https://github.com/sgoley/mai
 
 > `optional` **appName?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:169](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L169)
+Defined in: [packages/plugin-api/src/types.ts:192](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L192)
 
 Application name for connection metadata
 
@@ -22,7 +22,7 @@ Application name for connection metadata
 
 > `optional` **authSource?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:157](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L157)
+Defined in: [packages/plugin-api/src/types.ts:180](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L180)
 
 Authentication database (default: 'admin')
 
@@ -32,7 +32,7 @@ Authentication database (default: 'admin')
 
 > `optional` **directConnection?**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:165](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L165)
+Defined in: [packages/plugin-api/src/types.ts:188](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L188)
 
 Direct connection to single host (bypass replica set discovery)
 
@@ -42,7 +42,7 @@ Direct connection to single host (bypass replica set discovery)
 
 > `optional` **readPreference?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:163](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L163)
+Defined in: [packages/plugin-api/src/types.ts:186](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L186)
 
 Read preference: primary, secondary, nearest, etc.
 
@@ -52,7 +52,7 @@ Read preference: primary, secondary, nearest, etc.
 
 > `optional` **replicaSet?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:159](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L159)
+Defined in: [packages/plugin-api/src/types.ts:182](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L182)
 
 Replica set name
 
@@ -62,7 +62,7 @@ Replica set name
 
 > `optional` **srv?**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:161](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L161)
+Defined in: [packages/plugin-api/src/types.ts:184](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L184)
 
 Use SRV DNS resolution (mongodb+srv)
 
@@ -72,7 +72,7 @@ Use SRV DNS resolution (mongodb+srv)
 
 > `optional` **writeConcern?**: `object`
 
-Defined in: [packages/plugin-api/src/types.ts:167](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L167)
+Defined in: [packages/plugin-api/src/types.ts:190](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L190)
 
 Write concern
 

@@ -1,9 +1,9 @@
 import type { CommandModule } from 'yargs';
-import { ConfigManager, getFormatter, autoDetectFormat, MaitreError, exitCodeForError } from '@maitredb/core';
+import { getFormatter, autoDetectFormat, MaitreError, exitCodeForError } from '@maitredb/core';
 import type { OutputFormat } from '@maitredb/core';
 import type { FieldInfo } from '@maitredb/plugin-api';
-import { getRegistry } from '../bootstrap.js';
-import { resolveConnectionConfig } from '../connection-config.js';
+import type { ManagedConnection } from '@maitredb/core';
+import { getCacheManager, getConnectionManager } from '../bootstrap.js';
 
 /** `mdb schema` command — wraps the introspection sub-commands. */
 export const schemaCommand: CommandModule = {
@@ -16,7 +16,7 @@ export const schemaCommand: CommandModule = {
         type: 'string',
         demandOption: true,
         describe: 'Introspection action',
-        choices: ['tables', 'columns', 'indexes'],
+        choices: ['tables', 'columns', 'indexes', 'functions', 'procedures', 'types'],
       })
       .positional('object', { type: 'string', describe: 'Table name (for columns/indexes)' })
       .option('schema', { type: 'string', default: 'main', describe: 'Schema name' })
@@ -27,12 +27,11 @@ export const schemaCommand: CommandModule = {
         choices: ['table', 'json', 'csv', 'ndjson', 'raw'],
       }),
   handler: async (argv) => {
+    let conn: ManagedConnection | undefined;
+    const connMgr = getConnectionManager();
     try {
-      const configMgr = new ConfigManager();
-      const connConfig = await resolveConnectionConfig(configMgr, argv.conn as string);
-      const registry = getRegistry();
-      const adapter = await registry.get(connConfig.type);
-      const conn = await adapter.connect(connConfig);
+      conn = await connMgr.getConnection(argv.conn as string);
+      const adapter = conn.adapter;
       const schemaName = argv.schema as string;
       const action = argv.action as string;
       const object = argv.object as string | undefined;
@@ -89,6 +88,52 @@ export const schemaCommand: CommandModule = {
           ];
           break;
         }
+        case 'functions': {
+          const functions = await adapter.getFunctions(conn, schemaName);
+          rows = functions.map((fn) => ({
+            name: fn.name,
+            return_type: fn.returnType,
+            arguments: fn.arguments,
+            language: fn.language ?? '',
+          }));
+          fields = [
+            { name: 'name', nativeType: 'TEXT', type: 'string' },
+            { name: 'return_type', nativeType: 'TEXT', type: 'string' },
+            { name: 'arguments', nativeType: 'TEXT', type: 'string' },
+            { name: 'language', nativeType: 'TEXT', type: 'string' },
+          ];
+          break;
+        }
+        case 'procedures': {
+          const procedures = await adapter.getProcedures(conn, schemaName);
+          rows = procedures.map((proc) => ({
+            name: proc.name,
+            arguments: proc.arguments,
+            language: proc.language ?? '',
+          }));
+          fields = [
+            { name: 'name', nativeType: 'TEXT', type: 'string' },
+            { name: 'arguments', nativeType: 'TEXT', type: 'string' },
+            { name: 'language', nativeType: 'TEXT', type: 'string' },
+          ];
+          break;
+        }
+        case 'types': {
+          const types = await adapter.getTypes(conn, schemaName);
+          rows = types.map((typeInfo) => ({
+            name: typeInfo.name,
+            type: typeInfo.type,
+            values: typeInfo.values?.join(', ') ?? '',
+            definition: typeInfo.definition ?? '',
+          }));
+          fields = [
+            { name: 'name', nativeType: 'TEXT', type: 'string' },
+            { name: 'type', nativeType: 'TEXT', type: 'string' },
+            { name: 'values', nativeType: 'TEXT', type: 'string' },
+            { name: 'definition', nativeType: 'TEXT', type: 'string' },
+          ];
+          break;
+        }
         default:
           console.error(`Unknown schema action: ${action}`);
           process.exit(1);
@@ -99,8 +144,6 @@ export const schemaCommand: CommandModule = {
       const start = performance.now();
       const result = { rows, fields, rowCount: rows.length, durationMs: performance.now() - start };
       console.log(formatter.format(result));
-
-      await adapter.disconnect(conn);
     } catch (err) {
       if (err instanceof MaitreError) {
         process.stderr.write(JSON.stringify(err.toJSON()) + '\n');
@@ -108,6 +151,12 @@ export const schemaCommand: CommandModule = {
       }
       process.stderr.write(JSON.stringify({ error: 'INTERNAL_ERROR', message: err instanceof Error ? err.message : String(err) }) + '\n');
       process.exit(3);
+    } finally {
+      if (conn) {
+        await connMgr.releaseConnection(conn);
+      }
+      await connMgr.closeAll();
+      getCacheManager().close();
     }
   },
 };

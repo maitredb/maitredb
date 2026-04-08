@@ -4,7 +4,7 @@
 
 # Interface: ColumnInfo
 
-Defined in: [packages/plugin-api/src/types.ts:286](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L286)
+Defined in: [packages/plugin-api/src/types.ts:309](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L309)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [packages/plugin-api/src/types.ts:286](https://github.com/sgoley/mai
 
 > `optional` **comment?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:295](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L295)
+Defined in: [packages/plugin-api/src/types.ts:318](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L318)
 
 ***
 
@@ -20,7 +20,7 @@ Defined in: [packages/plugin-api/src/types.ts:295](https://github.com/sgoley/mai
 
 > `optional` **defaultValue?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:293](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L293)
+Defined in: [packages/plugin-api/src/types.ts:316](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L316)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [packages/plugin-api/src/types.ts:293](https://github.com/sgoley/mai
 
 > **isPrimaryKey**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:294](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L294)
+Defined in: [packages/plugin-api/src/types.ts:317](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L317)
 
 ***
 
@@ -36,7 +36,7 @@ Defined in: [packages/plugin-api/src/types.ts:294](https://github.com/sgoley/mai
 
 > **name**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:289](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L289)
+Defined in: [packages/plugin-api/src/types.ts:312](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L312)
 
 ***
 
@@ -44,7 +44,7 @@ Defined in: [packages/plugin-api/src/types.ts:289](https://github.com/sgoley/mai
 
 > **nativeType**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:290](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L290)
+Defined in: [packages/plugin-api/src/types.ts:313](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L313)
 
 ***
 
@@ -52,7 +52,7 @@ Defined in: [packages/plugin-api/src/types.ts:290](https://github.com/sgoley/mai
 
 > **nullable**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:292](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L292)
+Defined in: [packages/plugin-api/src/types.ts:315](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L315)
 
 ***
 
@@ -60,7 +60,7 @@ Defined in: [packages/plugin-api/src/types.ts:292](https://github.com/sgoley/mai
 
 > **schema**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:287](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L287)
+Defined in: [packages/plugin-api/src/types.ts:310](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L310)
 
 ***
 
@@ -68,7 +68,7 @@ Defined in: [packages/plugin-api/src/types.ts:287](https://github.com/sgoley/mai
 
 > **table**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:288](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L288)
+Defined in: [packages/plugin-api/src/types.ts:311](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L311)
 
 ***
 
@@ -76,4 +76,4 @@ Defined in: [packages/plugin-api/src/types.ts:288](https://github.com/sgoley/mai
 
 > **type**: [`MaitreType`](../type-aliases/MaitreType.md)
 
-Defined in: [packages/plugin-api/src/types.ts:291](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L291)
+Defined in: [packages/plugin-api/src/types.ts:314](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L314)

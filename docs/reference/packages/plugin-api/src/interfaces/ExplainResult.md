@@ -4,7 +4,7 @@
 
 # Interface: ExplainResult
 
-Defined in: [packages/plugin-api/src/types.ts:351](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L351)
+Defined in: [packages/plugin-api/src/types.ts:382](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L382)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [packages/plugin-api/src/types.ts:351](https://github.com/sgoley/mai
 
 > **dialect**: [`DatabaseDialect`](../type-aliases/DatabaseDialect.md)
 
-Defined in: [packages/plugin-api/src/types.ts:352](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L352)
+Defined in: [packages/plugin-api/src/types.ts:383](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L383)
 
 ***
 
@@ -20,7 +20,7 @@ Defined in: [packages/plugin-api/src/types.ts:352](https://github.com/sgoley/mai
 
 > **plan**: [`PlanNode`](PlanNode.md)
 
-Defined in: [packages/plugin-api/src/types.ts:354](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L354)
+Defined in: [packages/plugin-api/src/types.ts:385](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L385)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [packages/plugin-api/src/types.ts:354](https://github.com/sgoley/mai
 
 > **rawPlan**: `unknown`
 
-Defined in: [packages/plugin-api/src/types.ts:353](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L353)
+Defined in: [packages/plugin-api/src/types.ts:384](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L384)
 
 ***
 
@@ -36,7 +36,7 @@ Defined in: [packages/plugin-api/src/types.ts:353](https://github.com/sgoley/mai
 
 > `optional` **rowsActual?**: `number`
 
-Defined in: [packages/plugin-api/src/types.ts:357](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L357)
+Defined in: [packages/plugin-api/src/types.ts:388](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L388)
 
 ***
 
@@ -44,7 +44,7 @@ Defined in: [packages/plugin-api/src/types.ts:357](https://github.com/sgoley/mai
 
 > `optional` **rowsEstimated?**: `number`
 
-Defined in: [packages/plugin-api/src/types.ts:356](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L356)
+Defined in: [packages/plugin-api/src/types.ts:387](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L387)
 
 ***
 
@@ -52,7 +52,7 @@ Defined in: [packages/plugin-api/src/types.ts:356](https://github.com/sgoley/mai
 
 > `optional` **totalTimeMs?**: `number`
 
-Defined in: [packages/plugin-api/src/types.ts:355](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L355)
+Defined in: [packages/plugin-api/src/types.ts:386](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L386)
 
 ***
 
@@ -60,4 +60,4 @@ Defined in: [packages/plugin-api/src/types.ts:355](https://github.com/sgoley/mai
 
 > **warnings**: `string`[]
 
-Defined in: [packages/plugin-api/src/types.ts:358](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L358)
+Defined in: [packages/plugin-api/src/types.ts:389](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L389)

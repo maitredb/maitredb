@@ -2,8 +2,16 @@ export { MaitreError, MaitreErrorCode, EXIT_SUCCESS, EXIT_USER_ERROR, EXIT_GOVER
 export { ConfigManager } from './config.js';
 export type { MaitreConfig } from './config.js';
 export { QueryExecutor, isDDL } from './executor.js';
+export type { ExecutorOptions } from './executor.js';
+export { GenericPool } from './generic-pool.js';
+export type { GenericPoolFactory, PoolStats } from './generic-pool.js';
+export { ConnectionManager } from './connection-manager.js';
+export type { ManagedConnection, ConnectionManagerOptions } from './connection-manager.js';
+export { HistoryStore } from './history.js';
+export type { HistoryStoreOptions, HistoryQueryOptions } from './history.js';
 export { getFormatter, autoDetectFormat } from './formatters.js';
 export type { OutputFormat, Formatter } from './formatters.js';
+export type { AuditEntry, CacheOptions, HistoryOptions } from './types.js';
 export {
   CredentialManager,
   EnvironmentCredentialBackend,

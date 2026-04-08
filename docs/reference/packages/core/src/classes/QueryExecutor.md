@@ -4,19 +4,15 @@
 
 # Class: QueryExecutor
 
-Defined in: [packages/core/src/executor.ts:18](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/executor.ts#L18)
-
-Wraps a DriverAdapter to provide consistent error handling and
-timing metadata. The executor enforces the "streaming-first" guarantee by
-delegating to the driver for both buffered and streamed paths.
+Defined in: [packages/core/src/executor.ts:39](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/executor.ts#L39)
 
 ## Constructors
 
 ### Constructor
 
-> **new QueryExecutor**(`adapter`, `maxBufferedRows?`): `QueryExecutor`
+> **new QueryExecutor**(`adapter`, `options?`): `QueryExecutor`
 
-Defined in: [packages/core/src/executor.ts:19](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/executor.ts#L19)
+Defined in: [packages/core/src/executor.ts:42](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/executor.ts#L42)
 
 #### Parameters
 
@@ -24,9 +20,9 @@ Defined in: [packages/core/src/executor.ts:19](https://github.com/sgoley/maitred
 
 `DriverAdapter`
 
-##### maxBufferedRows?
+##### options?
 
-`number` = `DEFAULT_MAX_BUFFERED_ROWS`
+[`ExecutorOptions`](../interfaces/ExecutorOptions.md) = `{}`
 
 #### Returns
 
@@ -38,7 +34,7 @@ Defined in: [packages/core/src/executor.ts:19](https://github.com/sgoley/maitred
 
 > **execute**(`conn`, `sql`, `params?`): `Promise`\<`QueryResult`\>
 
-Defined in: [packages/core/src/executor.ts:25](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/executor.ts#L25)
+Defined in: [packages/core/src/executor.ts:50](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/executor.ts#L50)
 
 Execute a SQL statement and capture timing metadata.
 
@@ -66,7 +62,7 @@ Execute a SQL statement and capture timing metadata.
 
 > **stream**(`conn`, `sql`, `params?`): `AsyncIterable`\<`Record`\<`string`, `unknown`\>\>
 
-Defined in: [packages/core/src/executor.ts:37](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/executor.ts#L37)
+Defined in: [packages/core/src/executor.ts:96](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/executor.ts#L96)
 
 Stream rows directly from the adapter while preserving error semantics.
 

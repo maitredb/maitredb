@@ -5,6 +5,8 @@ import { hideBin } from 'yargs/helpers';
 import { connectCommand } from './commands/connect.js';
 import { queryCommand } from './commands/query.js';
 import { schemaCommand } from './commands/schema.js';
+import { permissionsCommand } from './commands/permissions.js';
+import { historyCommand } from './commands/history.js';
 
 const cli = yargs(hideBin(process.argv))
   .scriptName('mdb')
@@ -12,6 +14,8 @@ const cli = yargs(hideBin(process.argv))
   .command(connectCommand)
   .command(queryCommand)
   .command(schemaCommand)
+  .command(permissionsCommand)
+  .command(historyCommand)
   .demandCommand(1, 'You need to specify a command')
   .strict()
   .help()

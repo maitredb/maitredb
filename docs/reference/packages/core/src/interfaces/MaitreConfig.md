@@ -4,15 +4,23 @@
 
 # Interface: MaitreConfig
 
-Defined in: [packages/core/src/config.ts:9](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/config.ts#L9)
+Defined in: [packages/core/src/config.ts:10](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/config.ts#L10)
 
 ## Properties
+
+### cache?
+
+> `optional` **cache?**: [`CacheOptions`](CacheOptions.md)
+
+Defined in: [packages/core/src/config.ts:14](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/config.ts#L14)
+
+***
 
 ### defaultConnection?
 
 > `optional` **defaultConnection?**: `string`
 
-Defined in: [packages/core/src/config.ts:11](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/config.ts#L11)
+Defined in: [packages/core/src/config.ts:12](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/config.ts#L12)
 
 ***
 
@@ -20,7 +28,15 @@ Defined in: [packages/core/src/config.ts:11](https://github.com/sgoley/maitredb/
 
 > **defaultFormat**: `"json"` \| `"table"` \| `"csv"` \| `"ndjson"` \| `"yaml"` \| `"raw"`
 
-Defined in: [packages/core/src/config.ts:10](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/config.ts#L10)
+Defined in: [packages/core/src/config.ts:11](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/config.ts#L11)
+
+***
+
+### history?
+
+> `optional` **history?**: [`HistoryOptions`](HistoryOptions.md)
+
+Defined in: [packages/core/src/config.ts:15](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/config.ts#L15)
 
 ***
 
@@ -28,4 +44,4 @@ Defined in: [packages/core/src/config.ts:10](https://github.com/sgoley/maitredb/
 
 > **maxRows**: `number`
 
-Defined in: [packages/core/src/config.ts:12](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/config.ts#L12)
+Defined in: [packages/core/src/config.ts:13](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/config.ts#L13)

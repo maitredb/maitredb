@@ -38,6 +38,8 @@ describe('CLI e2e', () => {
     expect(stdout).toContain('connect');
     expect(stdout).toContain('query');
     expect(stdout).toContain('schema');
+    expect(stdout).toContain('permissions');
+    expect(stdout).toContain('history');
   });
 
   it('add, list, test, and remove a connection', async () => {
@@ -127,6 +129,30 @@ describe('CLI e2e', () => {
       expect(result.rows).toHaveLength(3);
       expect(result.rows.find((c: { name: string }) => c.name === 'id')).toBeTruthy();
     });
+
+    it('schema functions/procedures/types actions execute', async () => {
+      const functionsOut = await mdb('schema', 'qdb', 'functions', '--format', 'json');
+      const proceduresOut = await mdb('schema', 'qdb', 'procedures', '--format', 'json');
+      const typesOut = await mdb('schema', 'qdb', 'types', '--format', 'json');
+
+      expect(JSON.parse(functionsOut.stdout).rows).toEqual([]);
+      expect(JSON.parse(proceduresOut.stdout).rows).toEqual([]);
+      expect(JSON.parse(typesOut.stdout).rows).toEqual([]);
+    });
+  });
+
+  it('permissions command exits gracefully for sqlite', async () => {
+    const { stdout } = await mdb('permissions', 'qdb', 'roles');
+    expect(stdout).toContain('not supported');
+  });
+
+  it('history command returns recent query entries', async () => {
+    await mdb('query', 'qdb', 'SELECT 1 as smoke_history', '--format', 'json');
+    const { stdout } = await mdb('history', '--connection', 'qdb', '--last', '1', '--format', 'json');
+    const result = JSON.parse(stdout);
+    expect(result.rows).toHaveLength(1);
+    expect(result.rows[0].connection).toBe('qdb');
+    expect(result.rows[0].query).toContain('SELECT 1 as smoke_history');
   });
 
   it('returns error for missing connection', async () => {

@@ -4,7 +4,7 @@
 
 # Interface: DriverAdapter
 
-Defined in: [packages/plugin-api/src/driver-adapter.ts:24](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/driver-adapter.ts#L24)
+Defined in: [packages/plugin-api/src/driver-adapter.ts:25](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/driver-adapter.ts#L25)
 
 Contract that every database driver must implement.
 
@@ -14,7 +14,7 @@ Contract that every database driver must implement.
 
 > `readonly` **dialect**: [`DatabaseDialect`](../type-aliases/DatabaseDialect.md)
 
-Defined in: [packages/plugin-api/src/driver-adapter.ts:25](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/driver-adapter.ts#L25)
+Defined in: [packages/plugin-api/src/driver-adapter.ts:26](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/driver-adapter.ts#L26)
 
 ## Methods
 
@@ -22,7 +22,7 @@ Defined in: [packages/plugin-api/src/driver-adapter.ts:25](https://github.com/sg
 
 > **beginTransaction**(`conn`, `options?`): `Promise`\<[`Transaction`](Transaction.md)\>
 
-Defined in: [packages/plugin-api/src/driver-adapter.ts:39](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/driver-adapter.ts#L39)
+Defined in: [packages/plugin-api/src/driver-adapter.ts:40](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/driver-adapter.ts#L40)
 
 #### Parameters
 
@@ -44,7 +44,7 @@ Defined in: [packages/plugin-api/src/driver-adapter.ts:39](https://github.com/sg
 
 > **cancelQuery**(`conn`, `queryId`): `Promise`\<`void`\>
 
-Defined in: [packages/plugin-api/src/driver-adapter.ts:36](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/driver-adapter.ts#L36)
+Defined in: [packages/plugin-api/src/driver-adapter.ts:37](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/driver-adapter.ts#L37)
 
 #### Parameters
 
@@ -66,7 +66,7 @@ Defined in: [packages/plugin-api/src/driver-adapter.ts:36](https://github.com/sg
 
 > **capabilities**(): [`DriverCapabilities`](DriverCapabilities.md)
 
-Defined in: [packages/plugin-api/src/driver-adapter.ts:60](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/driver-adapter.ts#L60)
+Defined in: [packages/plugin-api/src/driver-adapter.ts:62](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/driver-adapter.ts#L62)
 
 #### Returns
 
@@ -78,7 +78,7 @@ Defined in: [packages/plugin-api/src/driver-adapter.ts:60](https://github.com/sg
 
 > **connect**(`config`): `Promise`\<[`Connection`](Connection.md)\>
 
-Defined in: [packages/plugin-api/src/driver-adapter.ts:28](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/driver-adapter.ts#L28)
+Defined in: [packages/plugin-api/src/driver-adapter.ts:29](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/driver-adapter.ts#L29)
 
 #### Parameters
 
@@ -96,7 +96,7 @@ Defined in: [packages/plugin-api/src/driver-adapter.ts:28](https://github.com/sg
 
 > **disconnect**(`conn`): `Promise`\<`void`\>
 
-Defined in: [packages/plugin-api/src/driver-adapter.ts:29](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/driver-adapter.ts#L29)
+Defined in: [packages/plugin-api/src/driver-adapter.ts:30](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/driver-adapter.ts#L30)
 
 #### Parameters
 
@@ -114,7 +114,7 @@ Defined in: [packages/plugin-api/src/driver-adapter.ts:29](https://github.com/sg
 
 > **execute**(`conn`, `query`, `params?`): `Promise`\<[`QueryResult`](QueryResult.md)\>
 
-Defined in: [packages/plugin-api/src/driver-adapter.ts:34](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/driver-adapter.ts#L34)
+Defined in: [packages/plugin-api/src/driver-adapter.ts:35](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/driver-adapter.ts#L35)
 
 #### Parameters
 
@@ -140,7 +140,7 @@ Defined in: [packages/plugin-api/src/driver-adapter.ts:34](https://github.com/sg
 
 > **explain**(`conn`, `query`, `options?`): `Promise`\<[`ExplainResult`](ExplainResult.md)\>
 
-Defined in: [packages/plugin-api/src/driver-adapter.ts:54](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/driver-adapter.ts#L54)
+Defined in: [packages/plugin-api/src/driver-adapter.ts:56](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/driver-adapter.ts#L56)
 
 #### Parameters
 
@@ -166,7 +166,7 @@ Defined in: [packages/plugin-api/src/driver-adapter.ts:54](https://github.com/sg
 
 > **getColumns**(`conn`, `schema`, `table`): `Promise`\<[`ColumnInfo`](ColumnInfo.md)[]\>
 
-Defined in: [packages/plugin-api/src/driver-adapter.ts:44](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/driver-adapter.ts#L44)
+Defined in: [packages/plugin-api/src/driver-adapter.ts:45](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/driver-adapter.ts#L45)
 
 #### Parameters
 
@@ -192,7 +192,7 @@ Defined in: [packages/plugin-api/src/driver-adapter.ts:44](https://github.com/sg
 
 > **getFunctions**(`conn`, `schema?`): `Promise`\<[`FunctionInfo`](FunctionInfo.md)[]\>
 
-Defined in: [packages/plugin-api/src/driver-adapter.ts:46](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/driver-adapter.ts#L46)
+Defined in: [packages/plugin-api/src/driver-adapter.ts:47](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/driver-adapter.ts#L47)
 
 #### Parameters
 
@@ -214,7 +214,7 @@ Defined in: [packages/plugin-api/src/driver-adapter.ts:46](https://github.com/sg
 
 > **getGrants**(`conn`, `role?`): `Promise`\<[`GrantInfo`](GrantInfo.md)[]\>
 
-Defined in: [packages/plugin-api/src/driver-adapter.ts:51](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/driver-adapter.ts#L51)
+Defined in: [packages/plugin-api/src/driver-adapter.ts:53](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/driver-adapter.ts#L53)
 
 #### Parameters
 
@@ -236,7 +236,7 @@ Defined in: [packages/plugin-api/src/driver-adapter.ts:51](https://github.com/sg
 
 > **getIndexes**(`conn`, `schema`, `table`): `Promise`\<[`IndexInfo`](IndexInfo.md)[]\>
 
-Defined in: [packages/plugin-api/src/driver-adapter.ts:45](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/driver-adapter.ts#L45)
+Defined in: [packages/plugin-api/src/driver-adapter.ts:46](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/driver-adapter.ts#L46)
 
 #### Parameters
 
@@ -262,7 +262,7 @@ Defined in: [packages/plugin-api/src/driver-adapter.ts:45](https://github.com/sg
 
 > **getProcedures**(`conn`, `schema?`): `Promise`\<[`ProcedureInfo`](ProcedureInfo.md)[]\>
 
-Defined in: [packages/plugin-api/src/driver-adapter.ts:47](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/driver-adapter.ts#L47)
+Defined in: [packages/plugin-api/src/driver-adapter.ts:48](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/driver-adapter.ts#L48)
 
 #### Parameters
 
@@ -284,7 +284,7 @@ Defined in: [packages/plugin-api/src/driver-adapter.ts:47](https://github.com/sg
 
 > **getRoles**(`conn`): `Promise`\<[`RoleInfo`](RoleInfo.md)[]\>
 
-Defined in: [packages/plugin-api/src/driver-adapter.ts:50](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/driver-adapter.ts#L50)
+Defined in: [packages/plugin-api/src/driver-adapter.ts:52](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/driver-adapter.ts#L52)
 
 #### Parameters
 
@@ -302,7 +302,7 @@ Defined in: [packages/plugin-api/src/driver-adapter.ts:50](https://github.com/sg
 
 > **getSchemas**(`conn`): `Promise`\<[`SchemaInfo`](SchemaInfo.md)[]\>
 
-Defined in: [packages/plugin-api/src/driver-adapter.ts:42](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/driver-adapter.ts#L42)
+Defined in: [packages/plugin-api/src/driver-adapter.ts:43](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/driver-adapter.ts#L43)
 
 #### Parameters
 
@@ -320,7 +320,7 @@ Defined in: [packages/plugin-api/src/driver-adapter.ts:42](https://github.com/sg
 
 > **getTables**(`conn`, `schema?`): `Promise`\<[`TableInfo`](TableInfo.md)[]\>
 
-Defined in: [packages/plugin-api/src/driver-adapter.ts:43](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/driver-adapter.ts#L43)
+Defined in: [packages/plugin-api/src/driver-adapter.ts:44](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/driver-adapter.ts#L44)
 
 #### Parameters
 
@@ -338,11 +338,33 @@ Defined in: [packages/plugin-api/src/driver-adapter.ts:43](https://github.com/sg
 
 ***
 
+### getTypes()
+
+> **getTypes**(`conn`, `schema?`): `Promise`\<[`TypeInfo`](TypeInfo.md)[]\>
+
+Defined in: [packages/plugin-api/src/driver-adapter.ts:49](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/driver-adapter.ts#L49)
+
+#### Parameters
+
+##### conn
+
+[`Connection`](Connection.md)
+
+##### schema?
+
+`string`
+
+#### Returns
+
+`Promise`\<[`TypeInfo`](TypeInfo.md)[]\>
+
+***
+
 ### mapNativeType()
 
 > **mapNativeType**(`nativeType`): [`MaitreType`](../type-aliases/MaitreType.md)
 
-Defined in: [packages/plugin-api/src/driver-adapter.ts:57](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/driver-adapter.ts#L57)
+Defined in: [packages/plugin-api/src/driver-adapter.ts:59](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/driver-adapter.ts#L59)
 
 #### Parameters
 
@@ -360,7 +382,7 @@ Defined in: [packages/plugin-api/src/driver-adapter.ts:57](https://github.com/sg
 
 > **stream**(`conn`, `query`, `params?`): `AsyncIterable`\<`Record`\<`string`, `unknown`\>\>
 
-Defined in: [packages/plugin-api/src/driver-adapter.ts:35](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/driver-adapter.ts#L35)
+Defined in: [packages/plugin-api/src/driver-adapter.ts:36](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/driver-adapter.ts#L36)
 
 #### Parameters
 
@@ -386,7 +408,7 @@ Defined in: [packages/plugin-api/src/driver-adapter.ts:35](https://github.com/sg
 
 > **testConnection**(`config`): `Promise`\<[`ConnectionTestResult`](ConnectionTestResult.md)\>
 
-Defined in: [packages/plugin-api/src/driver-adapter.ts:30](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/driver-adapter.ts#L30)
+Defined in: [packages/plugin-api/src/driver-adapter.ts:31](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/driver-adapter.ts#L31)
 
 #### Parameters
 
@@ -404,7 +426,7 @@ Defined in: [packages/plugin-api/src/driver-adapter.ts:30](https://github.com/sg
 
 > **validateConnection**(`conn`): `Promise`\<`boolean`\>
 
-Defined in: [packages/plugin-api/src/driver-adapter.ts:31](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/driver-adapter.ts#L31)
+Defined in: [packages/plugin-api/src/driver-adapter.ts:32](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/driver-adapter.ts#L32)
 
 #### Parameters
 

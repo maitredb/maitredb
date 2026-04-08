@@ -29,6 +29,7 @@
 - [MongoOptions](interfaces/MongoOptions.md)
 - [MysqlOptions](interfaces/MysqlOptions.md)
 - [PlanNode](interfaces/PlanNode.md)
+- [PoolConfig](interfaces/PoolConfig.md)
 - [PostgresOptions](interfaces/PostgresOptions.md)
 - [ProcedureInfo](interfaces/ProcedureInfo.md)
 - [QueryResult](interfaces/QueryResult.md)
@@ -42,6 +43,7 @@
 - [Transaction](interfaces/Transaction.md)
 - [TransactionOptions](interfaces/TransactionOptions.md)
 - [TunnelConfig](interfaces/TunnelConfig.md)
+- [TypeInfo](interfaces/TypeInfo.md)
 
 ## Type Aliases
 

@@ -4,7 +4,7 @@
 
 # Interface: AthenaOptions
 
-Defined in: [packages/plugin-api/src/types.ts:228](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L228)
+Defined in: [packages/plugin-api/src/types.ts:251](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L251)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [packages/plugin-api/src/types.ts:228](https://github.com/sgoley/mai
 
 > `optional` **awsProfile?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:238](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L238)
+Defined in: [packages/plugin-api/src/types.ts:261](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L261)
 
 AWS profile name
 
@@ -22,7 +22,7 @@ AWS profile name
 
 > `optional` **catalog?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:232](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L232)
+Defined in: [packages/plugin-api/src/types.ts:255](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L255)
 
 Data catalog name (default: 'AwsDataCatalog')
 
@@ -32,7 +32,7 @@ Data catalog name (default: 'AwsDataCatalog')
 
 > **outputLocation**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:234](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L234)
+Defined in: [packages/plugin-api/src/types.ts:257](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L257)
 
 S3 output location for query results
 
@@ -42,7 +42,7 @@ S3 output location for query results
 
 > `optional` **queryTimeout?**: `number`
 
-Defined in: [packages/plugin-api/src/types.ts:240](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L240)
+Defined in: [packages/plugin-api/src/types.ts:263](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L263)
 
 Query execution timeout in ms
 
@@ -52,7 +52,7 @@ Query execution timeout in ms
 
 > `optional` **region?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:236](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L236)
+Defined in: [packages/plugin-api/src/types.ts:259](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L259)
 
 AWS region
 
@@ -62,7 +62,7 @@ AWS region
 
 > `optional` **resultReuseEnabled?**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:242](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L242)
+Defined in: [packages/plugin-api/src/types.ts:265](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L265)
 
 Result reuse (Athena feature)
 
@@ -72,7 +72,7 @@ Result reuse (Athena feature)
 
 > `optional` **resultReuseMaxAge?**: `number`
 
-Defined in: [packages/plugin-api/src/types.ts:244](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L244)
+Defined in: [packages/plugin-api/src/types.ts:267](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L267)
 
 Max age for reused results in minutes
 
@@ -82,6 +82,6 @@ Max age for reused results in minutes
 
 > `optional` **workGroup?**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:230](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L230)
+Defined in: [packages/plugin-api/src/types.ts:253](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L253)
 
 Athena workgroup

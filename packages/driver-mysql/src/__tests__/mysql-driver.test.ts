@@ -11,6 +11,7 @@ describe('MysqlDriver', () => {
     expect(capabilities.explain).toBe(true);
     expect(capabilities.explainAnalyze).toBe(true);
     expect(capabilities.procedures).toBe(true);
+    expect(capabilities.userDefinedTypes).toBe(false);
     expect(capabilities.roles).toBe(true);
     expect(capabilities.schemas).toBe(true);
     expect(capabilities.cancelQuery).toBe(true);
@@ -35,5 +36,10 @@ describe('MysqlDriver', () => {
     expect(driver.mapNativeType('blob')).toBe('binary');
     expect(driver.mapNativeType('geometry')).toBe('geometry');
     expect(driver.mapNativeType('custom_type')).toBe('unknown');
+  });
+
+  it('returns no standalone user-defined types', async () => {
+    const driver = new MysqlDriver('mysql');
+    await expect(driver.getTypes({} as never)).resolves.toEqual([]);
   });
 });

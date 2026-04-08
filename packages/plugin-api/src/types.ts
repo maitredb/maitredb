@@ -60,6 +60,24 @@ export interface ConnectionConfig {
   tunnel?: TunnelConfig;
   /** Driver-specific options — typed per dialect */
   options?: DriverOptions;
+  /** Connection pooling configuration */
+  pool?: PoolConfig;
+  /** Connection tags used by governance/history features */
+  tags?: string[];
+}
+
+/** Shared pool configuration for driver-native pools and generic fallback pools. */
+export interface PoolConfig {
+  /** Minimum idle connections retained in pool. */
+  min?: number;
+  /** Maximum active + idle connections in pool. */
+  max?: number;
+  /** Idle connection timeout in milliseconds. */
+  idleTimeoutMs?: number;
+  /** Max wait time to acquire a connection in milliseconds. */
+  acquireTimeoutMs?: number;
+  /** Maximum queued acquirers before failing fast. */
+  maxWaitingClients?: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -324,6 +342,14 @@ export interface ProcedureInfo {
   language?: string;
 }
 
+export interface TypeInfo {
+  schema: string;
+  name: string;
+  type: 'enum' | 'composite' | 'domain' | 'range' | 'base';
+  values?: string[];
+  definition?: string;
+}
+
 export interface RoleInfo {
   name: string;
   superuser: boolean;
@@ -381,6 +407,8 @@ export interface DriverCapabilities {
   explain: boolean;
   explainAnalyze: boolean;
   procedures: boolean;
+  /** Driver can introspect standalone user-defined types. */
+  userDefinedTypes: boolean;
   roles: boolean;
   schemas: boolean;
   cancelQuery: boolean;

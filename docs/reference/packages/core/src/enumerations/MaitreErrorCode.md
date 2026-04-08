@@ -4,7 +4,7 @@
 
 # Enumeration: MaitreErrorCode
 
-Defined in: [packages/core/src/errors.ts:3](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L3)
+Defined in: [packages/core/src/errors.ts:3](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L3)
 
 ## Enumeration Members
 
@@ -12,7 +12,7 @@ Defined in: [packages/core/src/errors.ts:3](https://github.com/sgoley/maitredb/b
 
 > **AUTHENTICATION\_FAILED**: `1003`
 
-Defined in: [packages/core/src/errors.ts:7](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L7)
+Defined in: [packages/core/src/errors.ts:7](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L7)
 
 ***
 
@@ -20,7 +20,7 @@ Defined in: [packages/core/src/errors.ts:7](https://github.com/sgoley/maitredb/b
 
 > **CACHE\_ERROR**: `9003`
 
-Defined in: [packages/core/src/errors.ts:38](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L38)
+Defined in: [packages/core/src/errors.ts:38](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L38)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [packages/core/src/errors.ts:38](https://github.com/sgoley/maitredb/
 
 > **CONFIG\_ERROR**: `9004`
 
-Defined in: [packages/core/src/errors.ts:39](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L39)
+Defined in: [packages/core/src/errors.ts:39](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L39)
 
 ***
 
@@ -36,7 +36,7 @@ Defined in: [packages/core/src/errors.ts:39](https://github.com/sgoley/maitredb/
 
 > **CONNECTION\_FAILED**: `1001`
 
-Defined in: [packages/core/src/errors.ts:5](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L5)
+Defined in: [packages/core/src/errors.ts:5](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L5)
 
 ***
 
@@ -44,7 +44,7 @@ Defined in: [packages/core/src/errors.ts:5](https://github.com/sgoley/maitredb/b
 
 > **CONNECTION\_LOST**: `1004`
 
-Defined in: [packages/core/src/errors.ts:8](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L8)
+Defined in: [packages/core/src/errors.ts:8](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L8)
 
 ***
 
@@ -52,7 +52,7 @@ Defined in: [packages/core/src/errors.ts:8](https://github.com/sgoley/maitredb/b
 
 > **CONNECTION\_TIMEOUT**: `1002`
 
-Defined in: [packages/core/src/errors.ts:6](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L6)
+Defined in: [packages/core/src/errors.ts:6](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L6)
 
 ***
 
@@ -60,7 +60,7 @@ Defined in: [packages/core/src/errors.ts:6](https://github.com/sgoley/maitredb/b
 
 > **DEADLOCK**: `4002`
 
-Defined in: [packages/core/src/errors.ts:32](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L32)
+Defined in: [packages/core/src/errors.ts:32](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L32)
 
 ***
 
@@ -68,7 +68,7 @@ Defined in: [packages/core/src/errors.ts:32](https://github.com/sgoley/maitredb/
 
 > **DRIVER\_NOT\_FOUND**: `9001`
 
-Defined in: [packages/core/src/errors.ts:36](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L36)
+Defined in: [packages/core/src/errors.ts:36](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L36)
 
 ***
 
@@ -76,7 +76,7 @@ Defined in: [packages/core/src/errors.ts:36](https://github.com/sgoley/maitredb/
 
 > **EXECUTION\_ERROR**: `2002`
 
-Defined in: [packages/core/src/errors.ts:15](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L15)
+Defined in: [packages/core/src/errors.ts:15](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L15)
 
 ***
 
@@ -84,7 +84,7 @@ Defined in: [packages/core/src/errors.ts:15](https://github.com/sgoley/maitredb/
 
 > **EXPLAIN\_REQUIRED**: `3006`
 
-Defined in: [packages/core/src/errors.ts:28](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L28)
+Defined in: [packages/core/src/errors.ts:28](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L28)
 
 ***
 
@@ -92,7 +92,7 @@ Defined in: [packages/core/src/errors.ts:28](https://github.com/sgoley/maitredb/
 
 > **INTERNAL\_ERROR**: `9999`
 
-Defined in: [packages/core/src/errors.ts:40](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L40)
+Defined in: [packages/core/src/errors.ts:40](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L40)
 
 ***
 
@@ -100,7 +100,7 @@ Defined in: [packages/core/src/errors.ts:40](https://github.com/sgoley/maitredb/
 
 > **OPERATION\_BLOCKED**: `3005`
 
-Defined in: [packages/core/src/errors.ts:27](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L27)
+Defined in: [packages/core/src/errors.ts:27](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L27)
 
 ***
 
@@ -108,7 +108,7 @@ Defined in: [packages/core/src/errors.ts:27](https://github.com/sgoley/maitredb/
 
 > **PERMISSION\_DENIED**: `2006`
 
-Defined in: [packages/core/src/errors.ts:19](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L19)
+Defined in: [packages/core/src/errors.ts:19](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L19)
 
 ***
 
@@ -116,7 +116,7 @@ Defined in: [packages/core/src/errors.ts:19](https://github.com/sgoley/maitredb/
 
 > **PLUGIN\_LOAD\_FAILED**: `9002`
 
-Defined in: [packages/core/src/errors.ts:37](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L37)
+Defined in: [packages/core/src/errors.ts:37](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L37)
 
 ***
 
@@ -124,7 +124,7 @@ Defined in: [packages/core/src/errors.ts:37](https://github.com/sgoley/maitredb/
 
 > **POLICY\_VIOLATION**: `3001`
 
-Defined in: [packages/core/src/errors.ts:23](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L23)
+Defined in: [packages/core/src/errors.ts:23](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L23)
 
 ***
 
@@ -132,7 +132,7 @@ Defined in: [packages/core/src/errors.ts:23](https://github.com/sgoley/maitredb/
 
 > **POOL\_EXHAUSTED**: `1007`
 
-Defined in: [packages/core/src/errors.ts:11](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L11)
+Defined in: [packages/core/src/errors.ts:11](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L11)
 
 ***
 
@@ -140,7 +140,7 @@ Defined in: [packages/core/src/errors.ts:11](https://github.com/sgoley/maitredb/
 
 > **QUERY\_CANCELLED**: `2004`
 
-Defined in: [packages/core/src/errors.ts:17](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L17)
+Defined in: [packages/core/src/errors.ts:17](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L17)
 
 ***
 
@@ -148,7 +148,7 @@ Defined in: [packages/core/src/errors.ts:17](https://github.com/sgoley/maitredb/
 
 > **QUERY\_TIMEOUT**: `2003`
 
-Defined in: [packages/core/src/errors.ts:16](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L16)
+Defined in: [packages/core/src/errors.ts:16](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L16)
 
 ***
 
@@ -156,7 +156,7 @@ Defined in: [packages/core/src/errors.ts:16](https://github.com/sgoley/maitredb/
 
 > **RATE\_LIMITED**: `3003`
 
-Defined in: [packages/core/src/errors.ts:25](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L25)
+Defined in: [packages/core/src/errors.ts:25](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L25)
 
 ***
 
@@ -164,7 +164,7 @@ Defined in: [packages/core/src/errors.ts:25](https://github.com/sgoley/maitredb/
 
 > **READ\_ONLY\_VIOLATION**: `3002`
 
-Defined in: [packages/core/src/errors.ts:24](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L24)
+Defined in: [packages/core/src/errors.ts:24](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L24)
 
 ***
 
@@ -172,7 +172,7 @@ Defined in: [packages/core/src/errors.ts:24](https://github.com/sgoley/maitredb/
 
 > **RELATION\_NOT\_FOUND**: `2007`
 
-Defined in: [packages/core/src/errors.ts:20](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L20)
+Defined in: [packages/core/src/errors.ts:20](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L20)
 
 ***
 
@@ -180,7 +180,7 @@ Defined in: [packages/core/src/errors.ts:20](https://github.com/sgoley/maitredb/
 
 > **RESULT\_TOO\_LARGE**: `2005`
 
-Defined in: [packages/core/src/errors.ts:18](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L18)
+Defined in: [packages/core/src/errors.ts:18](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L18)
 
 ***
 
@@ -188,7 +188,7 @@ Defined in: [packages/core/src/errors.ts:18](https://github.com/sgoley/maitredb/
 
 > **SCHEMA\_NOT\_ALLOWED**: `3004`
 
-Defined in: [packages/core/src/errors.ts:26](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L26)
+Defined in: [packages/core/src/errors.ts:26](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L26)
 
 ***
 
@@ -196,7 +196,7 @@ Defined in: [packages/core/src/errors.ts:26](https://github.com/sgoley/maitredb/
 
 > **SERIALIZATION\_FAILURE**: `4003`
 
-Defined in: [packages/core/src/errors.ts:33](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L33)
+Defined in: [packages/core/src/errors.ts:33](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L33)
 
 ***
 
@@ -204,7 +204,7 @@ Defined in: [packages/core/src/errors.ts:33](https://github.com/sgoley/maitredb/
 
 > **SSL\_ERROR**: `1005`
 
-Defined in: [packages/core/src/errors.ts:9](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L9)
+Defined in: [packages/core/src/errors.ts:9](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L9)
 
 ***
 
@@ -212,7 +212,7 @@ Defined in: [packages/core/src/errors.ts:9](https://github.com/sgoley/maitredb/b
 
 > **SYNTAX\_ERROR**: `2001`
 
-Defined in: [packages/core/src/errors.ts:14](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L14)
+Defined in: [packages/core/src/errors.ts:14](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L14)
 
 ***
 
@@ -220,7 +220,7 @@ Defined in: [packages/core/src/errors.ts:14](https://github.com/sgoley/maitredb/
 
 > **TRANSACTION\_FAILED**: `4001`
 
-Defined in: [packages/core/src/errors.ts:31](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L31)
+Defined in: [packages/core/src/errors.ts:31](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L31)
 
 ***
 
@@ -228,4 +228,4 @@ Defined in: [packages/core/src/errors.ts:31](https://github.com/sgoley/maitredb/
 
 > **TUNNEL\_FAILED**: `1006`
 
-Defined in: [packages/core/src/errors.ts:10](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/errors.ts#L10)
+Defined in: [packages/core/src/errors.ts:10](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/errors.ts#L10)

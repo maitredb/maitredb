@@ -130,8 +130,15 @@ describe('SqliteDriver', () => {
       expect(caps.embedded).toBe(true);
       expect(caps.transactions).toBe(true);
       expect(caps.streaming).toBe(true);
+      expect(caps.userDefinedTypes).toBe(false);
       expect(caps.roles).toBe(false);
       expect(caps.listenNotify).toBe(false);
+    });
+  });
+
+  describe('types', () => {
+    it('returns no standalone user-defined types', async () => {
+      await expect(driver.getTypes(conn, 'main')).resolves.toEqual([]);
     });
   });
 

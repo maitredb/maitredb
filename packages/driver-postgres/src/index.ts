@@ -21,6 +21,7 @@ import type {
   RoleInfo,
   SchemaInfo,
   TableInfo,
+  TypeInfo,
   Transaction,
   TransactionOptions,
 } from '@maitredb/plugin-api';
@@ -383,6 +384,52 @@ export class PostgresDriver implements DriverAdapter {
     }));
   }
 
+  /** List user-defined PostgreSQL types (enum/composite/domain/range/base). */
+  async getTypes(conn: Connection, schema?: string): Promise<TypeInfo[]> {
+    const result = await this.getPool(conn).query<{
+      schema_name: string;
+      type_name: string;
+      type_kind: 'enum' | 'composite' | 'domain' | 'range' | 'base';
+      enum_values: string[] | null;
+      definition: string | null;
+    }>(`
+      SELECT
+        n.nspname AS schema_name,
+        t.typname AS type_name,
+        CASE t.typtype
+          WHEN 'e' THEN 'enum'
+          WHEN 'c' THEN 'composite'
+          WHEN 'd' THEN 'domain'
+          WHEN 'r' THEN 'range'
+          ELSE 'base'
+        END AS type_kind,
+        CASE
+          WHEN t.typtype = 'e' THEN (
+            SELECT array_agg(e.enumlabel ORDER BY e.enumsortorder)
+            FROM pg_catalog.pg_enum e
+            WHERE e.enumtypid = t.oid
+          )
+          ELSE NULL
+        END AS enum_values,
+        pg_catalog.format_type(t.oid, NULL) AS definition
+      FROM pg_catalog.pg_type t
+      JOIN pg_catalog.pg_namespace n
+        ON n.oid = t.typnamespace
+      WHERE n.nspname NOT IN ('pg_catalog', 'information_schema')
+        AND n.nspname NOT LIKE 'pg_toast%'
+        AND ($1::text IS NULL OR n.nspname = $1)
+      ORDER BY n.nspname, t.typname
+    `, [schema ?? null]);
+
+    return result.rows.map((row) => ({
+      schema: row.schema_name,
+      name: row.type_name,
+      type: row.type_kind,
+      values: row.enum_values ?? undefined,
+      definition: row.definition ?? undefined,
+    }));
+  }
+
   /** List roles/users visible to the caller. */
   async getRoles(conn: Connection): Promise<RoleInfo[]> {
     const result = await this.getPool(conn).query<{
@@ -518,6 +565,7 @@ export class PostgresDriver implements DriverAdapter {
       explain: true,
       explainAnalyze: true,
       procedures: true,
+      userDefinedTypes: true,
       roles: true,
       schemas: true,
       cancelQuery: true,
@@ -561,6 +609,7 @@ export class PostgresDriver implements DriverAdapter {
 
   private toPoolConfig(config: ConnectionConfig): PoolConfig {
     const options = (config.options ?? {}) as PostgresOptions;
+    const pool = config.pool ?? {};
 
     return {
       host: config.host,
@@ -569,7 +618,10 @@ export class PostgresDriver implements DriverAdapter {
       password: config.password,
       database: config.database,
       ssl: toPgSsl(config.ssl),
-      connectionTimeoutMillis: options.connectTimeout,
+      min: pool.min,
+      max: pool.max,
+      idleTimeoutMillis: pool.idleTimeoutMs,
+      connectionTimeoutMillis: pool.acquireTimeoutMs ?? options.connectTimeout,
       application_name: options.applicationName,
       statement_timeout: options.statementTimeout,
     };

@@ -6,6 +6,6 @@
 
 > `const` **queryCommand**: `CommandModule`
 
-Defined in: [apps/cli/src/commands/query.ts:7](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/apps/cli/src/commands/query.ts#L7)
+Defined in: [apps/cli/src/commands/query.ts:8](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/apps/cli/src/commands/query.ts#L8)
 
 `mdb query` command — runs adhoc SQL against a saved connection.

@@ -1,0 +1,34 @@
+{
+  "name": "@maitredb/cache",
+  "version": "0.2.0",
+  "description": "Caching layer for Maître d'B metadata operations",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "lint": "tsc --noEmit",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@maitredb/core": "workspace:*",
+    "@maitredb/plugin-api": "workspace:*",
+    "lru-cache": "^10.4.3"
+  },
+  "optionalDependencies": {
+    "better-sqlite3": "^11.9.1"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^22.15.2",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.1"
+  }
+}

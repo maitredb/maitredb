@@ -4,7 +4,7 @@
 
 # Class: EncryptedFileCredentialBackend
 
-Defined in: [packages/core/src/credentials.ts:273](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L273)
+Defined in: [packages/core/src/credentials.ts:273](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/credentials.ts#L273)
 
 AES-256-GCM encrypted file at `~/.maitredb/credentials.enc`.
 
@@ -25,7 +25,7 @@ Each credential entry has its own IV for independent updates.
 
 > **new EncryptedFileCredentialBackend**(`options?`): `EncryptedFileCredentialBackend`
 
-Defined in: [packages/core/src/credentials.ts:278](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L278)
+Defined in: [packages/core/src/credentials.ts:278](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/credentials.ts#L278)
 
 #### Parameters
 
@@ -49,7 +49,7 @@ Defined in: [packages/core/src/credentials.ts:278](https://github.com/sgoley/mai
 
 > `readonly` **name**: `"encrypted-file"` = `'encrypted-file'`
 
-Defined in: [packages/core/src/credentials.ts:274](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L274)
+Defined in: [packages/core/src/credentials.ts:274](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/credentials.ts#L274)
 
 #### Implementation of
 
@@ -61,7 +61,7 @@ Defined in: [packages/core/src/credentials.ts:274](https://github.com/sgoley/mai
 
 > **delete**(`connectionName`): `Promise`\<`boolean`\>
 
-Defined in: [packages/core/src/credentials.ts:311](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L311)
+Defined in: [packages/core/src/credentials.ts:311](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/credentials.ts#L311)
 
 Delete a credential. Returns true if it existed.
 
@@ -85,7 +85,7 @@ Delete a credential. Returns true if it existed.
 
 > **get**(`connectionName`): `Promise`\<[`Credential`](../type-aliases/Credential.md) \| `undefined`\>
 
-Defined in: [packages/core/src/credentials.ts:287](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L287)
+Defined in: [packages/core/src/credentials.ts:287](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/credentials.ts#L287)
 
 Retrieve a credential by connection name. Returns undefined if not found.
 
@@ -109,7 +109,7 @@ Retrieve a credential by connection name. Returns undefined if not found.
 
 > **isAvailable**(): `Promise`\<`boolean`\>
 
-Defined in: [packages/core/src/credentials.ts:283](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L283)
+Defined in: [packages/core/src/credentials.ts:283](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/credentials.ts#L283)
 
 Return true if this backend is available in the current environment.
 
@@ -127,7 +127,7 @@ Return true if this backend is available in the current environment.
 
 > **list**(): `Promise`\<`string`[]\>
 
-Defined in: [packages/core/src/credentials.ts:320](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L320)
+Defined in: [packages/core/src/credentials.ts:320](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/credentials.ts#L320)
 
 List all connection names that have stored credentials.
 
@@ -145,7 +145,7 @@ List all connection names that have stored credentials.
 
 > **store**(`connectionName`, `credential`): `Promise`\<`void`\>
 
-Defined in: [packages/core/src/credentials.ts:297](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/core/src/credentials.ts#L297)
+Defined in: [packages/core/src/credentials.ts:297](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/core/src/credentials.ts#L297)
 
 Store a credential for a connection. Not all backends support writes.
 

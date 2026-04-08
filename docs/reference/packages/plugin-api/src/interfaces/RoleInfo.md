@@ -4,7 +4,7 @@
 
 # Interface: RoleInfo
 
-Defined in: [packages/plugin-api/src/types.ts:322](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L322)
+Defined in: [packages/plugin-api/src/types.ts:353](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L353)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [packages/plugin-api/src/types.ts:322](https://github.com/sgoley/mai
 
 > **login**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:325](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L325)
+Defined in: [packages/plugin-api/src/types.ts:356](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L356)
 
 ***
 
@@ -20,7 +20,7 @@ Defined in: [packages/plugin-api/src/types.ts:325](https://github.com/sgoley/mai
 
 > **name**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:323](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L323)
+Defined in: [packages/plugin-api/src/types.ts:354](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L354)
 
 ***
 
@@ -28,4 +28,4 @@ Defined in: [packages/plugin-api/src/types.ts:323](https://github.com/sgoley/mai
 
 > **superuser**: `boolean`
 
-Defined in: [packages/plugin-api/src/types.ts:324](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L324)
+Defined in: [packages/plugin-api/src/types.ts:355](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L355)

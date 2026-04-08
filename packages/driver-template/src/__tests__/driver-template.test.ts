@@ -12,6 +12,7 @@ describe('DriverTemplate smoke test', () => {
       explain: false,
       explainAnalyze: false,
       procedures: false,
+      userDefinedTypes: false,
       roles: false,
       schemas: false,
       cancelQuery: false,

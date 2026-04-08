@@ -26,6 +26,7 @@ import type {
   RoleInfo,
   SchemaInfo,
   TableInfo,
+  TypeInfo,
   Transaction,
   TransactionOptions,
 } from '@maitredb/plugin-api';
@@ -391,6 +392,13 @@ export class MysqlDriver implements DriverAdapter {
   }
 
   /**
+   * MySQL/MariaDB do not expose standalone user-defined type objects.
+   */
+  async getTypes(_conn: Connection, _schema?: string): Promise<TypeInfo[]> {
+    return [];
+  }
+
+  /**
    * List accounts/roles. Returns an empty list if server permissions disallow role inspection.
    */
   async getRoles(conn: Connection): Promise<RoleInfo[]> {
@@ -566,6 +574,7 @@ export class MysqlDriver implements DriverAdapter {
       explain: true,
       explainAnalyze: true,
       procedures: true,
+      userDefinedTypes: false,
       roles: true,
       schemas: true,
       cancelQuery: true,
@@ -590,8 +599,8 @@ export class MysqlDriver implements DriverAdapter {
 
   private toPoolOptions(config: ConnectionConfig): PoolOptions {
     const driverOptions = (config.options ?? {}) as MysqlOptions;
-
-    return {
+    const pool = config.pool ?? {};
+    const poolOptions: PoolOptions & { acquireTimeout?: number } = {
       host: config.host,
       port: config.port,
       user: config.user,
@@ -602,12 +611,15 @@ export class MysqlDriver implements DriverAdapter {
       connectTimeout: driverOptions.connectTimeout,
       multipleStatements: driverOptions.multipleStatements,
       waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0,
+      connectionLimit: pool.max ?? 10,
+      queueLimit: pool.maxWaitingClients ?? 0,
+      acquireTimeout: pool.acquireTimeoutMs,
       ssl: toMysqlSsl(config.ssl),
       supportBigNumbers: true,
       bigNumberStrings: true,
     };
+
+    return poolOptions;
   }
 
   private async ping(pool: Pool): Promise<void> {

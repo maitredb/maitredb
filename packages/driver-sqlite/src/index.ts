@@ -9,6 +9,7 @@ import type {
   QueryResult,
   SchemaInfo,
   TableInfo,
+  TypeInfo,
   ColumnInfo,
   IndexInfo,
   FunctionInfo,
@@ -216,6 +217,10 @@ export class SqliteDriver implements DriverAdapter {
     return []; // SQLite has no stored procedures
   }
 
+  async getTypes(_conn: Connection, _schema?: string): Promise<TypeInfo[]> {
+    return []; // SQLite has no standalone user-defined type catalog
+  }
+
   async getRoles(_conn: Connection): Promise<RoleInfo[]> {
     return []; // SQLite has no role system
   }
@@ -261,6 +266,7 @@ export class SqliteDriver implements DriverAdapter {
       explain: true,
       explainAnalyze: false,
       procedures: false,
+      userDefinedTypes: false,
       roles: false,
       schemas: false,
       cancelQuery: false,

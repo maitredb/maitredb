@@ -4,7 +4,7 @@
 
 # Interface: SchemaInfo
 
-Defined in: [packages/plugin-api/src/types.ts:275](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L275)
+Defined in: [packages/plugin-api/src/types.ts:298](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L298)
 
 ## Properties
 
@@ -12,4 +12,4 @@ Defined in: [packages/plugin-api/src/types.ts:275](https://github.com/sgoley/mai
 
 > **name**: `string`
 
-Defined in: [packages/plugin-api/src/types.ts:276](https://github.com/sgoley/maitredb/blob/39735963a13b9d7a55753aff783ac89c8bc8c091/packages/plugin-api/src/types.ts#L276)
+Defined in: [packages/plugin-api/src/types.ts:299](https://github.com/sgoley/maitredb/blob/eb336a8b108b2e051b41d4d911faeb23422b80b7/packages/plugin-api/src/types.ts#L299)
