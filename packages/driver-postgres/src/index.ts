@@ -1,596 +1,516 @@
-import { Pool, PoolClient, QueryResult as PgQueryResult, types as pgTypes } from 'pg';
+import { randomUUID } from 'node:crypto';
+import { Pool, types as pgTypes } from 'pg';
+import type { FieldDef, PoolClient, PoolConfig, QueryResult as PgQueryResult, QueryResultRow } from 'pg';
 import type {
-  DriverAdapter,
+  ColumnInfo,
+  Connection,
   ConnectionConfig,
   ConnectionTestResult,
+  DriverAdapter,
+  DriverCapabilities,
+  ExplainOptions,
+  ExplainResult,
+  FunctionInfo,
+  GrantInfo,
+  IndexInfo,
+  MaitreType,
+  PlanNode,
+  PostgresOptions,
+  ProcedureInfo,
   QueryResult,
-  Row,
+  RoleInfo,
   SchemaInfo,
   TableInfo,
-  ColumnInfo,
-  IndexInfo,
-  FunctionInfo,
-  ProcedureInfo,
-  RoleInfo,
-  GrantInfo,
-  ExplainResult,
   Transaction,
-  DriverCapabilities,
   TransactionOptions,
-  ExplainOptions,
-  Connection,
 } from '@maitredb/plugin-api';
 import { MaitreError, MaitreErrorCode } from '@maitredb/core';
-import { MaitreType } from '@maitredb/core';
 
-// Register UUID parser to return strings instead of Buffers
-pgTypes.setTypeParser(pgTypes.builtins.UUID, (val: string) => val);
-
-/**
- * PostgreSQL driver adapter using the `pg` package.
- * Implements the full DriverAdapter interface with streaming, introspection, and tracing.
- */
 /** PostgreSQL driver implemented via the native `pg` client. */
 export class PostgresDriver implements DriverAdapter {
   readonly dialect: 'postgresql' = 'postgresql';
 
-  private pool?: Pool;
-
   constructor() {
-    // Configure pg to use bigint for numeric types to avoid precision loss
+    // Keep large numerics lossless.
     pgTypes.setTypeParser(pgTypes.builtins.INT8, (val: string) => BigInt(val));
-    pgTypes.setTypeParser(pgTypes.builtins.NUMERIC, (val: string) => val); // Keep as string for precision
+    pgTypes.setTypeParser(pgTypes.builtins.NUMERIC, (val: string) => val);
+    pgTypes.setTypeParser(pgTypes.builtins.UUID, (val: string) => val);
   }
 
-  // ============================================================================
-  // Connection Lifecycle
-  // ============================================================================
-
+  /** Create a pooled PostgreSQL connection and validate with `SELECT 1`. */
   async connect(config: ConnectionConfig): Promise<Connection> {
-    const poolConfig = this.buildPoolConfig(config);
-    this.pool = new Pool(poolConfig);
+    this.assertDialect(config.type);
 
-    // Test the connection
-    const client = await this.pool.connect();
-    await client.query('SELECT 1');
-    client.release();
+    const pool = new Pool(this.toPoolConfig(config));
+    await pool.query('SELECT 1');
 
-    return { config, pool: this.pool };
+    return {
+      id: randomUUID(),
+      config,
+      dialect: 'postgresql',
+      native: pool,
+    };
   }
 
+  /** Dispose the underlying `pg.Pool`. */
   async disconnect(conn: Connection): Promise<void> {
-    if (this.pool) {
-      await this.pool.end();
-      this.pool = undefined;
-    }
+    await this.getPool(conn).end();
   }
 
+  /** Probe database reachability and server version. */
   async testConnection(config: ConnectionConfig): Promise<ConnectionTestResult> {
-    const start = Date.now();
-    let client: PoolClient | undefined;
+    this.assertDialect(config.type);
+
+    const startedAt = performance.now();
+    const pool = new Pool(this.toPoolConfig(config));
 
     try {
-      const poolConfig = this.buildPoolConfig(config);
-      const tempPool = new Pool(poolConfig);
-      client = await tempPool.connect();
-
-      const result = await client.query('SELECT version() as version, current_database() as database');
-      const version = result.rows[0]?.version || 'unknown';
-      const database = result.rows[0]?.database || config.database || 'unknown';
-
-      await client.release();
-      await tempPool.end();
-
+      const result = await pool.query<{ version: string }>('SELECT version() AS version');
       return {
         success: true,
-        latencyMs: Date.now() - start,
-        serverVersion: version,
-        databaseName: database,
+        latencyMs: performance.now() - startedAt,
+        serverVersion: result.rows[0]?.version,
       };
-    } catch (err) {
-      if (client) {
-        try {
-          await client.release();
-        } catch {}
-      }
+    } catch (error) {
       return {
         success: false,
-        latencyMs: Date.now() - start,
-        error: err instanceof Error ? err.message : String(err),
+        latencyMs: performance.now() - startedAt,
+        error: toErrorMessage(error),
       };
+    } finally {
+      await pool.end();
     }
   }
 
+  /** Execute a lightweight health query for an existing connection. */
   async validateConnection(conn: Connection): Promise<boolean> {
-    if (!this.pool) {
-      return false;
-    }
-
     try {
-      const client = await this.pool.connect();
-      await client.query('SELECT 1');
-      client.release();
+      await this.getPool(conn).query('SELECT 1');
       return true;
     } catch {
       return false;
     }
   }
 
-  // ============================================================================
-  // Query Execution
-  // ============================================================================
-
+  /** Execute a SQL statement and return buffered rows + field metadata. */
   async execute(conn: Connection, query: string, params?: unknown[]): Promise<QueryResult> {
-    if (!this.pool) {
-      throw new MaitreError(
-        MaitreErrorCode.CONNECTION_FAILED,
-        'PostgreSQL connection not established',
-        this.dialect,
-      );
-    }
+    const pool = this.getPool(conn);
+    const startedAt = performance.now();
+    const result = await pool.query(query, params as any[] | undefined);
 
-    const client = await this.pool.connect();
-    try {
-      const start = Date.now();
-      const result = await client.query(query, params);
-      const durationMs = Date.now() - start;
+    return this.toQueryResult(result, performance.now() - startedAt);
+  }
 
-      return this.mapQueryResult(result, durationMs);
-    } finally {
-      client.release();
+  /** Stream rows as an `AsyncIterable` without changing the caller contract. */
+  async *stream(conn: Connection, query: string, params?: unknown[]): AsyncIterable<Record<string, unknown>> {
+    const pool = this.getPool(conn);
+    const result = await pool.query(query, params as any[] | undefined);
+    for (const row of result.rows) {
+      yield this.mapRow(row);
     }
   }
 
-  async* stream(conn: Connection, query: string, params?: unknown[]): AsyncIterable<Row> {
-    if (!this.pool) {
-      throw new MaitreError(
-        MaitreErrorCode.CONNECTION_FAILED,
-        'PostgreSQL connection not established',
-        this.dialect,
-      );
-    }
-
-    const client = await this.pool.connect();
-    try {
-      const result = await client.query(query, params);
-      for (const row of result.rows) {
-        yield this.mapRow(row);
-      }
-    } finally {
-      client.release();
-    }
-  }
-
+  /** Cancel a backend query by PID using `pg_cancel_backend`. */
   async cancelQuery(conn: Connection, queryId: string): Promise<void> {
-    if (!this.pool) {
+    const pool = this.getPool(conn);
+    const pid = Number.parseInt(queryId, 10);
+
+    if (Number.isNaN(pid) || pid <= 0) {
       throw new MaitreError(
-        MaitreErrorCode.CONNECTION_FAILED,
-        'PostgreSQL connection not established',
+        MaitreErrorCode.CONFIG_ERROR,
+        `Invalid PostgreSQL query id: ${queryId}`,
         this.dialect,
       );
     }
 
-    // PostgreSQL uses pg_cancel_backend to cancel queries
-    // queryId should be the backend PID
-    const client = await this.pool.connect();
-    try {
-      await client.query('SELECT pg_cancel_backend($1)', [queryId]);
-    } finally {
-      client.release();
-    }
+    await pool.query('SELECT pg_cancel_backend($1)', [pid]);
   }
 
-  // ============================================================================
-  // Transactions
-  // ============================================================================
-
+  /** Begin a transaction and return helpers bound to one client session. */
   async beginTransaction(conn: Connection, options?: TransactionOptions): Promise<Transaction> {
-    if (!this.pool) {
-      throw new MaitreError(
-        MaitreErrorCode.CONNECTION_FAILED,
-        'PostgreSQL connection not established',
-        this.dialect,
-      );
-    }
+    const client = await this.getPool(conn).connect();
 
-    const client = await this.pool.connect();
-    await client.query('BEGIN' + (options?.isolationLevel ? ` ${options.isolationLevel}` : ''));
+    try {
+      await client.query('BEGIN');
+
+      if (options?.isolationLevel) {
+        await client.query(`SET TRANSACTION ISOLATION LEVEL ${toPostgresIsolationLevel(options.isolationLevel)}`);
+      }
+
+      if (options?.readOnly !== undefined) {
+        await client.query(`SET TRANSACTION ${options.readOnly ? 'READ ONLY' : 'READ WRITE'}`);
+      }
+    } catch (error) {
+      client.release();
+      throw error;
+    }
 
     return {
-      client,
-      commit: async () => {
-        await client.query('COMMIT');
-        client.release();
+      id: randomUUID(),
+      query: async (sql: string, params?: unknown[]): Promise<QueryResult> => {
+        const startedAt = performance.now();
+        const result = await client.query(sql, params as any[] | undefined);
+        return this.toQueryResult(result, performance.now() - startedAt);
       },
-      rollback: async () => {
-        await client.query('ROLLBACK');
-        client.release();
+      commit: async (): Promise<void> => {
+        try {
+          await client.query('COMMIT');
+        } finally {
+          client.release();
+        }
       },
-      query: async (query: string, params?: unknown[]) => {
-        const result = await client.query(query, params);
-        return this.mapQueryResult(result);
+      rollback: async (): Promise<void> => {
+        try {
+          await client.query('ROLLBACK');
+        } finally {
+          client.release();
+        }
       },
     };
   }
 
-  // ============================================================================
-  // Schema Introspection
-  // ============================================================================
-
+  /** List non-system schemas. */
   async getSchemas(conn: Connection): Promise<SchemaInfo[]> {
-    if (!this.pool) {
-      throw new MaitreError(
-        MaitreErrorCode.CONNECTION_FAILED,
-        'PostgreSQL connection not established',
-        this.dialect,
-      );
-    }
+    const result = await this.getPool(conn).query<{ name: string }>(`
+      SELECT nspname AS name
+      FROM pg_catalog.pg_namespace
+      WHERE nspname NOT LIKE 'pg_%'
+        AND nspname <> 'information_schema'
+      ORDER BY nspname
+    `);
 
-    const client = await this.pool.connect();
-    try {
-      const result = await client.query(`
-        SELECT nspname as name,
-               pg_catalog.obj_description(n.oid, 'pg_namespace') as comment
-        FROM pg_catalog.pg_namespace n
-        WHERE nspname NOT LIKE 'pg_%'
-          AND nspname != 'information_schema'
-        ORDER BY nspname
-      `);
-
-      return result.rows.map((row) => ({
-        name: row.name,
-        comment: row.comment || undefined,
-      }));
-    } finally {
-      client.release();
-    }
+    return result.rows.map((row) => ({ name: row.name }));
   }
 
-  async getTables(conn: Connection, schema: string): Promise<TableInfo[]> {
-    if (!this.pool) {
-      throw new MaitreError(
-        MaitreErrorCode.CONNECTION_FAILED,
-        'PostgreSQL connection not established',
-        this.dialect,
-      );
-    }
+  /** List tables/views with optional schema filtering. */
+  async getTables(conn: Connection, schema?: string): Promise<TableInfo[]> {
+    const result = await this.getPool(conn).query<{
+      schema_name: string;
+      table_name: string;
+      table_type: string;
+      row_estimate: string | number | null;
+    }>(`
+      SELECT
+        t.table_schema AS schema_name,
+        t.table_name,
+        t.table_type,
+        c.reltuples::bigint AS row_estimate
+      FROM information_schema.tables t
+      LEFT JOIN pg_catalog.pg_namespace n
+        ON n.nspname = t.table_schema
+      LEFT JOIN pg_catalog.pg_class c
+        ON c.relname = t.table_name
+       AND c.relnamespace = n.oid
+      WHERE t.table_schema NOT IN ('pg_catalog', 'information_schema')
+        AND ($1::text IS NULL OR t.table_schema = $1)
+      ORDER BY t.table_schema, t.table_name
+    `, [schema ?? null]);
 
-    const client = await this.pool.connect();
-    try {
-      const result = await client.query(`
-        SELECT t.table_name as name,
-               t.table_type as type,
-               pg_catalog.obj_description(c.oid, 'pg_class') as comment,
-               (SELECT COUNT(*) FROM information_schema.columns 
-                WHERE table_schema = $1 AND table_name = t.table_name) as column_count
-        FROM information_schema.tables t
-        JOIN pg_catalog.pg_class c ON c.relname = t.table_name
-        JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
-        WHERE t.table_schema = $1
-          AND t.table_name NOT LIKE 'pg_%'
-          AND t.table_name NOT LIKE 'sql_%'
-        ORDER BY t.table_name
-      `, [schema]);
-
-      return result.rows.map((row) => ({
-        name: row.name,
-        type: row.type === 'VIEW' ? 'view' : 'table',
-        comment: row.comment || undefined,
-        columnCount: parseInt(row.column_count),
-      }));
-    } finally {
-      client.release();
-    }
+    return result.rows.map((row) => ({
+      schema: row.schema_name,
+      name: row.table_name,
+      type: row.table_type === 'VIEW' ? 'view' : 'table',
+      rowCountEstimate: parseNullableNumber(row.row_estimate),
+    }));
   }
 
+  /** List columns with PK/nullability/default metadata. */
   async getColumns(conn: Connection, schema: string, table: string): Promise<ColumnInfo[]> {
-    if (!this.pool) {
-      throw new MaitreError(
-        MaitreErrorCode.CONNECTION_FAILED,
-        'PostgreSQL connection not established',
-        this.dialect,
-      );
-    }
+    const result = await this.getPool(conn).query<{
+      column_name: string;
+      native_type: string;
+      is_nullable: string;
+      column_default: string | null;
+      is_primary_key: boolean;
+      comment: string | null;
+    }>(`
+      WITH pk_columns AS (
+        SELECT kcu.table_schema, kcu.table_name, kcu.column_name
+        FROM information_schema.table_constraints tc
+        JOIN information_schema.key_column_usage kcu
+          ON tc.constraint_name = kcu.constraint_name
+         AND tc.table_schema = kcu.table_schema
+         AND tc.table_name = kcu.table_name
+        WHERE tc.constraint_type = 'PRIMARY KEY'
+      )
+      SELECT
+        c.column_name,
+        c.udt_name AS native_type,
+        c.is_nullable,
+        c.column_default,
+        COALESCE(pk.column_name IS NOT NULL, false) AS is_primary_key,
+        pgd.description AS comment
+      FROM information_schema.columns c
+      LEFT JOIN pk_columns pk
+        ON pk.table_schema = c.table_schema
+       AND pk.table_name = c.table_name
+       AND pk.column_name = c.column_name
+      LEFT JOIN pg_catalog.pg_namespace ns
+        ON ns.nspname = c.table_schema
+      LEFT JOIN pg_catalog.pg_class cls
+        ON cls.relname = c.table_name
+       AND cls.relnamespace = ns.oid
+      LEFT JOIN pg_catalog.pg_attribute a
+        ON a.attrelid = cls.oid
+       AND a.attname = c.column_name
+      LEFT JOIN pg_catalog.pg_description pgd
+        ON pgd.objoid = cls.oid
+       AND pgd.objsubid = a.attnum
+      WHERE c.table_schema = $1
+        AND c.table_name = $2
+      ORDER BY c.ordinal_position
+    `, [schema, table]);
 
-    const client = await this.pool.connect();
-    try {
-      const result = await client.query(`
-        SELECT column_name as name,
-               data_type as type,
-               is_nullable = 'YES' as nullable,
-               column_default as default_value,
-               character_maximum_length as max_length,
-               numeric_precision as precision,
-               numeric_scale as scale,
-               pg_catalog.col_description(c.oid, a.attnum) as comment
-        FROM information_schema.columns c
-        JOIN pg_catalog.pg_class cls ON cls.relname = c.table_name
-        JOIN pg_catalog.pg_namespace n ON n.oid = cls.relnamespace
-        JOIN pg_catalog.pg_attribute a ON a.attrelid = cls.oid AND a.attname = c.column_name
-        WHERE c.table_schema = $1 AND c.table_name = $2
-          AND a.attnum > 0  -- exclude system columns
-        ORDER BY ordinal_position
-      `, [schema, table]);
-
-      return result.rows.map((row) => ({
-        name: row.name,
-        type: row.type,
-        nullable: row.nullable,
-        defaultValue: row.default_value || undefined,
-        maxLength: row.max_length ? parseInt(row.max_length) : undefined,
-        precision: row.precision ? parseInt(row.precision) : undefined,
-        scale: row.scale ? parseInt(row.scale) : undefined,
-        comment: row.comment || undefined,
-        maitreType: this.mapNativeType(row.type),
-      }));
-    } finally {
-      client.release();
-    }
+    return result.rows.map((row) => ({
+      schema,
+      table,
+      name: row.column_name,
+      nativeType: row.native_type,
+      type: this.mapNativeType(row.native_type),
+      nullable: row.is_nullable === 'YES',
+      defaultValue: row.column_default ?? undefined,
+      isPrimaryKey: row.is_primary_key,
+      comment: row.comment ?? undefined,
+    }));
   }
 
+  /** List indexes and ordered index columns for a table. */
   async getIndexes(conn: Connection, schema: string, table: string): Promise<IndexInfo[]> {
-    if (!this.pool) {
-      throw new MaitreError(
-        MaitreErrorCode.CONNECTION_FAILED,
-        'PostgreSQL connection not established',
-        this.dialect,
-      );
-    }
+    const result = await this.getPool(conn).query<{
+      index_name: string;
+      is_primary: boolean;
+      is_unique: boolean;
+      columns: string[] | null;
+    }>(`
+      SELECT
+        i.relname AS index_name,
+        idx.indisprimary AS is_primary,
+        idx.indisunique AS is_unique,
+        array_remove(array_agg(a.attname ORDER BY ord.ord), NULL) AS columns
+      FROM pg_catalog.pg_index idx
+      JOIN pg_catalog.pg_class t
+        ON t.oid = idx.indrelid
+      JOIN pg_catalog.pg_namespace n
+        ON n.oid = t.relnamespace
+      JOIN pg_catalog.pg_class i
+        ON i.oid = idx.indexrelid
+      LEFT JOIN LATERAL unnest(idx.indkey) WITH ORDINALITY AS ord(attnum, ord)
+        ON true
+      LEFT JOIN pg_catalog.pg_attribute a
+        ON a.attrelid = t.oid
+       AND a.attnum = ord.attnum
+      WHERE n.nspname = $1
+        AND t.relname = $2
+        AND idx.indisvalid
+      GROUP BY i.relname, idx.indisprimary, idx.indisunique
+      ORDER BY i.relname
+    `, [schema, table]);
 
-    const client = await this.pool.connect();
-    try {
-      const result = await client.query(`
-        SELECT i.relname as name,
-               a.amname as type,
-               idx.indisprimary as is_primary,
-               idx.indisunique as is_unique,
-               pg_get_indexdef(idx.indexrelid) as definition
-        FROM pg_catalog.pg_index idx
-        JOIN pg_catalog.pg_class i ON i.oid = idx.indexrelid
-        JOIN pg_catalog.pg_class t ON t.oid = idx.indrelid
-        JOIN pg_catalog.pg_namespace n ON n.oid = t.relnamespace
-        JOIN pg_catalog.pg_am a ON a.oid = i.relam
-        WHERE n.nspname = $1 AND t.relname = $2
-          AND idx.indisvalid
-        ORDER BY i.relname
-      `, [schema, table]);
-
-      return result.rows.map((row) => ({
-        name: row.name,
-        type: row.type,
-        isPrimary: row.is_primary,
-        isUnique: row.is_unique,
-        definition: row.definition,
-        columns: this.extractIndexColumns(row.definition),
-      }));
-    } finally {
-      client.release();
-    }
+    return result.rows.map((row) => ({
+      schema,
+      table,
+      name: row.index_name,
+      columns: row.columns ?? [],
+      unique: row.is_unique,
+      primary: row.is_primary,
+    }));
   }
 
-  async getFunctions(conn: Connection, schema: string): Promise<FunctionInfo[]> {
-    if (!this.pool) {
-      throw new MaitreError(
-        MaitreErrorCode.CONNECTION_FAILED,
-        'PostgreSQL connection not established',
-        this.dialect,
-      );
-    }
+  /** List SQL functions. */
+  async getFunctions(conn: Connection, schema?: string): Promise<FunctionInfo[]> {
+    const result = await this.getPool(conn).query<{
+      schema_name: string;
+      name: string;
+      return_type: string;
+      arguments: string;
+      language: string;
+    }>(`
+      SELECT
+        n.nspname AS schema_name,
+        p.proname AS name,
+        pg_catalog.pg_get_function_result(p.oid) AS return_type,
+        pg_catalog.pg_get_function_arguments(p.oid) AS arguments,
+        l.lanname AS language
+      FROM pg_catalog.pg_proc p
+      JOIN pg_catalog.pg_namespace n
+        ON n.oid = p.pronamespace
+      JOIN pg_catalog.pg_language l
+        ON l.oid = p.prolang
+      WHERE p.prokind = 'f'
+        AND n.nspname NOT IN ('pg_catalog', 'information_schema')
+        AND ($1::text IS NULL OR n.nspname = $1)
+      ORDER BY n.nspname, p.proname
+    `, [schema ?? null]);
 
-    const client = await this.pool.connect();
-    try {
-      const result = await client.query(`
-        SELECT p.proname as name,
-               pg_catalog.pg_get_function_result(p.oid) as return_type,
-               pg_catalog.pg_get_function_arguments(p.oid) as arguments,
-               pg_catalog.obj_description(p.oid, 'pg_proc') as comment,
-               l.lanname as language
-        FROM pg_catalog.pg_proc p
-        JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
-        JOIN pg_catalog.pg_language l ON l.oid = p.prolang
-        WHERE n.nspname = $1
-          AND p.proname NOT LIKE 'pg_%'
-          AND p.proname NOT LIKE 'sql_%'
-        ORDER BY p.proname
-      `, [schema]);
-
-      return result.rows.map((row) => ({
-        name: row.name,
-        returnType: row.return_type,
-        arguments: row.arguments,
-        comment: row.comment || undefined,
-        language: row.language,
-      }));
-    } finally {
-      client.release();
-    }
+    return result.rows.map((row) => ({
+      schema: row.schema_name,
+      name: row.name,
+      returnType: row.return_type,
+      arguments: row.arguments,
+      language: row.language,
+    }));
   }
 
-  async getProcedures(conn: Connection, schema: string): Promise<ProcedureInfo[]> {
-    if (!this.pool) {
-      throw new MaitreError(
-        MaitreErrorCode.CONNECTION_FAILED,
-        'PostgreSQL connection not established',
-        this.dialect,
-      );
-    }
+  /** List stored procedures. */
+  async getProcedures(conn: Connection, schema?: string): Promise<ProcedureInfo[]> {
+    const result = await this.getPool(conn).query<{
+      schema_name: string;
+      name: string;
+      arguments: string;
+      language: string;
+    }>(`
+      SELECT
+        n.nspname AS schema_name,
+        p.proname AS name,
+        pg_catalog.pg_get_function_arguments(p.oid) AS arguments,
+        l.lanname AS language
+      FROM pg_catalog.pg_proc p
+      JOIN pg_catalog.pg_namespace n
+        ON n.oid = p.pronamespace
+      JOIN pg_catalog.pg_language l
+        ON l.oid = p.prolang
+      WHERE p.prokind = 'p'
+        AND n.nspname NOT IN ('pg_catalog', 'information_schema')
+        AND ($1::text IS NULL OR n.nspname = $1)
+      ORDER BY n.nspname, p.proname
+    `, [schema ?? null]);
 
-    const client = await this.pool.connect();
-    try {
-      const result = await client.query(`
-        SELECT p.proname as name,
-               pg_catalog.pg_get_function_arguments(p.oid) as arguments,
-               pg_catalog.obj_description(p.oid, 'pg_proc') as comment,
-               l.lanname as language
-        FROM pg_catalog.pg_proc p
-        JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
-        JOIN pg_catalog.pg_language l ON l.oid = p.prolang
-        WHERE n.nspname = $1
-          AND p.prokind = 'p'  -- procedure
-          AND p.proname NOT LIKE 'pg_%'
-          AND p.proname NOT LIKE 'sql_%'
-        ORDER BY p.proname
-      `, [schema]);
-
-      return result.rows.map((row) => ({
-        name: row.name,
-        arguments: row.arguments,
-        comment: row.comment || undefined,
-        language: row.language,
-      }));
-    } finally {
-      client.release();
-    }
+    return result.rows.map((row) => ({
+      schema: row.schema_name,
+      name: row.name,
+      arguments: row.arguments,
+      language: row.language,
+    }));
   }
 
+  /** List roles/users visible to the caller. */
   async getRoles(conn: Connection): Promise<RoleInfo[]> {
-    if (!this.pool) {
-      throw new MaitreError(
-        MaitreErrorCode.CONNECTION_FAILED,
-        'PostgreSQL connection not established',
-        this.dialect,
-      );
-    }
+    const result = await this.getPool(conn).query<{
+      name: string;
+      superuser: boolean;
+      login: boolean;
+    }>(`
+      SELECT
+        rolname AS name,
+        rolsuper AS superuser,
+        rolcanlogin AS login
+      FROM pg_catalog.pg_roles
+      WHERE rolname NOT LIKE 'pg_%'
+      ORDER BY rolname
+    `);
 
-    const client = await this.pool.connect();
-    try {
-      const result = await client.query(`
-        SELECT rolname as name,
-               rolsuper as is_superuser,
-               rolinherit as can_inherit,
-               rolcreaterole as can_create_roles,
-               rolcreatedb as can_create_databases,
-               rolcanlogin as can_login,
-               rolreplication as can_replicate,
-               pg_catalog.shobj_description(r.oid, 'pg_authid') as comment
-        FROM pg_catalog.pg_roles r
-        WHERE rolname NOT LIKE 'pg_%'
-        ORDER BY rolname
-      `);
-
-      return result.rows.map((row) => ({
-        name: row.name,
-        isSuperuser: row.is_superuser,
-        canInherit: row.can_inherit,
-        canCreateRoles: row.can_create_roles,
-        canCreateDatabases: row.can_create_databases,
-        canLogin: row.can_login,
-        canReplicate: row.can_replicate,
-        comment: row.comment || undefined,
-      }));
-    } finally {
-      client.release();
-    }
+    return result.rows.map((row) => ({
+      name: row.name,
+      superuser: row.superuser,
+      login: row.login,
+    }));
   }
 
+  /** List table grants grouped as one row per role/schema/table. */
   async getGrants(conn: Connection, role?: string): Promise<GrantInfo[]> {
-    if (!this.pool) {
-      throw new MaitreError(
-        MaitreErrorCode.CONNECTION_FAILED,
-        'PostgreSQL connection not established',
-        this.dialect,
-      );
-    }
+    const result = await this.getPool(conn).query<{
+      role_name: string;
+      schema_name: string;
+      table_name: string;
+      privilege_type: string;
+    }>(`
+      SELECT
+        grantee AS role_name,
+        table_schema AS schema_name,
+        table_name,
+        privilege_type
+      FROM information_schema.role_table_grants
+      WHERE ($1::text IS NULL OR grantee = $1)
+      ORDER BY grantee, table_schema, table_name, privilege_type
+    `, [role ?? null]);
 
-    const client = await this.pool.connect();
-    try {
-      let query = `
-        SELECT grantee, privilege_type, table_name, schema_name, is_grantable
-        FROM information_schema.role_table_grants
-      `;
+    const grouped = new Map<string, GrantInfo>();
 
-      if (role) {
-        query += ` WHERE grantee = $1`;
+    for (const row of result.rows) {
+      const key = `${row.role_name}\u0000${row.schema_name}\u0000${row.table_name}`;
+      let grant = grouped.get(key);
+      if (!grant) {
+        grant = {
+          role: row.role_name,
+          schema: row.schema_name,
+          table: row.table_name,
+          privileges: [],
+        };
+        grouped.set(key, grant);
       }
-
-      query += ` ORDER BY grantee, schema_name, table_name, privilege_type`;
-
-      const result = await client.query(query, role ? [role] : []);
-
-      return result.rows.map((row) => ({
-        grantee: row.grantee,
-        privilege: row.privilege_type,
-        table: row.table_name,
-        schema: row.schema_name,
-        isGrantable: row.is_grantable,
-      }));
-    } finally {
-      client.release();
+      grant.privileges.push(row.privilege_type);
     }
+
+    return [...grouped.values()];
   }
 
-  // ============================================================================
-  // Query Tracing & Profiling
-  // ============================================================================
-
+  /** Run EXPLAIN and normalize the returned plan tree. */
   async explain(conn: Connection, query: string, options?: ExplainOptions): Promise<ExplainResult> {
-    if (!this.pool) {
-      throw new MaitreError(
-        MaitreErrorCode.CONNECTION_FAILED,
-        'PostgreSQL connection not established',
-        this.dialect,
-      );
-    }
-
+    const pool = this.getPool(conn);
     const analyze = options?.analyze ?? false;
-    const buffers = options?.buffers ?? false;
-    const format = options?.format || 'json';
+    const format = options?.format ?? 'json';
 
-    let explainQuery = `EXPLAIN (FORMAT ${format.toUpperCase()}`;
-    if (analyze) explainQuery += ', ANALYZE';
-    if (buffers) explainQuery += ', BUFFERS';
-    explainQuery += `) ${query}`;
-
-    const client = await this.pool.connect();
-    try {
-      const result = await client.query(explainQuery);
-      const rawPlan = result.rows[0][format === 'json' ? 'QUERY PLAN' : 'QUERY PLAN'];
-
-      // Parse and normalize the plan
-      const normalized = this.normalizeExplainPlan(rawPlan, format);
+    if (format === 'json') {
+      const sql = `EXPLAIN (${analyze ? 'ANALYZE, ' : ''}FORMAT JSON) ${query}`;
+      const result = await pool.query<{ 'QUERY PLAN': unknown }>(sql);
+      const rawPlan = result.rows[0]?.['QUERY PLAN'];
+      const plan = normalizePgJsonPlan(rawPlan);
+      const warnings = collectPlanWarnings(plan);
 
       return {
         dialect: this.dialect,
         rawPlan,
-        plan: normalized,
-        totalTimeMs: normalized.timeMs?.actual,
-        rowsEstimated: normalized.rows?.estimated,
-        rowsActual: normalized.rows?.actual,
-        warnings: this.extractExplainWarnings(normalized),
+        plan,
+        totalTimeMs: plan.timeMs?.actual,
+        rowsEstimated: plan.rows?.estimated,
+        rowsActual: plan.rows?.actual,
+        warnings,
       };
-    } finally {
-      client.release();
     }
+
+    const sql = `EXPLAIN (${analyze ? 'ANALYZE, ' : ''}FORMAT TEXT) ${query}`;
+    const result = await pool.query<{ 'QUERY PLAN': string }>(sql);
+    const lines = result.rows.map((row) => row['QUERY PLAN']);
+
+    return {
+      dialect: this.dialect,
+      rawPlan: lines,
+      plan: {
+        operation: 'EXPLAIN',
+        children: lines.map((line) => ({ operation: line.trim(), children: [], properties: {} })),
+        properties: {},
+      },
+      warnings: lines
+        .filter((line) => line.toLowerCase().includes('seq scan'))
+        .map((line) => `Sequential scan detected: ${line.trim()}`),
+    };
   }
 
-  // ============================================================================
-  // Type Mapping
-  // ============================================================================
-
+  /** Map PostgreSQL native type names to the shared type system. */
   mapNativeType(nativeType: string): MaitreType {
     const type = nativeType.toLowerCase();
-    
-    if (type.includes('int') || type.includes('serial')) return 'integer';
-    if (type.includes('float') || type.includes('double') || type.includes('real')) return 'float';
-    if (type.includes('numeric') || type.includes('decimal') || type.includes('money')) return 'decimal';
+
+    if (matches(type, ['smallint', 'integer', 'bigint', 'int2', 'int4', 'int8', 'serial', 'bigserial'])) return 'integer';
+    if (matches(type, ['real', 'double precision', 'float4', 'float8'])) return 'float';
+    if (matches(type, ['numeric', 'decimal', 'money'])) return 'decimal';
     if (type.includes('bool')) return 'boolean';
-    if (type.includes('date')) return 'date';
-    if (type.includes('time')) return 'time';
+
     if (type.includes('timestamp')) return 'timestamp';
-    if (type.includes('json') || type.includes('jsonb')) return 'json';
-    if (type.includes('bytea') || type.includes('blob')) return 'binary';
-    if (type.includes('uuid')) return 'uuid';
-    if (type.includes('interval')) return 'interval';
-    if (type.includes('geometry') || type.includes('geography')) return 'geometry';
-    
-    // Default to string for text, varchar, char, etc.
-    return 'string';
+    if (type === 'date') return 'date';
+    if (type.startsWith('time')) return 'time';
+
+    if (matches(type, ['json', 'jsonb'])) return 'json';
+    if (type === 'bytea') return 'binary';
+    if (type === 'uuid') return 'uuid';
+    if (type === 'interval') return 'interval';
+    if (matches(type, ['geometry', 'geography'])) return 'geometry';
+    if (type.endsWith('[]') || type === '_text' || type.startsWith('_')) return 'array';
+    if (matches(type, ['text', 'varchar', 'character varying', 'char', 'character', 'citext', 'name'])) return 'string';
+
+    return 'unknown';
   }
 
-  // ============================================================================
-  // Capabilities
-  // ============================================================================
-
+  /** Expose PostgreSQL feature flags for CLI/runtime gating. */
   capabilities(): DriverCapabilities {
     return {
       transactions: true,
@@ -608,163 +528,248 @@ export class PostgresDriver implements DriverAdapter {
     };
   }
 
-  // ============================================================================
-  // Private Helpers
-  // ============================================================================
-
-  private buildPoolConfig(config: ConnectionConfig) {
-    const poolConfig: any = {
-      host: config.host,
-      port: config.port || 5432,
-      user: config.user,
-      database: config.database,
-      password: config.password, // Will be resolved from credential store by caller
-      ssl: config.ssl,
-      max: config.options?.pool?.max || 10,
-      idleTimeoutMillis: config.options?.pool?.idleTimeoutMs || 30000,
-      connectionTimeoutMillis: config.options?.pool?.connectTimeoutMs || 5000,
-    };
-
-    // Apply SSL configuration
-    if (config.ssl) {
-      if (typeof config.ssl === 'object') {
-        poolConfig.ssl = {
-          rejectUnauthorized: config.ssl.rejectUnauthorized !== false,
-          ...config.ssl,
-        };
-      } else if (config.ssl === true) {
-        poolConfig.ssl = { rejectUnauthorized: true };
-      }
+  private assertDialect(type: ConnectionConfig['type']): asserts type is 'postgresql' {
+    if (type !== 'postgresql') {
+      throw new MaitreError(
+        MaitreErrorCode.CONFIG_ERROR,
+        `PostgresDriver only supports postgresql connections (received: ${type})`,
+        this.dialect,
+      );
     }
-
-    // Apply connection options
-    if (config.options?.applicationName) {
-      poolConfig.application_name = config.options.applicationName;
-    }
-    if (config.options?.statementTimeout) {
-      poolConfig.statement_timeout = config.options.statementTimeout;
-    }
-
-    return poolConfig;
   }
 
-  private mapQueryResult(result: PgQueryResult, durationMs?: number): QueryResult {
+  private getPool(conn: Connection): Pool {
+    if (!conn.native || typeof conn.native !== 'object') {
+      throw new MaitreError(
+        MaitreErrorCode.CONNECTION_FAILED,
+        'PostgreSQL connection not initialized',
+        this.dialect,
+      );
+    }
+
+    const pool = conn.native as Pool;
+    if (typeof pool.query !== 'function' || typeof pool.connect !== 'function') {
+      throw new MaitreError(
+        MaitreErrorCode.CONNECTION_FAILED,
+        'Invalid PostgreSQL connection handle',
+        this.dialect,
+      );
+    }
+
+    return pool;
+  }
+
+  private toPoolConfig(config: ConnectionConfig): PoolConfig {
+    const options = (config.options ?? {}) as PostgresOptions;
+
+    return {
+      host: config.host,
+      port: config.port,
+      user: config.user,
+      password: config.password,
+      database: config.database,
+      ssl: toPgSsl(config.ssl),
+      connectionTimeoutMillis: options.connectTimeout,
+      application_name: options.applicationName,
+      statement_timeout: options.statementTimeout,
+    };
+  }
+
+  private toQueryResult(result: PgQueryResult<QueryResultRow>, durationMs: number): QueryResult {
     return {
       rows: result.rows.map((row) => this.mapRow(row)),
-      fields: result.fields.map((field) => ({
-        name: field.name,
-        type: field.dataTypeID,
-        maitreType: this.mapNativeType(field.dataTypeName),
-      })),
-      rowCount: result.rowCount || 0,
+      fields: (result.fields ?? []).map((field) => {
+        const nativeType = postgresNativeTypeFromOid(field);
+        return {
+          name: field.name,
+          nativeType,
+          type: this.mapNativeType(nativeType),
+        };
+      }),
+      rowCount: result.rowCount ?? result.rows.length,
       durationMs,
     };
   }
 
-  private mapRow(row: any): Row {
-    const mapped: Row = {};
+  private mapRow(row: QueryResultRow): Record<string, unknown> {
+    const mapped: Record<string, unknown> = {};
+
     for (const [key, value] of Object.entries(row)) {
-      // Convert PostgreSQL-specific types to JS-friendly formats
-      if (value instanceof Buffer) {
-        mapped[key] = value.toString('hex');
-      } else if (typeof value === 'bigint') {
+      if (typeof value === 'bigint') {
         mapped[key] = value.toString();
+      } else if (value instanceof Buffer) {
+        mapped[key] = value.toString('hex');
       } else {
         mapped[key] = value;
       }
     }
+
     return mapped;
   }
+}
 
-  private extractIndexColumns(definition: string): string[] {
-    // Extract column names from index definition like:
-    // CREATE INDEX idx_name ON table (col1, col2)
-    const match = /ON\s+\w+\s*\(([^)]+)\)/i.exec(definition);
-    if (!match) return [];
-    
-    return match[1].split(',').map((col) => col.trim());
-  }
+function toPgSsl(ssl: ConnectionConfig['ssl']): PoolConfig['ssl'] {
+  if (ssl === undefined || ssl === false) return undefined;
+  if (ssl === true) return { rejectUnauthorized: true };
 
-  private normalizeExplainPlan(rawPlan: any, format: string): any {
-    if (format === 'json') {
-      return this.normalizeJsonPlan(rawPlan);
-    }
-    
-    // For text format, return as-is with some metadata
-    return {
-      operation: 'Plan',
-      properties: {
-        text: rawPlan,
-      },
-      children: [],
-    };
-  }
+  return {
+    ca: ssl.ca,
+    cert: ssl.cert,
+    key: ssl.key,
+    rejectUnauthorized: ssl.rejectUnauthorized ?? (ssl.mode === 'verify-ca' || ssl.mode === 'verify-full'),
+  };
+}
 
-  private normalizeJsonPlan(plan: any): any {
-    // PostgreSQL JSON explain returns an array of nodes
-    if (Array.isArray(plan)) {
-      if (plan.length === 0) {
-        return { operation: 'Empty Plan', children: [] };
-      }
-      
-      // The first node is typically the root
-      return this.normalizePlanNode(plan[0]);
-    }
-    
-    return this.normalizePlanNode(plan);
-  }
-
-  private normalizePlanNode(node: any): any {
-    const normalized: any = {
-      operation: node['Node Type'] || 'Unknown',
-      properties: { ...node },
-      children: [],
-    };
-
-    // Extract common properties
-    if (node['Actual Total Time']) {
-      normalized.timeMs = {
-        actual: parseFloat(node['Actual Total Time']),
-      };
-    }
-    
-    if (node['Planned Rows'] || node['Actual Rows']) {
-      normalized.rows = {
-        estimated: node['Planned Rows'] ? parseFloat(node['Planned Rows']) : undefined,
-        actual: node['Actual Rows'] ? parseFloat(node['Actual Rows']) : undefined,
-      };
-    }
-
-    // Recursively normalize children
-    if (node.Plans) {
-      normalized.children = node.Plans.map((child: any) => this.normalizePlanNode(child));
-    }
-
-    delete normalized.properties['Node Type'];
-    delete normalized.properties.Plans;
-
-    return normalized;
-  }
-
-  private extractExplainWarnings(plan: any): string[] {
-    const warnings: string[] = [];
-    
-    const traverse = (node: any) => {
-      if (node.properties?.['Warning']) {
-        warnings.push(node.properties['Warning']);
-      }
-      
-      // Check for sequential scans on large tables
-      if (node.operation === 'Seq Scan' && node.rows?.estimated > 10000) {
-        warnings.push(`Sequential scan on large table (estimated ${node.rows.estimated} rows)`);
-      }
-
-      for (const child of node.children || []) {
-        traverse(child);
-      }
-    };
-
-    traverse(plan);
-    return warnings;
+function toPostgresIsolationLevel(level: NonNullable<TransactionOptions['isolationLevel']>): string {
+  switch (level) {
+    case 'read-uncommitted':
+      return 'READ UNCOMMITTED';
+    case 'read-committed':
+      return 'READ COMMITTED';
+    case 'repeatable-read':
+      return 'REPEATABLE READ';
+    case 'serializable':
+      return 'SERIALIZABLE';
   }
 }
+
+function parseNullableNumber(value: string | number | null): number | undefined {
+  if (value === null || value === undefined) return undefined;
+  const parsed = typeof value === 'number' ? value : Number.parseInt(value, 10);
+  return Number.isNaN(parsed) ? undefined : parsed;
+}
+
+function normalizePgJsonPlan(rawPlan: unknown): PlanNode {
+  let parsed = rawPlan;
+
+  if (typeof parsed === 'string') {
+    try {
+      parsed = JSON.parse(parsed) as unknown;
+    } catch {
+      return {
+        operation: 'EXPLAIN (raw)',
+        children: [],
+        properties: { raw: parsed },
+      };
+    }
+  }
+
+  if (!Array.isArray(parsed) || parsed.length === 0) {
+    return {
+      operation: 'EXPLAIN',
+      children: [],
+      properties: { raw: parsed },
+    };
+  }
+
+  const first = parsed[0] as Record<string, unknown>;
+  const node = (first['Plan'] ?? first) as Record<string, unknown>;
+  return toPlanNode(node);
+}
+
+function toPlanNode(node: Record<string, unknown>): PlanNode {
+  const plans = Array.isArray(node['Plans']) ? node['Plans'] as Array<Record<string, unknown>> : [];
+
+  const costStartup = toNumber(node['Startup Cost']);
+  const costTotal = toNumber(node['Total Cost']);
+  const plannedRows = toNumber(node['Plan Rows']);
+  const actualRows = toNumber(node['Actual Rows']);
+  const actualTime = toNumber(node['Actual Total Time']);
+
+  return {
+    operation: String(node['Node Type'] ?? 'Unknown'),
+    table: typeof node['Relation Name'] === 'string' ? node['Relation Name'] : undefined,
+    index: typeof node['Index Name'] === 'string' ? node['Index Name'] : undefined,
+    cost: costStartup !== undefined || costTotal !== undefined
+      ? {
+          startup: costStartup ?? 0,
+          total: costTotal ?? 0,
+        }
+      : undefined,
+    rows: plannedRows !== undefined || actualRows !== undefined
+      ? {
+          estimated: plannedRows ?? 0,
+          actual: actualRows,
+        }
+      : undefined,
+    timeMs: actualTime !== undefined
+      ? { actual: actualTime }
+      : undefined,
+    children: plans.map((child) => toPlanNode(child)),
+    properties: omitKeys(node, ['Plans']),
+  };
+}
+
+function collectPlanWarnings(root: PlanNode): string[] {
+  const warnings: string[] = [];
+
+  const walk = (node: PlanNode): void => {
+    const op = node.operation.toLowerCase();
+    if (op.includes('seq scan')) {
+      warnings.push(
+        node.table
+          ? `Sequential scan on ${node.table}`
+          : 'Sequential scan detected',
+      );
+    }
+
+    for (const child of node.children) {
+      walk(child);
+    }
+  };
+
+  walk(root);
+  return warnings;
+}
+
+function matches(value: string, patterns: string[]): boolean {
+  return patterns.some((pattern) => value === pattern || value.includes(pattern));
+}
+
+function postgresNativeTypeFromOid(field: FieldDef): string {
+  const oid = field.dataTypeID;
+
+  if (oid === pgTypes.builtins.BOOL) return 'boolean';
+  if (oid === pgTypes.builtins.INT2) return 'smallint';
+  if (oid === pgTypes.builtins.INT4) return 'integer';
+  if (oid === pgTypes.builtins.INT8) return 'bigint';
+  if (oid === pgTypes.builtins.FLOAT4) return 'real';
+  if (oid === pgTypes.builtins.FLOAT8) return 'double precision';
+  if (oid === pgTypes.builtins.NUMERIC) return 'numeric';
+  if (oid === pgTypes.builtins.DATE) return 'date';
+  if (oid === pgTypes.builtins.TIME) return 'time';
+  if (oid === pgTypes.builtins.TIMESTAMP) return 'timestamp';
+  if (oid === pgTypes.builtins.TIMESTAMPTZ) return 'timestamptz';
+  if (oid === pgTypes.builtins.UUID) return 'uuid';
+  if (oid === pgTypes.builtins.JSON || oid === pgTypes.builtins.JSONB) return 'json';
+  if (oid === pgTypes.builtins.BYTEA) return 'bytea';
+  if (oid === pgTypes.builtins.VARCHAR) return 'varchar';
+  if (oid === pgTypes.builtins.TEXT) return 'text';
+
+  return `oid:${oid}`;
+}
+
+function toNumber(value: unknown): number | undefined {
+  if (typeof value === 'number') return Number.isFinite(value) ? value : undefined;
+  if (typeof value === 'string') {
+    const parsed = Number.parseFloat(value);
+    return Number.isFinite(parsed) ? parsed : undefined;
+  }
+  return undefined;
+}
+
+function omitKeys(source: Record<string, unknown>, keys: string[]): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(source)) {
+    if (!keys.includes(key)) {
+      out[key] = value;
+    }
+  }
+  return out;
+}
+
+function toErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+export default PostgresDriver;
