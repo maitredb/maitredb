@@ -288,11 +288,19 @@ export interface FieldInfo {
   nullable?: boolean;
 }
 
+export interface StreamOptions {
+  /** Number of rows per Arrow RecordBatch. Default: 10000. */
+  batchSize?: number;
+}
+
 export interface QueryResult {
   rows: Record<string, unknown>[];
   fields: FieldInfo[];
   rowCount: number;
   durationMs: number;
+  /** Arrow RecordBatch. Present for Arrow-native drivers; also attached by the
+   *  executor for JS-object drivers after conversion. Empty `rows` when set. */
+  batch?: import('apache-arrow').RecordBatch;
 }
 
 export interface SchemaInfo {
@@ -416,4 +424,6 @@ export interface DriverCapabilities {
   asyncExecution: boolean;
   embedded: boolean;
   costEstimate: boolean;
+  /** Driver implements streamBatches() and returns Arrow RecordBatch natively. */
+  arrowNative: boolean;
 }

@@ -3,6 +3,154 @@
 > Chronological record of all changes, improvements, and fixes.
 > Follows [Keep a Changelog](https://keepachangelog.com/) format.
 
+## [v0.3.0] — 2026-04-14
+
+### Added
+
+- **Arrow type foundations (Phase 0)**
+  - `apache-arrow ^18.0.0` added as dependency to `@maitredb/plugin-api` and `@maitredb/core`
+  - `StreamOptions` interface (`batchSize?: number`) added to `@maitredb/plugin-api`
+  - `QueryResult.batch?: RecordBatch` optional field — present for Arrow-native drivers and attached by the executor for JS-object drivers after conversion; `rows` is empty when `batch` is set
+  - `DriverCapabilities.arrowNative: boolean` — declares whether `streamBatches()` returns `RecordBatch` without JS-side conversion
+  - `streamBatches?()` optional method added to `DriverAdapter` contract — Arrow-native drivers implement it; the `QueryExecutor` prefers it over `stream()` when present
+
+- **Arrow utilities and executor updates — `@maitredb/core` (Phase 1)**
+  - `packages/core/src/arrow-utils.ts`: `rowsToRecordBatch(rows, fields)` converts JS object arrays to Arrow `RecordBatch` via `tableFromArrays`; `recordBatchToRows(batch)` materialises a batch to plain JS objects; `batchRows(source, fields, batchSize)` async generator buffers a row-stream into `RecordBatch` chunks; `maitreTypeToArrow(type)` maps `MaitreType` to Arrow `DataType`
+  - `packages/core/src/arrow-result.ts`: `ArrowResult` ergonomic wrapper — `column(name)` O(1) vector access; `rows()` Proxy-based lazy iterator that reads from column buffers without per-row allocation; `toObjects()` materialises all rows with a stderr warning above 10 000 rows
+  - `QueryExecutor.execute()` attaches an Arrow `RecordBatch` to results from non-Arrow drivers (best-effort; failures leave `batch` undefined)
+  - `QueryExecutor.stream()` now yields `AsyncIterable<RecordBatch>` — uses `streamBatches()` for Arrow-native drivers, wraps `stream()` + `batchRows()` for others; `batchSize` option added to `ExecutorOptions`
+  - `packages/core/src/formatters.ts` gains a `getRows()` helper that falls back to `recordBatchToRows(batch)` when `rows` is empty — all formatters transparently handle Arrow-native results
+  - `ArrowResult`, `rowsToRecordBatch`, `recordBatchToRows`, `batchRows` exported from `@maitredb/core` barrel
+  - Existing drivers (`driver-sqlite`, `driver-postgres`, `driver-mysql`, `driver-template`) gain `arrowNative: false` in `capabilities()`
+
+- **DuckDB driver — `@maitredb/driver-duckdb` (Workstream 3a)**
+  - New package `@maitredb/driver-duckdb@0.3.0` using `@duckdb/node-api`
+  - `execute()` SELECT path calls `runAndReadAll()` + `getRowObjectsJS()` then converts to Arrow batch; `rows` is always empty on success; writes (INSERT/UPDATE/DDL) use `conn.run()`
+  - `streamBatches()` uses DuckDB's native `conn.stream()` + `yieldRowObjectJs()` to chunk results into `RecordBatch`s of configurable `batchSize`; `stream()` compatibility shim iterates the batch column-by-column
+  - Full introspection: `getSchemas()` via `information_schema.schemata`; `getTables()` via `information_schema.tables`; `getColumns()` via `information_schema.columns`; `getIndexes()` via `duckdb_indexes()`; `getFunctions()` via `duckdb_functions()`; `getTypes()` via `duckdb_types()` returning `labels` column for enum values (not Arrow-converted to avoid list-column round-trip issues); `getProcedures()`/`getRoles()`/`getGrants()` return empty
+  - `beginTransaction()` runs `BEGIN`/`COMMIT`/`ROLLBACK`; `cancelQuery()` throws (DuckDB embedded has no cancellation)
+  - `explain()` with `EXPLAIN` / `EXPLAIN ANALYZE`
+  - Type mapping for all DuckDB types including `HUGEINT`, `INTERVAL`, composite types
+  - `capabilities()`: `arrowNative: true`, `embedded: true`, `transactions: true`, `costEstimate: true`
+  - Registered as `'duckdb'` in CLI `bootstrap.ts`; DSN parser handles `duckdb://` and `duckdb://:memory:`
+  - CLI `package.json` depends on `@maitredb/driver-duckdb: workspace:*`
+
+- **ClickHouse driver — `@maitredb/driver-clickhouse` (Workstream 3b)**
+  - New package `@maitredb/driver-clickhouse@0.3.0` using `@clickhouse/client`
+  - `connect()` uses `client.ping()` for validation; supports HTTP/HTTPS based on `config.ssl`
+  - `execute()` tries Arrow IPC format (`format: 'Arrow'`) first, falls back to JSONEachRow on failure; Arrow path parses IPC bytes via `tableFromIPC`; JSONEachRow path returns `rows` populated (no batch); DDL/write path uses `client.command()`
+  - `streamBatches()` tries `format: 'ArrowStream'` first and parses chunked IPC; falls back to `execute()` + batch conversion when ArrowStream unavailable
+  - `cancelQuery()` runs `KILL QUERY WHERE query_id = '...'`; `beginTransaction()` throws `TRANSACTION_NOT_SUPPORTED`
+  - Introspection: `getSchemas()` via `system.databases`; `getTables()` via `system.tables` with VIEW detection; `getColumns()` via `system.columns` with `is_in_primary_key` mapping; `getFunctions()` via `system.functions`; `getRoles()` via `system.roles`; `getGrants()` via `system.grants`; `getTypes()`/`getProcedures()`/`getIndexes()` return empty (ClickHouse uses built-in types / sort keys)
+  - Type mapping strips `Nullable(T)` and `LowCardinality(T)` wrappers before matching
+  - `capabilities()`: `arrowNative: true`, `roles: true`, `cancelQuery: true`, `transactions: false`, `embedded: false`
+  - Registered as `'clickhouse'` in CLI `bootstrap.ts`; DSN parser handles `clickhouse://`
+  - CLI `package.json` depends on `@maitredb/driver-clickhouse: workspace:*`
+
+- **Streaming maturity — `mdb query` (Workstream 3d)**
+  - `mdb query <conn> <sql> --stream` flag streams output with constant memory — one `RecordBatch` at a time via `executor.stream()`
+  - `--batch-size <n>` (default 10 000) controls rows per Arrow batch in streaming mode
+  - `--stream --format table` degrades to `ndjson` with a stderr warning (table format requires all rows)
+  - Streaming path shares the same `finally` block as `execute()` for connection release and resource cleanup
+
+### Tests
+
+- `packages/driver-duckdb/src/__tests__/duckdb-driver.test.ts` (18 tests): connect/disconnect lifecycle, SELECT returns `batch` with data and empty `rows`, DDL returns `rowCount: 0`, `streamBatches()` yields `RecordBatch`s with correct row counts and respects `batchSize`, `stream()` compat yields plain JS objects, transaction commit/rollback round-trips, `getSchemas`/`getTables`/`getColumns`/`getTypes` (ENUM labels), `mapNativeType` spot-checks across all categories, `capabilities()` flags, `explain()` non-empty plan
+- `packages/driver-clickhouse/src/__tests__/clickhouse-driver.test.ts` (20 tests, fully mocked — no real server): `connect()` URL/credentials, ping failure throws, `disconnect()` calls `close()`, `validateConnection()` true/false, DDL calls `command()` not `query()`, SELECT falls back to JSONEachRow when Arrow unavailable, `streamBatches()` falls back to `execute()` when ArrowStream fails, `cancelQuery()` sends `KILL QUERY`, `beginTransaction()` throws, `getSchemas`/`getTables`/`getColumns`/`getRoles` mapping, `mapNativeType` covers all categories + `Nullable()` + `LowCardinality()` unwrapping, `capabilities()` flags
+
+---
+
+## [v0.2.0] — 2026-04-13
+
+### Added
+
+- **Connection pooling (Workstream 2a)**
+  - `GenericPool<T>` in `@maitredb/core`: idle queue, active counter, wait queue with configurable `acquireTimeoutMs` and `maxWaitingClients`; idle timer destroys connections past `idleTimeoutMs`; maintains `min` idle connections; throws `POOL_EXHAUSTED` (1007) when queue is full
+  - `ConnectionManager` in `@maitredb/core`: pool-aware connection lifecycle manager; resolves config + credentials via `ConfigManager`; delegates to native pools for PostgreSQL/MySQL; uses `GenericPool` for drivers without native pooling; health-checks via `validateConnection()` on acquire with auto-reconnect for non-transactional connections
+  - `PoolConfig` type (`min`, `max`, `idleTimeoutMs`, `acquireTimeoutMs`, `maxWaitingClients`) added to `@maitredb/plugin-api`; wired into `ConnectionConfig` as `pool?`
+  - PostgreSQL `toPoolConfig()` reads `config.pool.*` → native `pg.Pool` options (`min`, `max`, `idleTimeoutMillis`, `connectionTimeoutMillis`)
+  - MySQL `toPoolOptions()` reads `config.pool.*` → native pool options (`connectionLimit`, `acquireTimeout`, `queueLimit`)
+  - CLI `bootstrap.ts` exposes `getConnectionManager()` singleton; `query`, `schema`, and `permissions` commands use `ConnectionManager` instead of manual `connect/disconnect`
+
+- **Caching layer — `@maitredb/cache` package (Workstream 2b)**
+  - `MemoryCache`: LRU wrapper around `lru-cache` v10+ with per-entry TTL, `invalidate(pattern: RegExp)`, and hit/miss stats
+  - `DiskCache`: SQLite-backed persistent cache via optional `better-sqlite3`; graceful no-op fallback when unavailable; lazy expiry cleanup; `cache(key, value, expires_at, created_at)` schema
+  - `CacheManager`: memory-first reads with disk promotion; 5-minute TTL for schema results, 2-minute TTL for permission results; `invalidateForConnection(connectionId, dialect, scope)` for targeted invalidation
+  - `CachedAdapter`: transparent proxy wrapping any `DriverAdapter`; intercepts all introspection methods (`getTables`, `getColumns`, `getIndexes`, `getFunctions`, `getProcedures`, `getTypes`, `getRoles`, `getGrants`); cache-check before inner call, cache-write on miss; all non-introspection methods (`execute`, `stream`, `connect`, etc.) pass through unchanged
+  - `buildCacheKey()` / `invalidationPattern()` utilities for consistent key formatting and pattern-based invalidation
+  - `QueryExecutor` DDL detection now calls `cache.invalidateForConnection()` with `'schema'` scope on DDL statements and `'permissions'` scope on GRANT/REVOKE
+  - CLI `bootstrap.ts` exposes `getCacheManager()` singleton; `ConnectionManager` wraps adapters in `CachedAdapter` when cache is enabled
+
+- **Full introspection commands (Workstream 2c)**
+  - `TypeInfo` type added to `@maitredb/plugin-api`; `getTypes(conn, schema?)` added to `DriverAdapter`; `userDefinedTypes` capability flag added to `DriverCapabilities`
+  - PostgreSQL `getTypes()` queries `pg_type` + `pg_namespace` + `pg_enum` for enums, composites, domains, and ranges; `userDefinedTypes: true`
+  - MySQL and SQLite `getTypes()` return empty arrays; `userDefinedTypes: false`
+  - `mdb schema <conn> functions` — calls `adapter.getFunctions()`, outputs name/returnType/arguments/language
+  - `mdb schema <conn> procedures` — calls `adapter.getProcedures()`, outputs name/arguments/language
+  - `mdb schema <conn> types` — calls `adapter.getTypes()`, outputs name/type/values/definition
+  - New `mdb permissions <conn> <action> [object]` command (`roles`, `grants`, `table-grants`); checks `capabilities().roles` before calling — exits with a clear message for unsupported drivers (e.g. SQLite)
+
+- **Query history (Workstream 2d)**
+  - `HistoryStore` in `@maitredb/core`: optional `better-sqlite3` backing with graceful no-op fallback; `history` table with indexes on `connection` and `timestamp`; `record()`, `query({ connection?, last?, since? })`, `maybeRotate(maxSizeMb)` (deletes oldest 20% when file exceeds limit)
+  - `QueryExecutor.execute()` records every execution to `HistoryStore` — success and error paths — including duration, rows affected/returned, error code/message; connections tagged `'production'` suppress params from history
+  - `mdb history [--connection <name>] [--last N] [--format <format>]` CLI command; displays timestamp, connection, dialect, query (truncated), duration, row count
+  - CLI `bootstrap.ts` exposes `getHistoryStore()` singleton
+  - History DB defaults to `~/.maitredb/history.db`
+
+- **Shared types in `@maitredb/core`**
+  - New `packages/core/src/types.ts`: `AuditEntry`, `CacheOptions`, `HistoryOptions`
+  - `MaitreConfig` extended with `cache?: CacheOptions` and `history?: HistoryOptions`
+  - `ConnectionConfig` extended with `tags?: string[]` (used for production param suppression)
+
+### Tests
+
+- `packages/core/src/__tests__/generic-pool.test.ts`: max limit enforcement, queue timeout, idle cleanup, validation failure discard, drain, min idle maintenance
+- `packages/core/src/__tests__/connection-manager.test.ts`: acquire/release/close lifecycle, health check on acquire, auto-reconnect, `POOL_EXHAUSTED` error
+- `packages/cache/src/__tests__/cache-key.test.ts`: key format, invalidation pattern matching
+- `packages/cache/src/__tests__/memory-cache.test.ts`: set/get, TTL expiration, pattern invalidation, stats
+- `packages/cache/src/__tests__/disk-cache.test.ts`: round-trip on temp file, graceful fallback without `better-sqlite3`
+- `packages/cache/src/__tests__/cache-manager.test.ts`: memory-then-disk promotion, DDL invalidation scope, TTL differentiation
+- `packages/cache/src/__tests__/cached-adapter.test.ts`: cache hit/miss on introspection, passthrough for execute/stream, DDL invalidation trigger
+- `packages/core/src/__tests__/history.test.ts`: record/query round-trip, filter by connection, limit, param suppression for production tags, graceful no-op without `better-sqlite3`, rotation
+- CLI e2e: `mdb schema <conn> functions/procedures/types`, `mdb permissions <conn> roles`, `mdb query` → `mdb history --last 1`
+
+---
+
+## [v0.1.0e] — 2026-04-08
+
+### Changed
+
+- **Expanded PostgreSQL driver test suite**
+  - Comprehensive unit tests covering `connect()`, `disconnect()`, `testConnection()`, `validateConnection()`, `execute()`, `stream()`, `cancelQuery()`, transaction helpers, and all introspection methods
+  - Tests cover error paths: connection failure, query error, cancelled queries, unsupported operations
+
+- **Driver template test suite**
+  - Added `packages/driver-template/src/__tests__/driver-template.test.ts` verifying stub implementations compile and return expected shapes
+
+---
+
+## [v0.1.0d] — 2026-04-07
+
+### Added
+
+- **MySQL/MariaDB driver**
+  - `packages/driver-mysql/` implements the complete `DriverAdapter` lifecycle: `connect()`, `disconnect()`, `testConnection()`, `validateConnection()`, streaming `execute()/stream()`, `cancelQuery()`, and transaction helpers
+  - `getSchemas()/getTables()/getColumns()/getIndexes()` plus `getFunctions()/getProcedures()/getRoles()/getGrants()` for catalog + permission introspection
+  - `explain()` parses optimizer output and surfaces warnings; capabilities expose `userDefinedTypes: false`, `roles: true`, `streaming: true`
+  - Supports `connectionLimit`, `acquireTimeout`, and `queueLimit` pool options
+
+- **MkDocs documentation site**
+  - Added `docs/index.md` and wired TypeDoc-generated Markdown output into a MkDocs pipeline (`pnpm docs:reference`)
+
+### Changed
+
+- **`connect` command refactor**
+  - Extracted `connection-config.ts` (connection resolution, DSN merging, credential hydration) and `dsn.ts` (DSN parsing utilities) from `commands/connect.ts` into standalone modules — each independently testable
+  - `bootstrap.ts` gains `getRegistry()` helper used by all commands
+  - New test suites: `dsn.test.ts` (5 cases), `connection-config.test.ts` (2 cases)
+
+---
+
 ## [v0.1.0b] — 2026-04-08
 
 ### Added

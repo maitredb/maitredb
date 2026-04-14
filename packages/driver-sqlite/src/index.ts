@@ -274,6 +274,7 @@ export class SqliteDriver implements DriverAdapter {
       asyncExecution: false,
       embedded: true,
       costEstimate: false,
+      arrowNative: false,
     };
   }
 }

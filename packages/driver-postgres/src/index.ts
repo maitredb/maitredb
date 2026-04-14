@@ -573,6 +573,7 @@ export class PostgresDriver implements DriverAdapter {
       asyncExecution: false,
       embedded: false,
       costEstimate: true,
+      arrowNative: false,
     };
   }
 

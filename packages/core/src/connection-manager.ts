@@ -301,7 +301,7 @@ function parseDsn(name: string, dsn: string): { config: ConnectionConfig; passwo
     user: url.username ? decodeURIComponent(url.username) : undefined,
   };
 
-  if (type === 'sqlite') {
+  if (type === 'sqlite' || type === 'duckdb') {
     config.path = toSqlitePath(url);
   } else {
     config.database = decodeURIComponent(url.pathname.replace(/^\//, '') || '');
@@ -318,6 +318,8 @@ function toDialect(protocol: string): ConnectionConfig['type'] {
   if (protocol === 'mysql') return 'mysql';
   if (protocol === 'mariadb') return 'mariadb';
   if (protocol === 'sqlite' || protocol === 'sqlite3') return 'sqlite';
+  if (protocol === 'duckdb') return 'duckdb';
+  if (protocol === 'clickhouse') return 'clickhouse';
 
   throw new MaitreError(
     MaitreErrorCode.CONFIG_ERROR,

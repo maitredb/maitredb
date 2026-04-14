@@ -582,6 +582,7 @@ export class MysqlDriver implements DriverAdapter {
       asyncExecution: false,
       embedded: false,
       costEstimate: true,
+      arrowNative: false,
     };
   }
 

@@ -1,7 +1,9 @@
 import { randomUUID } from 'node:crypto';
 import type { DriverAdapter, Connection, QueryResult } from '@maitredb/plugin-api';
+import type { RecordBatch } from 'apache-arrow';
 import type { AuditEntry } from './types.js';
 import { MaitreError, MaitreErrorCode } from './errors.js';
+import { rowsToRecordBatch, batchRows } from './arrow-utils.js';
 
 const DEFAULT_MAX_BUFFERED_ROWS = 10000;
 
@@ -20,6 +22,8 @@ export function isDDL(sql: string): boolean {
  */
 export interface ExecutorOptions {
   maxBufferedRows?: number;
+  /** Default rows per Arrow RecordBatch in stream(). Default: 10000. */
+  batchSize?: number;
   cache?: {
     invalidateForConnection(
       connectionId: string,
@@ -58,6 +62,15 @@ export class QueryExecutor {
         await this.options.cache.invalidateForConnection(this.options.connectionId, conn.dialect, scope);
       }
 
+      // Attach Arrow RecordBatch for non-Arrow drivers that returned plain rows
+      if (result.rows.length > 0 && !result.batch) {
+        try {
+          result.batch = rowsToRecordBatch(result.rows, result.fields);
+        } catch {
+          // Arrow conversion is best-effort; batch stays undefined
+        }
+      }
+
       await this.recordHistory({
         id: randomUUID(),
         timestamp: new Date(),
@@ -67,7 +80,7 @@ export class QueryExecutor {
         query: sql,
         params: shouldRecordParams(conn, params, this.options.logParamsForProduction),
         durationMs: result.durationMs,
-        rowsReturned: result.rows.length,
+        rowsReturned: result.rowCount,
         rowsAffected: result.rows.length === 0 ? result.rowCount : undefined,
       });
 
@@ -92,14 +105,25 @@ export class QueryExecutor {
     }
   }
 
-  /** Stream rows directly from the adapter while preserving error semantics. */
+  /**
+   * Stream query results as Arrow RecordBatches.
+   * Arrow-native drivers (DuckDB, ClickHouse) bypass JS conversion entirely.
+   * Other drivers batch their row streams into RecordBatches of `batchSize` rows.
+   */
   async *stream(
     conn: Connection,
     sql: string,
     params?: unknown[],
-  ): AsyncIterable<Record<string, unknown>> {
+    options: { batchSize?: number } = {},
+  ): AsyncIterable<RecordBatch> {
+    const batchSize = options.batchSize ?? this.options.batchSize ?? DEFAULT_MAX_BUFFERED_ROWS;
     try {
-      yield* this.adapter.stream(conn, sql, params);
+      if (this.adapter.streamBatches) {
+        yield* this.adapter.streamBatches(conn, sql, params, { batchSize });
+      } else {
+        const source = this.adapter.stream(conn, sql, params);
+        yield* batchRows(source, [], batchSize);
+      }
     } catch (err) {
       throw this.wrapError(err, conn);
     }

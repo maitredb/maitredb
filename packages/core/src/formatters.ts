@@ -1,7 +1,19 @@
 import type { FieldInfo, QueryResult } from '@maitredb/plugin-api';
+import { recordBatchToRows } from './arrow-utils.js';
 
 /** Supported output formats for CLI + programmatic consumers. */
 export type OutputFormat = 'table' | 'json' | 'csv' | 'ndjson' | 'yaml' | 'raw';
+
+/**
+ * Extract rows from a QueryResult, falling back to the Arrow batch when
+ * the result came from an Arrow-native driver (rows array is empty).
+ */
+function getRows(result: QueryResult): Record<string, unknown>[] {
+  if (result.rows.length === 0 && result.batch) {
+    return recordBatchToRows(result.batch);
+  }
+  return result.rows;
+}
 
 /** Minimal contract implemented by every formatter. */
 export interface Formatter {
@@ -27,8 +39,9 @@ export function autoDetectFormat(): OutputFormat {
 
 class JsonFormatter implements Formatter {
   format(result: QueryResult): string {
+    const rows = getRows(result);
     return JSON.stringify({
-      rows: result.rows,
+      rows,
       fields: result.fields,
       rowCount: result.rowCount,
       durationMs: result.durationMs
@@ -38,15 +51,16 @@ class JsonFormatter implements Formatter {
 
 class NdjsonFormatter implements Formatter {
   format(result: QueryResult): string {
-    return result.rows.map(r => JSON.stringify(r)).join('\n');
+    return getRows(result).map(r => JSON.stringify(r)).join('\n');
   }
 }
 
 class RawFormatter implements Formatter {
   format(result: QueryResult): string {
-    if (result.rows.length === 0) return '';
+    const rows = getRows(result);
+    if (rows.length === 0) return '';
     const cols = result.fields.map(f => f.name);
-    return result.rows
+    return rows
       .map(row => cols.map(c => String(row[c] ?? '')).join('\t'))
       .join('\n');
   }
@@ -54,13 +68,14 @@ class RawFormatter implements Formatter {
 
 class CsvFormatter implements Formatter {
   format(result: QueryResult): string {
-    if (result.rows.length === 0) return '';
+    const rows = getRows(result);
+    if (rows.length === 0) return '';
     const cols = result.fields.map(f => f.name);
     const header = cols.map(c => this.escape(c)).join(',');
-    const rows = result.rows.map(row =>
+    const csvRows = rows.map(row =>
       cols.map(c => this.escape(String(row[c] ?? ''))).join(','),
     );
-    return [header, ...rows].join('\n');
+    return [header, ...csvRows].join('\n');
   }
 
   private escape(val: string): string {
@@ -73,13 +88,14 @@ class CsvFormatter implements Formatter {
 
 class TableFormatter implements Formatter {
   format(result: QueryResult): string {
-    if (result.rows.length === 0) return `(0 rows) (${result.durationMs.toFixed(2)} ms)`;
+    const rows = getRows(result);
+    if (rows.length === 0) return `(0 rows) (${result.durationMs.toFixed(2)} ms)`;
 
     const cols = result.fields.map(f => f.name);
 
     // Calculate column widths
     const widths = cols.map(c => c.length);
-    for (const row of result.rows) {
+    for (const row of rows) {
       for (let i = 0; i < cols.length; i++) {
         const val = this.displayValue(row[cols[i]!]);
         widths[i] = Math.max(widths[i]!, val.length);
@@ -89,11 +105,11 @@ class TableFormatter implements Formatter {
     const sep = widths.map(w => '─'.repeat(w! + 2)).join('┼');
     const header = cols.map((c, i) => ` ${c.padEnd(widths[i]!)} `).join('│');
 
-    const rows = result.rows.map(row =>
+    const dataRows = rows.map(row =>
       cols.map((c, i) => ` ${this.displayValue(row[c]).padEnd(widths[i]!)} `).join('│'),
     );
 
-    const lines = [header, sep, ...rows];
+    const lines = [header, sep, ...dataRows];
     lines.push(`(${result.rowCount} row${result.rowCount === 1 ? '' : 's'}) (${result.durationMs.toFixed(2)} ms)`);
     return lines.join('\n');
   }

@@ -1,5 +1,5 @@
 import type { CommandModule } from 'yargs';
-import { QueryExecutor, getFormatter, autoDetectFormat, MaitreError, exitCodeForError } from '@maitredb/core';
+import { QueryExecutor, getFormatter, autoDetectFormat, MaitreError, exitCodeForError, recordBatchToRows } from '@maitredb/core';
 import type { OutputFormat } from '@maitredb/core';
 import type { ManagedConnection } from '@maitredb/core';
 import { getCacheManager, getConfigManager, getConnectionManager, getHistoryStore } from '../bootstrap.js';
@@ -21,6 +21,16 @@ export const queryCommand: CommandModule = {
       .option('file', {
         type: 'string',
         describe: 'Read SQL from file',
+      })
+      .option('stream', {
+        type: 'boolean',
+        default: false,
+        describe: 'Stream output with constant memory (one RecordBatch at a time)',
+      })
+      .option('batch-size', {
+        type: 'number',
+        default: 10_000,
+        describe: 'Rows per Arrow batch in streaming mode',
       })
       .check((argv) => {
         if (!argv.sql && !argv.file) {
@@ -53,11 +63,28 @@ export const queryCommand: CommandModule = {
         caller: 'human',
         logParamsForProduction: config.history?.logParamsForProduction,
       });
-      const result = await executor.execute(conn, sql!);
-
       const format = (argv.format as OutputFormat) ?? autoDetectFormat();
-      const formatter = getFormatter(format);
-      console.log(formatter.format(result));
+      const streaming = argv.stream as boolean;
+      const batchSize = argv['batch-size'] as number;
+
+      if (streaming) {
+        let effectiveFormat = format;
+        if (effectiveFormat === 'table') {
+          process.stderr.write('[maitredb] --stream: table format requires all rows; using ndjson\n');
+          effectiveFormat = 'ndjson';
+        }
+        const formatter = getFormatter(effectiveFormat);
+        for await (const batch of executor.stream(conn, sql!, [], { batchSize })) {
+          const rows = recordBatchToRows(batch);
+          if (rows.length === 0) continue;
+          const batchResult = { rows, fields: [], rowCount: rows.length, durationMs: 0 };
+          process.stdout.write(formatter.format(batchResult) + '\n');
+        }
+      } else {
+        const result = await executor.execute(conn, sql!);
+        const formatter = getFormatter(format);
+        console.log(formatter.format(result));
+      }
     } catch (err) {
       if (err instanceof MaitreError) {
         process.stderr.write(JSON.stringify(err.toJSON()) + '\n');

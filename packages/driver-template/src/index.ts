@@ -175,6 +175,7 @@ export class DriverTemplate implements DriverAdapter {
       asyncExecution: false,
       embedded: false,
       costEstimate: false,
+      arrowNative: false,
     };
   }
 

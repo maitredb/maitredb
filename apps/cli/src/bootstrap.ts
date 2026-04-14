@@ -38,6 +38,16 @@ export function getRegistry(): PluginRegistry {
       const { MysqlDriver } = await import('@maitredb/driver-mysql');
       return new MysqlDriver('mariadb');
     });
+
+    registry.registerFactory('duckdb', async () => {
+      const { DuckDbDriver } = await import('@maitredb/driver-duckdb');
+      return new DuckDbDriver();
+    });
+
+    registry.registerFactory('clickhouse', async () => {
+      const { ClickHouseDriver } = await import('@maitredb/driver-clickhouse');
+      return new ClickHouseDriver();
+    });
   }
   return registry;
 }

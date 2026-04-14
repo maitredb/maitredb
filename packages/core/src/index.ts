@@ -3,6 +3,8 @@ export { ConfigManager } from './config.js';
 export type { MaitreConfig } from './config.js';
 export { QueryExecutor, isDDL } from './executor.js';
 export type { ExecutorOptions } from './executor.js';
+export { ArrowResult } from './arrow-result.js';
+export { rowsToRecordBatch, recordBatchToRows, batchRows, maitreTypeToArrow } from './arrow-utils.js';
 export { GenericPool } from './generic-pool.js';
 export type { GenericPoolFactory, PoolStats } from './generic-pool.js';
 export { ConnectionManager } from './connection-manager.js';

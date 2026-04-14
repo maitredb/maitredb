@@ -4,6 +4,7 @@ import type {
   Connection,
   ConnectionTestResult,
   QueryResult,
+  StreamOptions,
   SchemaInfo,
   TableInfo,
   ColumnInfo,
@@ -34,6 +35,17 @@ export interface DriverAdapter {
   // Execution
   execute(conn: Connection, query: string, params?: unknown[]): Promise<QueryResult>;
   stream(conn: Connection, query: string, params?: unknown[]): AsyncIterable<Record<string, unknown>>;
+  /**
+   * Arrow-native streaming. Implement when the driver can produce Arrow RecordBatch
+   * directly (e.g. DuckDB, ClickHouse). The QueryExecutor prefers this over stream()
+   * when present; non-Arrow drivers omit it and the executor handles JS→Arrow conversion.
+   */
+  streamBatches?(
+    conn: Connection,
+    query: string,
+    params?: unknown[],
+    options?: StreamOptions,
+  ): AsyncIterable<import('apache-arrow').RecordBatch>;
   cancelQuery(conn: Connection, queryId: string): Promise<void>;
 
   // Transactions

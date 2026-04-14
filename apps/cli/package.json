@@ -21,6 +21,8 @@
     "@maitredb/driver-postgres": "workspace:*",
     "@maitredb/plugin-api": "workspace:*",
     "@maitredb/driver-sqlite": "workspace:*",
+    "@maitredb/driver-duckdb": "workspace:*",
+    "@maitredb/driver-clickhouse": "workspace:*",
     "yargs": "^17.7.2",
     "cli-table3": "^0.6.5",
     "csv-stringify": "^6.5.2"

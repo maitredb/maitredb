@@ -4,6 +4,7 @@ export type {
   MaitreType,
   ConnectionConfig,
   PoolConfig,
+  StreamOptions,
   ConnectionTestResult,
   Connection,
   FieldInfo,
