@@ -1,0 +1,45 @@
+{
+  "name": "@maitredb/mcp",
+  "version": "0.1.0",
+  "description": "Model Context Protocol server for Maître d'B",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "bin": {
+    "maitredb-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "lint": "tsc --noEmit",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@maitredb/cache": "workspace:*",
+    "@maitredb/core": "workspace:*",
+    "@maitredb/driver-athena": "workspace:*",
+    "@maitredb/driver-bigquery": "workspace:*",
+    "@maitredb/driver-clickhouse": "workspace:*",
+    "@maitredb/driver-duckdb": "workspace:*",
+    "@maitredb/driver-mongodb": "workspace:*",
+    "@maitredb/driver-mysql": "workspace:*",
+    "@maitredb/driver-postgres": "workspace:*",
+    "@maitredb/driver-redshift": "workspace:*",
+    "@maitredb/driver-snowflake": "workspace:*",
+    "@maitredb/driver-sqlite": "workspace:*",
+    "@maitredb/plugin-api": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.18.0",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.2",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
+  }
+}
