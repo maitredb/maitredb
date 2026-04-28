@@ -153,6 +153,88 @@ From the [Architecture](spec/architecture.md) and [Implementation Plan](spec/imp
 - Plugin system (third-party drivers, custom tools)
 - Advanced transaction modes (interactive REPL session, multi-statement batches)
 
+## FAQ
+
+### How will my credentials be stored?
+
+Credentials are **never** stored inside `connections.json` or any other plain-text config file that lives alongside your query files. Instead they are handed off to a secure credential backend:
+
+- **macOS / Windows** — the system keychain (`keytar`) is used so credentials are encrypted at rest and protected by your OS login.
+- **Linux** — the Secret Service API (GNOME Keyring / KWallet) is used when available, with a fallback to an encrypted local store.
+- **CI / headless environments** — credentials can be supplied via `MDB_*` environment variables, which are never written to disk by maitredb.
+
+The connection file only stores non-secret metadata (host, port, database name, driver type). If you share or commit `connections.json`, no secrets are exposed.
+
+---
+
+### How do the guardrails prevent accidental or malicious queries?
+
+Maître d'B applies defence-in-depth across several layers:
+
+1. **Read-only MCP surface** — The MCP stdio server only exposes read and introspection tools. All mutating SQL (`INSERT`, `UPDATE`, `DELETE`, DDL, etc.) and multi-statement batches are rejected at the tool layer before they reach the driver.
+2. **Operation blocking** (Phase 2) — The governance policy engine lets you declare per-connection allow/deny lists of SQL operation types (e.g., deny `DROP`, `TRUNCATE`, `GRANT`).
+3. **Rate limiting & approvals** (Phase 2) — High-impact queries above a configurable row-count or cost threshold require explicit human approval before execution.
+4. **Audit log** — Every query (text, timestamp, connection, row count, execution time) is appended to a local history database. Sensitive literal values are redacted before persistence so secrets that accidentally appear in queries are not stored in cleartext.
+5. **Agent mode** (`--as agent`) — Skips interactive auth prompts but enforces the full governance policy set, so automated callers get *less* latitude than interactive users, not more.
+
+No governance layer is a guarantee against all misuse, but the combination of a read-only default surface, an explicit policy engine, and a tamper-evident audit trail makes it significantly harder to cause accidental or intentional damage.
+
+---
+
+### How do I benchmark Maître d'B against a native driver?
+
+The built-in benchmarking suite (Phase 4) will provide statistical, reproducible comparisons. In the meantime:
+
+- Use `mdb query --stream` for large result sets — the Rust wire-protocol parser and Apache Arrow columnar format are designed to match or beat JavaScript driver throughput for read-heavy workloads because the entire result buffer is parsed in a single Rust call rather than one JS object per row.
+- For raw connection overhead you can time `mdb query <conn> "SELECT 1"` against equivalent `psql`/`mysql`/`sqlite3` invocations. Expect a small one-time Node.js startup cost that disappears in long-running processes.
+- The benchmarking suite (when shipped) will let you run the same query through the maitredb streaming path and a bare driver path, reporting p50/p95/p99 latency, throughput (rows/s and MB/s), and memory ceiling side-by-side with configurable repetitions and warm-up rounds.
+
+If you need to benchmark today, the `packages/core` streaming path is the hot path to profile — it routes wire bytes directly to the Rust parser and yields Arrow `RecordBatch` objects without allocating intermediate row arrays.
+
+---
+
+### Why not just let the agent connect to the database via a native CLI or simpler interface?
+
+Several reasons make a dedicated middleware layer worth the overhead:
+
+| Concern | Native CLI / raw driver | Maître d'B |
+|---|---|---|
+| **Credential handling** | Credentials often appear in command arguments or env vars that are visible in process listings and shell history | Credentials are resolved from a secure keychain at runtime and never passed as arguments |
+| **Blast radius control** | Agent has full database permissions by default | Governance policies restrict allowed operations, row counts, and cost budgets per connection |
+| **Audit trail** | No persistent audit log; queries disappear | Every query is logged with metadata for post-incident review |
+| **Streaming large results** | `psql` buffers entire result sets; JSON-over-stdio is slow for millions of rows | Arrow batches stream row-by-row with constant memory |
+| **Cross-database portability** | Each CLI has its own flags, output formats, and connection strings | One `mdb query` command works across all 11 databases with consistent output formats |
+| **Agent safety** | A confused or prompt-injected agent can run arbitrary DDL | Read-only MCP surface and operation blocklists limit the damage a compromised agent can do |
+
+In short, a native CLI gives an agent *full access with no guardrails*. Maître d'B is the layer that adds credential isolation, policy enforcement, and observability without the agent needing to know which database it is talking to.
+
+---
+
+### Does Maître d'B work without an internet connection?
+
+Yes. All operations — querying, introspection, history, credential storage — are fully local. There is no telemetry, no phone-home, and no licence server. Cloud-hosted databases (Snowflake, BigQuery, Redshift, Athena) obviously still require network access to reach their endpoints, but the maitredb tooling itself is entirely offline-capable.
+
+---
+
+### What happens to my data if I uninstall maitredb?
+
+Nothing is lost. The File Over App philosophy means:
+
+- `connections.json` is plain JSON you can read and edit with any text editor.
+- Query history is stored in a standard SQLite database you can open with any SQLite client.
+- Exported data uses open formats (Parquet, Iceberg, CSV, SQL) that any tool can consume.
+- Credentials remain in your OS keychain, accessible via `keytar` or your system's keychain UI.
+
+Uninstalling the `mdb` binary simply removes the tool. Your data, history, and credentials are unaffected.
+
+---
+
+### Which Node.js versions are supported?
+
+Node.js **20 LTS** and **22 LTS**. The Rust native addon (`@maitredb/wire`) ships prebuilt binaries for those versions; a pure-JS fallback is used automatically if the native module cannot load (e.g., unsupported architecture or Node version).
+
+---
+
 ## Contributing
 
 Contributions welcome! Please:
