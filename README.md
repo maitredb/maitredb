@@ -1,5 +1,9 @@
 # Maître d'B
 
+<p align="center">
+  <img src="img/Maitre’dB.png" alt="Maître d'B logo" width="320" />
+</p>
+
 > *The front-of-house manager for your databases.*
 
 A cross-platform, open-source database client with native CLI and GUI — built for humans and agents alike. Handles pooling, query sequencing, credential isolation, governance, and schema introspection as middleware between your applications and your databases.
