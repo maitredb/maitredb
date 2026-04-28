@@ -94,6 +94,18 @@ describe('SqliteDriver', () => {
       const nameCol = cols.find(c => c.name === 'name')!;
       expect(nameCol.nullable).toBe(false);
     });
+
+    it('handles quoted table and index names during introspection', async () => {
+      await driver.execute(conn, 'CREATE TABLE "odd\'table" ("odd col" TEXT)');
+      await driver.execute(conn, 'CREATE INDEX "odd\'idx" ON "odd\'table" ("odd col")');
+
+      const cols = await driver.getColumns(conn, 'main', "odd'table");
+      const indexes = await driver.getIndexes(conn, 'main', "odd'table");
+
+      expect(cols.map(c => c.name)).toEqual(['odd col']);
+      expect(indexes.map(i => i.name)).toContain("odd'idx");
+      expect(indexes.find(i => i.name === "odd'idx")?.columns).toEqual(['odd col']);
+    });
   });
 
   describe('explain', () => {

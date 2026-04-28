@@ -174,7 +174,7 @@ export class SqliteDriver implements DriverAdapter {
 
   async getColumns(conn: Connection, _schema: string, table: string): Promise<ColumnInfo[]> {
     const db = conn.native as Database.Database;
-    const rows = db.prepare(`PRAGMA table_info('${table}')`).all() as {
+    const rows = db.prepare('SELECT cid, name, type, "notnull", dflt_value, pk FROM pragma_table_info(?)').all(table) as {
       cid: number; name: string; type: string; notnull: number; dflt_value: string | null; pk: number;
     }[];
 
@@ -192,12 +192,12 @@ export class SqliteDriver implements DriverAdapter {
 
   async getIndexes(conn: Connection, _schema: string, table: string): Promise<IndexInfo[]> {
     const db = conn.native as Database.Database;
-    const indexes = db.prepare(`PRAGMA index_list('${table}')`).all() as {
+    const indexes = db.prepare('SELECT seq, name, "unique", origin FROM pragma_index_list(?)').all(table) as {
       seq: number; name: string; unique: number; origin: string;
     }[];
 
     return indexes.map(idx => {
-      const cols = db.prepare(`PRAGMA index_info('${idx.name}')`).all() as { name: string }[];
+      const cols = db.prepare('SELECT name FROM pragma_index_info(?)').all(idx.name) as { name: string }[];
       return {
         schema: 'main',
         table,

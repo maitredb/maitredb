@@ -143,17 +143,14 @@ export class DuckDbDriver implements DriverAdapter {
 
   /** Compatibility stream() — yields plain JS objects extracted from the Arrow batch. */
   async *stream(conn: Connection, query: string, params?: unknown[]): AsyncIterable<Record<string, unknown>> {
-    const result = await this.execute(conn, query, params);
-    if (result.batch) {
-      const batch = result.batch;
-      const names = batch.schema.fields.map(f => f.name);
-      for (let i = 0; i < batch.numRows; i++) {
-        const row: Record<string, unknown> = {};
-        for (const n of names) row[n] = batch.getChild(n)?.get(i) ?? null;
+    const { conn: dconn } = conn.native as DuckDBNative;
+    const values = params as DuckDBValue[] | undefined;
+    const streamResult = await dconn.stream(query, values);
+
+    for await (const chunkRows of streamResult.yieldRowObjectJs()) {
+      for (const row of chunkRows as Record<string, unknown>[]) {
         yield row;
       }
-    } else {
-      yield* result.rows;
     }
   }
 

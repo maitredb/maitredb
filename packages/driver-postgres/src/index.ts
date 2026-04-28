@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { Pool, types as pgTypes } from 'pg';
 import type { FieldDef, PoolClient, PoolConfig, QueryResult as PgQueryResult, QueryResultRow } from 'pg';
+import Cursor from 'pg-cursor';
 import type {
   ColumnInfo,
   Connection,
@@ -26,6 +27,8 @@ import type {
   TransactionOptions,
 } from '@maitredb/plugin-api';
 import { MaitreError, MaitreErrorCode } from '@maitredb/core';
+
+const STREAM_BATCH_SIZE = 1_000;
 
 /** PostgreSQL driver implemented via the native `pg` client. */
 export class PostgresDriver implements DriverAdapter {
@@ -105,9 +108,23 @@ export class PostgresDriver implements DriverAdapter {
   /** Stream rows as an `AsyncIterable` without changing the caller contract. */
   async *stream(conn: Connection, query: string, params?: unknown[]): AsyncIterable<Record<string, unknown>> {
     const pool = this.getPool(conn);
-    const result = await pool.query(query, params as any[] | undefined);
-    for (const row of result.rows) {
-      yield this.mapRow(row);
+    const client = await pool.connect();
+    const cursor = client.query(new Cursor<QueryResultRow>(query, params as any[] | undefined)) as Cursor<QueryResultRow>;
+
+    try {
+      while (true) {
+        const rows = await cursor.read(STREAM_BATCH_SIZE);
+        if (rows.length === 0) {
+          break;
+        }
+
+        for (const row of rows) {
+          yield this.mapRow(row);
+        }
+      }
+    } finally {
+      await cursor.close().catch(() => undefined);
+      client.release();
     }
   }
 

@@ -16,7 +16,23 @@ class MockClient {
 
   constructor(private readonly runQuery: (sql: string, params?: unknown[]) => Promise<MockQueryResult>) {}
 
-  async query(sql: string, params?: unknown[]): Promise<MockQueryResult> {
+  query(sql: string, params?: unknown[]): Promise<MockQueryResult>;
+  query(sql: object): object;
+  query(sql: string | object, params?: unknown[]): Promise<MockQueryResult> | object {
+    if (typeof sql !== 'string') {
+      this.queryCalls.push({ sql: '[cursor]' });
+      let offset = 0;
+      const cursor = sql as { read: (count: number) => Promise<Record<string, unknown>[]>; close: () => Promise<void> };
+      cursor.read = vi.fn(async (count: number) => {
+        const result = await this.runQuery('[cursor]', params);
+        const rows = result.rows.slice(offset, offset + count);
+        offset += count;
+        return rows;
+      });
+      cursor.close = vi.fn(async () => {});
+      return cursor;
+    }
+
     this.queryCalls.push({ sql, params });
     return this.runQuery(sql, params);
   }
@@ -181,7 +197,9 @@ describe('PostgresDriver', () => {
     }
 
     expect(rows).toEqual([{ id: '1' }, { id: '2' }]);
-    expect(pool.query).toHaveBeenCalledWith('SELECT id FROM users WHERE id > $1', [0]);
+    expect(pool.connect).toHaveBeenCalledTimes(1);
+    expect(pool.lastClient?.queryCalls).toEqual([{ sql: '[cursor]' }]);
+    expect(pool.lastClient?.release).toHaveBeenCalledTimes(1);
   });
 
   it('validateConnection reports true on success and false on probe failure', async () => {
