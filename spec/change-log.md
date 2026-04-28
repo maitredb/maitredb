@@ -3,7 +3,7 @@
 > Chronological record of all changes, improvements, and fixes.
 > Follows [Keep a Changelog](https://keepachangelog.com/) format.
 
-## [v0.4.0] — 2026-04-15
+## [v0.4.0] — 2026-04-28
 
 ### Added
 

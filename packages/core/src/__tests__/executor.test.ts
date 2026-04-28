@@ -147,4 +147,28 @@ describe('QueryExecutor', () => {
     const first = (record.mock.calls as unknown[][])[0]?.[0] as { error?: { code: number } } | undefined;
     expect(first?.error?.code).toBe(MaitreErrorCode.SYNTAX_ERROR);
   });
+
+  it('redacts obvious secret literals in query history', async () => {
+    const record = vi.fn(async () => {});
+    const history = { record };
+    const adapter = makeAdapter(async () => ({ rows: [], fields: [], rowCount: 0, durationMs: 0 }));
+    const executor = new QueryExecutor(adapter, {
+      history,
+      connectionName: 'dev',
+    });
+
+    await executor.execute(
+      {
+        ...conn,
+        config: { name: 'dev', type: 'sqlite' },
+      },
+      "SELECT * FROM users WHERE password = 'super-secret' AND token=\"abc123\"",
+    );
+
+    const first = (record.mock.calls as unknown[][])[0]?.[0] as { query?: string } | undefined;
+    expect(first?.query).toContain('password=[REDACTED]');
+    expect(first?.query).toContain('token=[REDACTED]');
+    expect(first?.query).not.toContain('super-secret');
+    expect(first?.query).not.toContain('abc123');
+  });
 });

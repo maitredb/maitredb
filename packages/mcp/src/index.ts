@@ -118,16 +118,15 @@ async function main(): Promise<void> {
     'maitredb_explain',
     {
       title: 'Explain Query',
-      description: 'Run EXPLAIN for a SQL query.',
+      description: 'Run read-only EXPLAIN for a SQL query. ANALYZE is disabled in MCP mode.',
       inputSchema: {
         connection: z.string(),
         sql: z.string().min(1),
-        analyze: z.boolean().optional(),
       },
     },
-    async ({ connection, sql, analyze }) => {
-      const plan = await runtime.explain(connection, sql, analyze ?? false);
-      const payload = { connection, analyze: analyze ?? false, plan };
+    async ({ connection, sql }) => {
+      const plan = await runtime.explain(connection, sql, false);
+      const payload = { connection, analyze: false, plan };
       return {
         content: [{ type: 'text', text: JSON.stringify(payload, null, 2) }],
         structuredContent: payload,

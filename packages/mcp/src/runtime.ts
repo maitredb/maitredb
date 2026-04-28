@@ -71,6 +71,20 @@ export class MaitredbMcpRuntime {
   }
 
   async explain(connection: string, sql: string, analyze = false): Promise<unknown> {
+    if (isPotentiallyMutatingQuery(sql)) {
+      throw new MaitreError(
+        3005,
+        'MCP explain tool is read-only. Mutating or multi-statement SQL is blocked.',
+      );
+    }
+
+    if (analyze) {
+      throw new MaitreError(
+        3005,
+        'MCP explain tool does not allow analyze mode. Use plain EXPLAIN only.',
+      );
+    }
+
     return this.withConnection(connection, (conn) => conn.adapter.explain(conn, sql, { analyze }));
   }
 

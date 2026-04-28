@@ -19,157 +19,110 @@ Most database clients treat the connection as a detail. Maître d'B treats it as
 
 ## Features
 
-- **11 Databases**: SQLite, PostgreSQL, MySQL/MariaDB, MongoDB, Snowflake, ClickHouse, DuckDB, BigQuery, Redshift, Athena
-- **Secure Credentials**: AES-256-GCM encryption, system keychain fallback, encrypted files, environment variables — pick your trust model
-- **Constant-memory Streaming**: Never buffer entire result sets; process rows as they arrive
-- **Performance**: Rust wire protocol parser, Apache Arrow columnar format, prepared statement caching
-- **Agent Governance**: Policies for read-only mode, operation blocking, rate limiting, schema isolation; audit trail for all attempts
-- **Data Masking**: Redact, hash, or apply noise to sensitive columns during query execution
-- **Universal Export**: Dump to Parquet, Iceberg, CSV, or SQL across any database
-- **Fake Data**: Schema-aware data generation for realistic test datasets
-- **Query Profiling**: Per-database EXPLAIN plans, execution statistics, cost estimates
-- **Benchmarking**: Rigorous query performance measurement with statistical rigor
-- **Schema Tools**: Introspection, comparison, auto-detection of optimization opportunities
+### Available now (v0.0.1)
+
+- **11 Database drivers registered in CLI/bootstrap**: SQLite, PostgreSQL, MySQL/MariaDB, MongoDB, Snowflake, ClickHouse, DuckDB, BigQuery, Redshift, Athena
+- **Secure credential storage**: credentials are stored outside connection config files
+- **Constant-memory streaming**: `mdb query --stream` reads in Arrow batches
+- **Schema and permissions introspection**: tables/columns/indexes/functions/procedures/types plus roles/grants where supported
+- **Local query history**: query metadata is stored in local history DB for auditing
+- **MCP stdio server**: read-only query and schema tooling for coding agents
+
+### Planned (not fully shipped yet)
+
+- Rust wire-protocol hot path and full Arrow-native parsing across drivers
+- Governance policy engine with approvals, rate limits, and per-connection policy mapping
+- Data masking transforms, universal dump/export, benchmarking suite, and GUI
 
 ## Installation
 
-```bash
-# Install globally
-npm install -g maitredb
+maitredb is currently source-first and pre-public preview (not published to npm yet).
 
-# Or use as a zero-install tool (npx)
-npx maitredb query dev "SELECT 1"
+```bash
+# Clone and install workspace dependencies
+pnpm install
+
+# Build CLI and MCP packages
+pnpm --filter @maitredb/cli build
+pnpm --filter @maitredb/mcp build
+
+# Verify CLI
+node apps/cli/dist/cli.js --help
 ```
 
 ## Usage Patterns
 
-### 1. Standalone CLI
+### 1. CLI from source checkout
 
-The simplest mode — query databases from your shell or scripts.
+Use the built CLI directly from this repository.
 
 ```bash
-# Set up a connection (credentials encrypted automatically)
-mdb connect add prod --type postgres --host db.example.com --user admin
+# Build once
+pnpm --filter @maitredb/cli build
 
-# Query
-mdb query prod "SELECT * FROM users WHERE active = true" --format json
+# Add and verify a local sqlite connection
+node apps/cli/dist/cli.js connect add dev --type sqlite --path ./dev.db
+node apps/cli/dist/cli.js connect list
 
-# Explore schema
-mdb schema prod tables
-mdb schema prod columns orders
+# Query and stream
+node apps/cli/dist/cli.js query dev "SELECT 1" --format json
+node apps/cli/dist/cli.js query dev "SELECT * FROM sqlite_master" --stream --format ndjson
 
-# Streaming (constant memory)
-mdb query prod "SELECT * FROM events" --stream --format ndjson | jq '.user_id' | sort | uniq -c
-
-# Export
-mdb dump prod orders --to parquet --output orders.parquet
-
-# Benchmark
-mdb bench prod --inner-join --runs 50
-
-# Explain
-mdb trace prod "SELECT * FROM orders WHERE total > 1000" --analyze
+# Introspection and audit history
+node apps/cli/dist/cli.js schema dev tables --schema main
+node apps/cli/dist/cli.js history --last 10
 ```
 
-### 2. Node.js / MCP Server (AI Agents & IDEs)
+### 2. MCP stdio from source checkout
 
-Integrate database access directly into Claude, GitHub Copilot, or other coding tools.
-
-**Build the MCP server:**
+Build the MCP package and point your MCP client to this local workspace.
 
 ```bash
 pnpm --filter @maitredb/mcp build
 ```
 
-**Add to Claude Desktop** (`~/.config/Claude/claude_desktop_config.json`):
+Example MCP stdio config (local source checkout):
 
 ```json
 {
   "mcpServers": {
     "maitredb": {
       "command": "node",
-      "args": ["/path/to/maitredb/packages/mcp/dist/index.js"]
+      "args": ["/absolute/path/to/maitredb/packages/mcp/dist/index.js"]
     }
   }
 }
 ```
 
-**Add to GitHub Copilot** (`.vscode/settings.json`):
+Available MCP tools:
+- `maitredb_list_connections`
+- `maitredb_get_schemas`
+- `maitredb_get_tables`
+- `maitredb_get_columns`
+- `maitredb_get_indexes`
+- `maitredb_explain` (EXPLAIN only; ANALYZE disabled)
+- `maitredb_query` (read-only; mutating and multi-statement SQL blocked)
 
-```json
-{
-  "github.copilot.advanced": {
-    "mcpServers": {
-      "maitredb": {
-        "command": "node",
-        "args": ["/path/to/maitredb/packages/mcp/dist/index.js"]
-      }
-    }
-  }
-}
-```
+### 3. Planned integrations (not available yet)
 
-**Available MCP tools:**
-- `list_connections` — List configured databases
-- `get_schemas`, `get_tables`, `get_columns`, `get_indexes` — Schema introspection
-- `explain` — Query execution plans
-- `query` — Execute read-only SQL (mutating operations blocked for safety)
+- Docker/TCP MCP deployment examples
+- Stable published npm packages for global install and npx
+- Higher-level programmatic API examples in root README
 
-### 3. Docker MCP Server
+## Security & Safety
 
-Run the MCP server in a container for team/CI usage.
+- Connection credentials are not stored in `connections.json`; they are stored separately via credential backends.
+- Local history stores SQL text for auditability; obvious secret literals are redacted before persistence.
+- MCP tools are read-only by default: mutating and multi-statement SQL is blocked.
+- Agent mode and advanced governance workflows are experimental and should be treated as pre-release behavior.
 
-```bash
-docker run -d \
-  -v ~/.maitredb:/root/.maitredb:ro \
-  -p 9999:9999 \
-  maitredb:latest mcp-server --port 9999
-```
+## What's Complete (v0.0.1)
 
-Agents/IDEs connect via TCP:
-
-```json
-{
-  "mcpServers": {
-    "maitredb": {
-      "type": "tcp",
-      "host": "localhost",
-      "port": 9999
-    }
-  }
-}
-```
-
-### 4. Programmatic API (Node.js Library)
-
-```typescript
-import { Maitre } from '@maitredb/core'
-
-const mdb = new Maitre()
-const conn = await mdb.connect('prod')
-
-// Query
-const result = await mdb.query(conn, 'SELECT * FROM users WHERE active = $1', [true])
-console.log(result.rows)
-
-// Streaming
-for await (const row of mdb.stream(conn, 'SELECT * FROM events')) {
-  console.log(row)
-}
-
-// Schema
-const tables = await mdb.schema.tables(conn, 'public')
-const plan = await mdb.explain(conn, 'SELECT ...', { analyze: true })
-```
-
-## What's Complete (v0.1.0)
-
-- ✅ Core CLI with 11 database drivers
-- ✅ Secure credential storage (AES-256-GCM, keychain, encrypted files)
-- ✅ Streaming query execution (Arrow columnar format)
-- ✅ Schema introspection (tables, columns, indexes, functions)
-- ✅ Basic query profiling (EXPLAIN per dialect)
-- ✅ MCP server for IDE integration
+- ✅ Core CLI command set: `connect`, `query`, `schema`, `permissions`, `history`
+- ✅ Connection manager + lazy driver registration across supported dialects
+- ✅ Secure credential storage separated from connection metadata
+- ✅ Streaming query path and local query history/audit storage
+- ✅ MCP stdio server with read-only query and introspection tools
 
 ## What's Planned (Future Phases)
 

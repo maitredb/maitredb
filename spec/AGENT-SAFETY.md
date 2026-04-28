@@ -206,6 +206,7 @@ ORDER BY timestamp DESC;
 ```
 
 The audit log is **immutable append-only** — you can't erase evidence of what the agent attempted.
+Before SQL text is persisted, obvious inline secret literals (for example `password='...'`, `token='...'`) are redacted.
 
 ---
 

@@ -6,6 +6,8 @@ import { MaitreError, MaitreErrorCode } from './errors.js';
 import { rowsToRecordBatch, batchRows } from './arrow-utils.js';
 
 const DEFAULT_MAX_BUFFERED_ROWS = 10000;
+const SENSITIVE_SQL_KEY_PATTERN = 'password|passwd|pwd|secret|token|api[_-]?key|access[_-]?key|secret[_-]?key|client[_-]?secret|private[_-]?key|refresh[_-]?token';
+const SQL_LITERAL_PATTERN = "'(?:''|[^'])*'|\"(?:[^\"\\\\]|\\\\.)*\"|\\$\\$[\\s\\S]*?\\$\\$|[^\\s,);}\\]]+";
 
 const DDL_PATTERN = /^\s*(CREATE|ALTER|DROP|GRANT|REVOKE|TRUNCATE)\b/i;
 const PERMISSION_DDL_PATTERN = /^\s*(GRANT|REVOKE)\b/i;
@@ -77,7 +79,7 @@ export class QueryExecutor {
         connection: this.options.connectionName ?? conn.config.name ?? this.options.connectionId ?? conn.id,
         dialect: conn.dialect,
         caller: this.options.caller ?? 'programmatic',
-        query: sql,
+        query: redactObviousSecretLiterals(sql),
         params: shouldRecordParams(conn, params, this.options.logParamsForProduction),
         durationMs: result.durationMs,
         rowsReturned: result.rowCount,
@@ -93,7 +95,7 @@ export class QueryExecutor {
         connection: this.options.connectionName ?? conn.config.name ?? this.options.connectionId ?? conn.id,
         dialect: conn.dialect,
         caller: this.options.caller ?? 'programmatic',
-        query: sql,
+        query: redactObviousSecretLiterals(sql),
         params: shouldRecordParams(conn, params, this.options.logParamsForProduction),
         durationMs: performance.now() - start,
         error: {
@@ -161,4 +163,19 @@ function shouldRecordParams(
     return params;
   }
   return undefined;
+}
+
+function redactObviousSecretLiterals(sql: string): string {
+  const assignmentPattern = new RegExp(
+    `\\b(${SENSITIVE_SQL_KEY_PATTERN})\\b\\s*=\\s*(${SQL_LITERAL_PATTERN})`,
+    'gi',
+  );
+  const jsonPattern = new RegExp(
+    `([\"'])(${SENSITIVE_SQL_KEY_PATTERN})\\1\\s*:\\s*(${SQL_LITERAL_PATTERN})`,
+    'gi',
+  );
+
+  return sql
+    .replace(assignmentPattern, '$1=[REDACTED]')
+    .replace(jsonPattern, '$1$2$1: [REDACTED]');
 }
