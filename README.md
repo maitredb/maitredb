@@ -2,7 +2,7 @@
 
 > *The front-of-house manager for your databases.*
 
-A cross-platform, open-source database client with native CLI and GUI — built for humans and agents alike. Handles pooling, query sequencing, credential isolation, and schema introspection as middleware between your "customers" (humans, AI agents, scripts) and the "kitchen" (your databases).
+A cross-platform, open-source database client with native CLI and GUI — built for humans and agents alike. Handles pooling, query sequencing, credential isolation, guardrails, and schema introspection as middleware between your "customers" (humans, AI agents, scripts) and the "kitchen" (your databases).
 
 **Package name**: `maitredb` | **CLI command**: `mdb` | **Org scope**: `@maitredb/*`
 

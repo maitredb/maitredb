@@ -1,0 +1,30 @@
+{
+  "name": "@maitredb/driver-mongodb",
+  "version": "0.4.0",
+  "description": "MongoDB driver for Maître d'B",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "lint": "tsc --noEmit",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@maitredb/plugin-api": "workspace:*",
+    "mongodb": "^6.0.0",
+    "apache-arrow": "^18.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "@types/node": "^22.15.2",
+    "vitest": "^3.2.4"
+  }
+}

@@ -69,6 +69,7 @@ function makeAdapter(executeImpl: (sql: string, params?: unknown[]) => Promise<Q
       asyncExecution: false,
       embedded: true,
       costEstimate: false,
+      arrowNative: false,
     }),
   };
 }

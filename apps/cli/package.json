@@ -23,6 +23,11 @@
     "@maitredb/driver-sqlite": "workspace:*",
     "@maitredb/driver-duckdb": "workspace:*",
     "@maitredb/driver-clickhouse": "workspace:*",
+    "@maitredb/driver-snowflake": "workspace:*",
+    "@maitredb/driver-mongodb": "workspace:*",
+    "@maitredb/driver-bigquery": "workspace:*",
+    "@maitredb/driver-redshift": "workspace:*",
+    "@maitredb/driver-athena": "workspace:*",
     "yargs": "^17.7.2",
     "cli-table3": "^0.6.5",
     "csv-stringify": "^6.5.2"

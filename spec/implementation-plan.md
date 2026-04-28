@@ -306,36 +306,253 @@ Everything below ships together as a single coordinated bootstrap. Nothing here 
 
 ---
 
-## v0.6.0 — Governance & Agent Mode (Milestone 6)
+## v0.6.0 — Governance & Agent Safety (Milestone 6)
 
-**Goal**: Safe agent access with policy enforcement.
+**Goal**: Prevent destructive agent operations and provide complete audit trail. Make it impossible for rogue AI agents to silently drop databases.
 
-### 6a. Governance package
+### 6a. Governance package core (`packages/governance/`)
 
-- `packages/governance/`
-- Policy file loader: `~/.maitredb/policies.json`
-- Query classifier: DDL vs DML, read vs write
-- Policy enforcement: allowed schemas, blocked operations, read-only mode, rate limiting, max rows per query
-- `GovernanceError` with structured reason + suggestion
+Core components (must be implemented together):
 
-### 6b. Agent mode
+1. **Query Classifier**
+   - SQL parser integration: use dialect-specific parser or fallback to generic regex classifier
+   - Classifies query intent: read | write | ddl | dcl | transaction
+   - Identifies operation: SELECT, INSERT, UPDATE, DELETE, DROP, ALTER, TRUNCATE, GRANT, etc.
+   - Extracts affected schemas, tables, complexity (join count, subquery depth)
+   - Detects dangerous patterns: DELETE without WHERE, TRUNCATE, DROP DATABASE
+   - Returns `QueryClassification` struct with all metadata
 
-- `--as agent` flag activates agent policy for the session
-- Skips interactive auth (browser SSO, password prompt)
-- Enforces governance policy from `connectionPolicies` mapping
-- Session timeout (`sessionTimeoutMs`)
-- Max concurrent queries enforcement
+2. **Policy Engine**
+   - Loads `~/.maitredb/policies.json` with full validation on startup
+   - Implements conservative operation blocking (blacklist mode):
+     - Each operation type has explicit allow/block flag
+     - Blocks by default: UPDATE, DELETE, TRUNCATE, DROP, ALTER, GRANT, IMPORT, etc.
+     - Allows by default: SELECT, (INSERT on agent depends on policy)
+   - Schema/table isolation: allowedSchemas, forbiddenPatterns
+   - Rate limiting: maxQueriesPerMinute, maxConcurrentQueries
+   - Result size protection: maxRowsPerQuery hard limit
+   - Expensive query gating: requireExplainBefore with rowEstimateThreshold
+   - Returns `PolicyDecision` with allowed boolean + blockedReason + suggestion
 
-### 6c. EXPLAIN gating
+3. **Audit Logger**
+   - SQLite database: `~/.maitredb/history.db`
+   - Writes every attempt (allowed or blocked) with timestamp, connection, query, classification, policy, result
+   - Schema includes: id, timestamp, connection, agent_id, query, operation, allowed, blocked_reason, error_code
+   - Queryable for incident response: "What did agent X attempt?", "Which operations were blocked?"
+   - Immutable append-only design (no DELETE on audit_log)
 
-- `requireExplainBefore.rowEstimateThreshold` — run EXPLAIN before expensive queries
-- If estimated rows exceed threshold, return `EXPLAIN_REQUIRED` error with the plan
+4. **Approval Manager** (for sensitive operations)
+   - Generates short-lived approval tokens (1 hour TTL default, configurable)
+   - Validates token before execution: must exist, not expired, not already used
+   - Prevents replay attacks: one-time use per token
+   - Tracks which operations required and obtained approval
 
-### 6d. Middleware & hook system
+### 6b. Conservative Blocking Rules (Agent Defaults)
 
-- Pre/post query hooks: `before`, `after`, `error` phases
-- Built-in hooks: audit logger, slow query logger, query transformer
-- User-defined hooks via config (exec commands on events)
+Default agent policy must block the Cursor-style disaster:
+
+```
+Operations BLOCKED by default for agents:
+  ✗ DELETE (even with WHERE clause)
+  ✗ UPDATE (any update)
+  ✗ TRUNCATE (table truncation)
+  ✗ DROP (any DROP DATABASE, DROP TABLE, DROP SCHEMA, DROP INDEX)
+  ✗ ALTER (any schema modification)
+  ✗ GRANT / REVOKE (privilege changes)
+  ✗ CREATE (DDL: CREATE TABLE, CREATE DATABASE, CREATE FUNCTION)
+  ✗ VACUUM / OPTIMIZE (maintenance operations)
+  ✗ IMPORT / COPY FROM / LOAD DATA (data injection)
+  ✗ UNLOAD / SELECT INTO / S3 EXPORT (data exfiltration)
+
+Operations ALLOWED by default for agents (if policy.mode = read-only):
+  ✓ SELECT (query/read)
+  ✓ WITH (CTE, recursion)
+  ✓ EXPLAIN (query plan analysis)
+
+Operations ALLOWED for agents (if policy.mode = read-write):
+  ✓ SELECT
+  ✓ INSERT (if explicitly enabled in policy)
+  ✓ WITH explicit requireApprovalFor gating
+```
+
+### 6c. Agent mode (`--as agent`)
+
+- Activates named agent policy (default: agent-default from policies.json)
+- Can override with `--policy <name>` flag
+- Skips interactive auth (no password prompt, no browser SSO)
+- All queries subject to policy enforcement (no bypass hatch)
+- Uses agent_id from environment or CLI flag (for audit logging)
+- Session timeout enforced (default 5 min)
+
+### 6d. Approval Workflow for Sensitive Operations
+
+For operations in `requireApprovalFor` list:
+
+**Dry-run phase:**
+```bash
+mdb query prod "UPDATE users SET status = 'inactive'" --as agent --dry-run
+# Returns operation ID, query hash, affected row estimate
+# Output: Operation prepared (ID: op-abc123)
+```
+
+**Human approval phase:**
+```json
+{
+  "operationId": "op-abc123",
+  "query": "UPDATE users SET status = 'inactive'",
+  "classification": { "operation": "UPDATE", "affectedTables": ["users"] },
+  "rowEstimate": 5234,
+  "policy": "agent-default",
+  "blockedReason": "UPDATE operations require human approval",
+  "approvalToken": "token-xyz789",
+  "expiresAt": 1234567890
+}
+```
+
+**Execution with approval:**
+```bash
+mdb query prod "UPDATE users SET status = 'inactive'" --as agent --approval-token token-xyz789
+# Validates token, then executes
+```
+
+### 6e. EXPLAIN gating
+
+- Policy setting: `requireExplainBefore.rowEstimateThreshold` (default: 1,000,000 rows)
+- For queries exceeding threshold: automatically run EXPLAIN first
+- Extract row estimate from plan
+- If estimate exceeds threshold: return EXPLAIN_REQUIRED error (code 3006)
+- Include plan in error so agent can see why it was rejected
+- Prevents query bombing / resource exhaustion
+
+### 6f. Audit Trail & Forensics
+
+SQLite schema for `~/.maitredb/history.db`:
+
+```sql
+CREATE TABLE audit_log (
+  id TEXT PRIMARY KEY,
+  timestamp INTEGER NOT NULL,              -- unix timestamp
+  connection TEXT NOT NULL,                 -- connection name
+  agent_id TEXT,                            -- agent identifier (NULL for humans)
+  query TEXT NOT NULL,                      -- full query text
+  classification_type TEXT,                 -- read|write|ddl|dcl|transaction
+  operation TEXT,                           -- SELECT|UPDATE|DROP|...
+  policy_name TEXT,                         -- which policy was applied
+  allowed BOOLEAN,                          -- was it allowed?
+  blocked_reason TEXT,                      -- if blocked, reason
+  error_code INTEGER,                       -- MaitreErrorCode if blocked
+  row_estimate INTEGER,                     -- from EXPLAIN if applicable
+  execution_ms INTEGER,                     -- query time in ms
+  affected_rows INTEGER,                    -- rows modified/returned
+  
+  CHECK (allowed = FALSE OR blocked_reason IS NULL)  -- consistency
+);
+
+-- Indices for common queries
+CREATE INDEX idx_audit_agent ON audit_log(agent_id, timestamp DESC);
+CREATE INDEX idx_audit_blocked ON audit_log(allowed, timestamp DESC);
+CREATE INDEX idx_audit_connection ON audit_log(connection, timestamp DESC);
+```
+
+**Example forensic queries:**
+```sql
+-- "What did the Cursor agent attempt in the last 24 hours?"
+SELECT operation, query, allowed, blocked_reason
+FROM audit_log
+WHERE agent_id LIKE 'cursor-%'
+  AND timestamp > unixepoch('now') - 86400
+ORDER BY timestamp DESC;
+
+-- "Which operations were blocked?"
+SELECT COUNT(*) as blocked_count, operation
+FROM audit_log
+WHERE allowed = FALSE
+GROUP BY operation
+ORDER BY blocked_count DESC;
+
+-- "Any DROP attempts in prod?"
+SELECT timestamp, agent_id, query, blocked_reason
+FROM audit_log
+WHERE connection = 'prod'
+  AND operation LIKE 'DROP%'
+ORDER BY timestamp DESC;
+```
+
+### 6g. Error Codes (Governance)
+
+New error codes for governance layer:
+
+```typescript
+export enum MaitreErrorCode {
+  // ... existing codes ...
+  
+  // Governance errors (3xxx)
+  OPERATION_BLOCKED       = 3005,    // Operation not allowed by policy
+  EXPLAIN_REQUIRED        = 3006,    // Must run EXPLAIN first
+  RATE_LIMITED            = 3003,    // Too many queries this minute
+  SCHEMA_NOT_ALLOWED      = 3004,    // Schema not in allowlist
+  POLICY_VIOLATION        = 3001,    // Generic policy violation
+  APPROVAL_REQUIRED       = 3007,    // Operation requires approval token
+  APPROVAL_EXPIRED        = 3008,    // Approval token expired
+}
+```
+
+Errors include `suggestion` field:
+```typescript
+throw new MaitreError(
+  MaitreErrorCode.OPERATION_BLOCKED,
+  "DROP operations are not allowed for agents",
+  'postgres',
+  undefined,  // nativeCode
+  "If you need to drop objects, connect without --as agent flag"  // suggestion
+);
+```
+
+### 6h. Middleware & Hook System
+
+Pre/post query hooks for extensibility:
+
+```typescript
+interface QueryHook {
+  phase: 'before' | 'after' | 'error';
+  query: string;
+  connection: Connection;
+  policy?: GovernancePolicy;
+  result?: QueryResult;
+  error?: MaitreError;
+}
+
+interface HookHandler {
+  (hook: QueryHook): Promise<void> | void;
+}
+```
+
+Built-in hooks:
+- **Audit logger**: logs to history.db (always active)
+- **Slow query logger**: logs queries exceeding executionMs threshold
+- **Query transformer**: applies masking, adds comments, rewrites for safety
+
+### 6i. Testing
+
+- Unit: policy engine with dozens of test cases
+  - Block DROP, TRUNCATE, DELETE without WHERE
+  - Allow SELECT
+  - Respect schema allowlists
+  - Enforce rate limits
+  - Block expensive queries
+  
+- Integration: end-to-end with SQLite driver
+  - Agent blocks DROP DATABASE attempt (verify error code 3005)
+  - Agent blocks DELETE without approval (verify error code 3007)
+  - Approval token lifecycle (generate, validate, expire, replay protection)
+  - Audit logging to history.db
+
+- E2E: CLI with --as agent flag
+  - `mdb query prod "DROP DATABASE test" --as agent` → error
+  - `mdb query prod "SELECT 1" --as agent` → success
+  - Audit log entry for both
+
+---
 
 ---
 

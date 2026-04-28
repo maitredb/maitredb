@@ -26,6 +26,15 @@ import type {
   TypeInfo,
 } from '@maitredb/plugin-api';
 
+type ClickHouseRawResult = {
+  buffer?: () => Promise<Buffer | Uint8Array>;
+  stream: () => AsyncIterable<Buffer | Uint8Array | (Buffer | Uint8Array)[]>;
+};
+
+type ClickHouseRawClient = {
+  query: (params: Record<string, unknown>) => Promise<ClickHouseRawResult>;
+};
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -127,7 +136,8 @@ export class ClickHouseDriver implements DriverAdapter {
 
     // Try Arrow IPC format first — native columnar result
     try {
-      const rs = await client.query({ query, format: 'Arrow', query_params: toQueryParams(params) });
+      const rs = await (client as unknown as ClickHouseRawClient).query({ query, format: 'Arrow', query_params: toQueryParams(params) });
+      if (!rs.buffer) throw new Error('ClickHouse Arrow result buffering is unavailable.');
       const buf = await rs.buffer();
       const table = tableFromIPC(buf);
       const batch = table.batches[0];
@@ -183,12 +193,12 @@ export class ClickHouseDriver implements DriverAdapter {
 
     // Try ArrowStream format — native chunked Arrow IPC
     try {
-      const rs = await client.query({
+      const rs = await (client as unknown as ClickHouseRawClient).query({
         query,
         format: 'ArrowStream',
         query_params: toQueryParams(params),
       });
-      for await (const chunk of rs.stream() as AsyncIterable<Buffer | Uint8Array | (Buffer | Uint8Array)[]>) {
+      for await (const chunk of rs.stream()) {
         const buf = Array.isArray(chunk)
           ? Buffer.concat(chunk as Uint8Array[])
           : Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);

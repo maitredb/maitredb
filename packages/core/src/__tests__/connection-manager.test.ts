@@ -91,6 +91,7 @@ function createAdapter(dialect: ConnectionConfig['type'], hooks?: {
       asyncExecution: false,
       embedded: false,
       costEstimate: false,
+      arrowNative: false,
     }),
   };
 

@@ -4,7 +4,7 @@
 >
 > A cross-platform, open-source database client with native CLI and GUI — built
 > for humans and agents alike. Handles pooling, query sequencing, credential
-> isolation, and schema introspection as middleware between your "customers"
+> isolation, guardrails, and schema introspection as middleware between your "customers"
 > (humans, AI agents, scripts) and the "kitchen" (your databases).
 
 **Package name**: `maitredb` | **CLI command**: `mdb` | **Org scope**: `@maitredb/*`
@@ -1034,7 +1034,24 @@ result.histogram // [{ bucket: '<10ms', count: 6 }, ...]
 
 ## Agent Governance & Security Model
 
-This is a **day-1 architectural concern**, not a bolt-on. Agents can be powerful but need guardrails.
+This is a **day-1 architectural concern**, not a bolt-on. Agents are powerful but need hard guardrails.
+
+The governance layer exists to prevent the scenario from the Cursor database deletion incident: an unchecked LLM agent drops production databases because nothing stopped it. Maître d'B makes this impossible through **three-layer defense**:
+
+1. **Query classification** — Parse SQL to understand intent (DDL, DML, read, write)
+2. **Policy enforcement** — Conservative operation blocking + schema isolation
+3. **Audit trail** — Complete queryable log of all attempted operations, blocked or not
+
+### Threat Model: Agent Gone Rogue
+
+An agent (LLM code generator, automation tool, etc.) can:
+- Issue malicious queries (DROP DATABASE, DELETE *, TRUNCATE)
+- Attempt privilege escalation (ALTER ROLE, GRANT admin)
+- Exfiltrate data (SELECT * from PII tables, export to S3)
+- Cause denial of service (resource exhaustion, infinite loops)
+- Chain multiple operations (e.g., disable backup triggers before DROP)
+
+Maître d'B's response: **fail safely and noisily**. Block the dangerous operation, log the attempt, return a clear error with context so the human can investigate.
 
 ### Policy file: `~/.maitredb/policies.json`
 
@@ -1043,45 +1060,395 @@ This is a **day-1 architectural concern**, not a bolt-on. Agents can be powerful
   "policies": {
     "agent-default": {
       "mode": "read-only",                    // read-only | read-write | full
+      
+      // Data volume safeguards
       "maxRowsPerQuery": 10000,               // hard limit on result size
       "maxQueriesPerMinute": 60,              // rate limiting
-      "allowedSchemas": ["public", "analytics"], // schema-level allowlist
-      "blockedOperations": ["DROP", "TRUNCATE", "DELETE WITHOUT WHERE"],
-      "requireExplainBefore": {
-        "rowEstimateThreshold": 1000000       // must EXPLAIN before running expensive queries
-      },
       "maxConcurrentQueries": 5,
-      "sessionTimeoutMs": 300000              // 5 min idle timeout
+      "sessionTimeoutMs": 300000,             // 5 min idle timeout
+      
+      // Schema isolation
+      "allowedSchemas": ["public", "analytics"],  // only these schemas
+      "allowedTables": null,                      // null = all in allowedSchemas, else: ["users", "orders"]
+      "forbiddenPatterns": [                      // table name regexes to block
+        "^admin_.*",
+        "^system_.*",
+        ".*_secret",
+        ".*_key"
+      ],
+      
+      // Destructive operation blocking (Conservative mode)
+      // Each operation type can be individually controlled
+      "operations": {
+        "read": { "allowed": true },              // SELECT, WITH, etc.
+        "insert": { "allowed": true },            // INSERT
+        "update": { "allowed": false },           // UPDATE (blocked by default for agents)
+        "delete": { 
+          "allowed": false,                       // DELETE is blocked
+          "allowIfHasWhereClause": false          // even DELETE WHERE id = 123 is blocked
+        },
+        "truncate": { "allowed": false },         // TRUNCATE (always destructive)
+        "drop": { "allowed": false },             // DROP TABLE/DATABASE/SCHEMA/INDEX (always destructive)
+        "alter": { 
+          "allowed": false,                       // ALTER TABLE/DATABASE
+          "allowedAlterations": []                // future: granular ALTER control
+        },
+        "ddl": { "allowed": false },              // CREATE (database-level changes)
+        "transaction": { 
+          "allowed": true,
+          "allowCommit": false,                   // Agent can BEGIN, but cannot COMMIT (human must)
+          "allowRollback": true                   // Agent can ROLLBACK
+        },
+        "vacuum": { "allowed": false },           // VACUUM, OPTIMIZE
+        "grant": { "allowed": false },            // GRANT, REVOKE (privilege changes)
+        "procedure": { "allowed": false },        // CALL, CREATE PROCEDURE
+        "import": { "allowed": false },           // COPY FROM, LOAD DATA (data injection)
+        "export": { 
+          "allowed": false,                       // SELECT INTO, UNLOAD, S3 export
+          "allowedFormats": []
+        }
+      },
+      
+      // Expensive query safeguards
+      "requireExplainBefore": {
+        "rowEstimateThreshold": 1000000,          // must EXPLAIN before running expensive queries
+        "joinCountThreshold": 5,                  // warn on joins > 5 tables
+        "subqueryDepthThreshold": 3               // warn on nested subqueries > 3 deep
+      },
+      
+      // Audit & approval
+      "auditAllOperations": true,                 // log everything to history.db
+      "requireApprovalFor": [                     // operations requiring human sign-off
+        "UPDATE",
+        "DELETE"
+      ],
+      "approvalTimeout": 3600000,                 // 1 hour: approval token expires after this
+      "blockedReasonMessage": "Destructive operations are not allowed for agents. Contact your database administrator to perform this operation."
     },
+    
     "human-default": {
       "mode": "full",
       "maxRowsPerQuery": null,
-      "maxQueriesPerMinute": null
+      "maxQueriesPerMinute": null,
+      "auditAllOperations": false,                // humans not micro-managed
+      "operations": {
+        "read": { "allowed": true },
+        "insert": { "allowed": true },
+        "update": { "allowed": true },
+        "delete": { "allowed": true },
+        "truncate": { "allowed": true },
+        "drop": { "allowed": true },
+        "alter": { "allowed": true },
+        "ddl": { "allowed": true },
+        "transaction": { "allowed": true, "allowCommit": true },
+        "vacuum": { "allowed": true },
+        "grant": { "allowed": true },
+        "procedure": { "allowed": true },
+        "import": { "allowed": true },
+        "export": { "allowed": true }
+      }
+    },
+    
+    "agent-prod": {
+      // Strictest policy for production agent access
+      // Extends agent-default with even tighter controls
+      "mode": "read-only",
+      "maxRowsPerQuery": 5000,
+      "allowedSchemas": ["analytics"],
+      "auditAllOperations": true,
+      "operations": {
+        "read": { "allowed": true },
+        "insert": { "allowed": false },
+        "update": { "allowed": false },
+        "delete": { "allowed": false },
+        "truncate": { "allowed": false },
+        "drop": { "allowed": false },
+        "alter": { "allowed": false },
+        "ddl": { "allowed": false },
+        "transaction": { "allowed": false },
+        "vacuum": { "allowed": false },
+        "grant": { "allowed": false },
+        "procedure": { "allowed": false },
+        "import": { "allowed": false },
+        "export": { "allowed": false }
+      }
     }
   },
+  
   "connectionPolicies": {
-    "prod": "agent-default",                  // prod gets restricted policy
-    "dev": "human-default"                    // dev is wide open
+    "prod": "agent-prod",                         // prod gets strictest policy
+    "staging": "agent-default",
+    "dev": "human-default"                        // dev is wide open
   }
 }
 ```
 
-### How policies are applied
+### Query Classification & Validation
 
-- CLI flag `--as agent` activates the agent policy for that session.
-- MCP server mode always uses the configured agent policy.
-- Policies are enforced in `@maitredb/governance` before queries reach the driver.
-- Policy violations return structured errors (not silent drops) so agents can adjust.
+Before execution, the governance layer parses and classifies every query:
 
-### Query validation pipeline
+```typescript
+interface QueryClassification {
+  type: 'read' | 'write' | 'ddl' | 'dcl' | 'transaction';
+  operation: 'SELECT' | 'INSERT' | 'UPDATE' | 'DELETE' | 'DROP' | 'ALTER' | 'TRUNCATE' | ...;
+  affectedSchemas: string[];
+  affectedTables: string[];
+  rowEstimate?: number;              // from EXPLAIN if available
+  hasWhereClause: boolean;
+  hasLimitClause: boolean;
+  joinCount: number;
+  subqueryDepth: number;
+  wouldModifyTables: boolean;
+  isSensitiveOperation: boolean;     // DROP, TRUNCATE, GRANT, VACUUM, etc.
+}
+```
+
+### Query Validation Pipeline
 
 ```
-User/Agent submits query
-  → Parse & classify (DDL? DML? read? write?)
-  → Check against policy (allowed schemas, blocked operations, mode)
-  → If write + requireExplainBefore: run EXPLAIN, check row estimate
-  → If passes: execute via driver
-  → If fails: return GovernanceError with reason + suggestion
+Agent submits query
+  ↓
+Parse query with SQL parser (e.g., pgsql-parser or dialect-specific)
+  ↓
+Classify operation (SELECT? UPDATE? DROP DATABASE?)
+  ↓
+Check policy constraints:
+  ├─ Is this operation type allowed? (operations.{type}.allowed)
+  ├─ Are target schemas in allowedSchemas list?
+  ├─ Do target tables match forbiddenPatterns regex?
+  ├─ If DELETE: does it have WHERE clause? (allowIfHasWhereClause check)
+  ├─ If EXPLAIN required: run EXPLAIN, compare row estimate vs threshold
+  ├─ Check rate limits (queries per minute, concurrent queries)
+  └─ Check data volume limits (maxRowsPerQuery)
+  ↓
+If blocked → return GovernanceError(code: 3005, message, suggestion)
+If approved → execute via driver
+If requireApprovalFor → require agent to call approveOperation(token)
+  ↓
+Log to audit trail (operation, user, policy applied, result)
+```
+
+### How Policies Are Applied
+
+- CLI flag `--as agent` activates the named agent policy for that session (default: agent-default)
+- `--policy custom-name` overrides to use a different policy
+- MCP server mode always uses the configured agent policy (no escape hatch)
+- Policies are enforced in `@maitredb/governance` before queries reach the driver
+- Policy violations return `GovernanceError` with code `3005` (`OPERATION_BLOCKED`)
+
+### Approval Workflow (for requireApprovalFor Operations)
+
+For operations marked in `requireApprovalFor` (e.g., UPDATE, DELETE on production), agents can:
+
+1. **Prepare** the operation without executing:
+   ```bash
+   mdb query prod "UPDATE users SET status = 'inactive'" --as agent --dry-run
+   # Returns: operation ID, query hash, summary
+   # Output: "Operation prepared (ID: op-abc123). Call 'mdb query prod --approve op-abc123' to execute."
+   ```
+
+2. **Request approval** (in agent flow, this is a prompt to the human orchestrator):
+   ```json
+   {
+     "operationId": "op-abc123",
+     "query": "UPDATE users SET status = 'inactive'",
+     "rowEstimate": 5234,
+     "policy": "agent-default",
+     "blockedReason": "UPDATE operations require human approval",
+     "approvalToken": "token-xyz789"
+   }
+   ```
+
+3. **Execute with approval token** (human provides token back to orchestrator):
+   ```bash
+   mdb query prod "UPDATE users SET status = 'inactive'" --as agent --approval-token token-xyz789
+   # Validates token not expired, then executes
+   ```
+
+### Conservative Blocking Example: The Cursor Incident
+
+This scenario should be **impossible** with maitredb's agent policy:
+
+```typescript
+// Agent thinks it's being helpful and cleans up
+const query = "DROP DATABASE production_backup";
+
+// With maitredb --as agent using agent-default policy:
+// 1. Parser: "DROP DATABASE" identified
+// 2. Classification: operation = 'drop', type = 'ddl'
+// 3. Policy check: operations.drop.allowed === false
+// 4. Result: BLOCKED
+// 5. Error returned:
+{
+  error: "OPERATION_BLOCKED",
+  code: 3005,
+  message: "DROP operations are not allowed for agents",
+  suggestion: "If you need to drop a database, connect as a human (without --as agent flag)",
+  operation: "DROP DATABASE",
+  blockedReason: "Destructive operations are not allowed for agents"
+}
+
+// Agent cannot proceed. No database is dropped. Incident prevented.
+```
+
+### Audit Trail & Forensics
+
+Every attempt is logged to `~/.maitredb/history.db` (SQLite):
+
+```sql
+-- history.db schema
+CREATE TABLE audit_log (
+  id TEXT PRIMARY KEY,
+  timestamp INTEGER NOT NULL,
+  connection TEXT NOT NULL,
+  agent_id TEXT,                    -- NULL for humans
+  query TEXT NOT NULL,
+  classification_type TEXT,         -- read|write|ddl|...
+  operation TEXT,                   -- SELECT|UPDATE|DROP|...
+  policy_name TEXT,
+  allowed BOOLEAN,
+  blocked_reason TEXT,              -- If blocked, why
+  error_code INTEGER,
+  row_estimate INTEGER,
+  execution_ms INTEGER,
+  affected_rows INTEGER
+);
+
+-- Forensics: "What did agent X do today?"
+SELECT * FROM audit_log 
+WHERE agent_id = 'claude-cursor-v1' 
+  AND timestamp > datetime('now', '-1 day') 
+ORDER BY timestamp DESC;
+
+-- "What operations were blocked?"
+SELECT * FROM audit_log 
+WHERE allowed = FALSE 
+ORDER BY timestamp DESC 
+LIMIT 20;
+```
+
+### Maitredb as a Safety Layer for AI Coding Tools
+
+Cursor and other AI coding agents using Claude can now integrate maitredb:
+
+```bash
+# In agent's execution environment, instead of:
+# > psql -h prod.db.example.com -d mydb -c "DROP DATABASE ..."
+
+# The agent uses maitredb (with --as agent flag):
+# > mdb query prod "DROP DATABASE ..." --as agent
+# Result: OPERATION_BLOCKED + clear error message
+
+# The agent logs it, reports to human:
+# "I attempted to drop the database but was blocked by safety policy. 
+#  To proceed, run this command yourself with approval."
+```
+
+This turns a **silent disaster** into a **clear workflow** where humans stay in control.
+
+### Governance Package Implementation (`@maitredb/governance`)
+
+The governance layer is **mandatory middleware** — all queries pass through it.
+
+**Core components:**
+
+1. **QueryClassifier**
+   - Parses SQL to identify operation type (read, write, ddl, transaction, etc.)
+   - Uses dialect-aware parsers (postgres-parser, sql-bricks, etc.) or generic SQL regex for simple classification
+   - Returns `QueryClassification` with operation, affected schemas/tables, complexity metrics
+   - Caches parser for a given dialect
+
+2. **PolicyEngine**
+   - Loads policy JSON from `~/.maitredb/policies.json` with full validation
+   - Implements policy matching: query → connection → dialect → policy name
+   - Validates query against policy:
+     - Operation type allowed? (operations.{type}.allowed)
+     - Affected schemas in allowlist? (allowedSchemas array)
+     - Affected tables don't match forbidden patterns? (forbiddenPatterns regex)
+     - For DELETE: has WHERE clause? (allowIfHasWhereClause)
+     - Rate limits respected? (maxQueriesPerMinute, concurrent queries)
+     - Row limits respected? (maxRowsPerQuery)
+   - Returns `PolicyDecision` with allowed/blocked status + reason
+
+3. **AuditLogger**
+   - Writes every operation attempt to `~/.maitredb/history.db` SQLite database
+   - Captures: timestamp, connection, query, classification, policy, result, error
+   - Queryable for forensics: "What did agent X attempt?", "Which operations were blocked?"
+   - Retention: configurable (default: unlimited, but recommend monthly rotation)
+
+4. **ApprovalManager** (for requireApprovalFor operations)
+   - Generates approval tokens with expiration (1 hour default)
+   - Validates token before execution
+   - Tracks which operations have been approved
+   - Prevents replay attacks (token can only be used once)
+
+**Flow:**
+
+```typescript
+interface GovernanceMiddleware {
+  validateAndExecute(
+    query: string,
+    connection: Connection,
+    policy: GovernancePolicy,
+    agentId?: string
+  ): Promise<QueryResult> {
+    // 1. Classify
+    const classification = queryClassifier.classify(query, connection.dialect);
+    
+    // 2. Validate against policy
+    const decision = policyEngine.evaluate(classification, policy);
+    
+    // 3. Log attempt
+    auditLogger.log({
+      query,
+      classification,
+      allowed: decision.allowed,
+      policy: policy.name,
+      agentId
+    });
+    
+    // 4. If blocked: return error
+    if (!decision.allowed) {
+      throw new MaitreError(
+        MaitreErrorCode.OPERATION_BLOCKED,
+        decision.blockedReason,
+        connection.dialect,
+        undefined,
+        decision.suggestion
+      );
+    }
+    
+    // 5. If requires approval: check token
+    if (decision.requiresApproval && !approvalToken) {
+      throw new MaitreError(
+        MaitreErrorCode.OPERATION_BLOCKED,
+        `Operation ${classification.operation} requires approval`,
+        connection.dialect,
+        undefined,
+        `Run with --approval-token <token>`
+      );
+    }
+    
+    // 6. Execute
+    return queryExecutor.execute(query, connection);
+  }
+}
+```
+
+**Policy loading & validation:**
+
+```typescript
+interface GovernancePolicyFile {
+  policies: Record<string, GovernancePolicy>;
+  connectionPolicies: Record<string, string>;  // connection name → policy name
+}
+
+// Validation on load:
+// - All referenced policies exist (no dangling connectionPolicies references)
+// - All operation types are recognized
+// - forbiddenPatterns are valid regex
+// - Numeric constraints are positive (maxRowsPerQuery > 0)
+// - Schema/table allowlists don't overlap with blockedSchemas/forbiddenPatterns
 ```
 
 ---

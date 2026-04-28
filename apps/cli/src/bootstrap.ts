@@ -48,6 +48,36 @@ export function getRegistry(): PluginRegistry {
       const { ClickHouseDriver } = await import('@maitredb/driver-clickhouse');
       return new ClickHouseDriver();
     });
+
+    registry.registerFactory('snowflake', async () => {
+      const packageName = '@maitredb/driver-snowflake';
+      const { SnowflakeDriver } = await import(packageName) as { SnowflakeDriver: new () => import('@maitredb/plugin-api').DriverAdapter };
+      return new SnowflakeDriver();
+    });
+
+    registry.registerFactory('mongodb', async () => {
+      const packageName = '@maitredb/driver-mongodb';
+      const { MongoDbDriver } = await import(packageName) as { MongoDbDriver: new () => import('@maitredb/plugin-api').DriverAdapter };
+      return new MongoDbDriver();
+    });
+
+    registry.registerFactory('bigquery', async () => {
+      const packageName = '@maitredb/driver-bigquery';
+      const { BigQueryDriver } = await import(packageName) as { BigQueryDriver: new () => import('@maitredb/plugin-api').DriverAdapter };
+      return new BigQueryDriver();
+    });
+
+    registry.registerFactory('redshift', async () => {
+      const packageName = '@maitredb/driver-redshift';
+      const { RedshiftDriver } = await import(packageName) as { RedshiftDriver: new () => import('@maitredb/plugin-api').DriverAdapter };
+      return new RedshiftDriver();
+    });
+
+    registry.registerFactory('athena', async () => {
+      const packageName = '@maitredb/driver-athena';
+      const { AthenaDriver } = await import(packageName) as { AthenaDriver: new () => import('@maitredb/plugin-api').DriverAdapter };
+      return new AthenaDriver();
+    });
   }
   return registry;
 }

@@ -80,6 +80,7 @@ function makeAdapter(calls: { getTables: number; execute: number }): DriverAdapt
       asyncExecution: false,
       embedded: true,
       costEstimate: false,
+      arrowNative: false,
     }),
   };
 }

@@ -3,6 +3,79 @@
 > Chronological record of all changes, improvements, and fixes.
 > Follows [Keep a Changelog](https://keepachangelog.com/) format.
 
+## [v0.4.0] — 2026-04-15
+
+### Added
+
+- **Snowflake driver — `@maitredb/driver-snowflake` (Workstream 4a)**
+  - New package `@maitredb/driver-snowflake@0.4.0` using `snowflake-sdk ^2.3.0`
+  - `connect()` iterates `config.auth` array in priority order: key-pair (`SNOWFLAKE_JWT` + `privateKey`/`privateKeyPath`) → token-cache/oauth-refresh (`OAUTH` + `token`) → password fallback; all snowflake-sdk callbacks are promisified via internal helpers
+  - `execute()` calls `promiseExecute()`, returns `batch` (Arrow `RecordBatch`) for SELECTs, plain `rowCount` for writes; `stream()` uses `streamResult: true` and `Statement.streamRows()` for native row streaming
+  - `beginTransaction()` issues `BEGIN`/`COMMIT`/`ROLLBACK` via `promiseExecute()`
+  - Full introspection: `getSchemas()` via `SHOW SCHEMAS`; `getTables()` via `SHOW TABLES` + `SHOW VIEWS`; `getColumns()` via `INFORMATION_SCHEMA.COLUMNS`; `getIndexes()` via `SHOW PRIMARY KEYS IN TABLE`; `getRoles()` via `SHOW ROLES`; `getGrants()` via `SHOW GRANTS TO ROLE`
+  - `sanitizeIdentifier()` wraps identifiers in double-quotes and escapes embedded quotes
+  - `capabilities()`: `transactions: true`, `streaming: true`, `explain: true`, `roles: true`, `schemas: true`, `costEstimate: true`, `arrowNative: false`
+
+- **Auth method hierarchy (Workstream 4f)**
+  - Snowflake `connect()` supports an ordered `config.auth` array — the driver iterates it in declaration order and selects the first matching method: key-pair JWT → OAUTH token → password; enables seamless credential rotation without code changes
+
+- **MongoDB driver — `@maitredb/driver-mongodb` (Workstream 4b)**
+  - New package `@maitredb/driver-mongodb@0.4.0` using `mongodb ^6.0.0`
+  - `execute()` accepts MongoOperation JSON objects (`{ collection, op, args?, projection?, sort?, limit? }`) or a minimal SQL SELECT statement parsed via `parseSqlToMongoOp()` regex parser
+  - Supported ops: `find`, `aggregate`, `insertOne`, `insertMany`, `updateOne`, `updateMany`, `deleteOne`, `deleteMany`, `command`
+  - `stream()` uses async iterator over native cursor for `find`/`aggregate` operations
+  - `beginTransaction()` uses `client.startSession()` + `session.startTransaction()` with commit/rollback
+  - Introspection: `getSchemas()` via `admin.command({ listDatabases: 1 })`; `getTables()` via `db.listCollections()`; `getColumns()` samples 100 documents and infers field types; `_id` field marked `isPrimaryKey: true`
+  - BSON types stripped via `JSON.parse(JSON.stringify(doc))` to avoid ObjectId serialization issues
+  - `capabilities()`: `transactions: true`, `streaming: true`, `explain: true`, `roles: true`, `schemas: true`, `arrowNative: false`
+
+- **BigQuery driver — `@maitredb/driver-bigquery` (Workstream 4c)**
+  - New package `@maitredb/driver-bigquery@0.4.0` using `@google-cloud/bigquery ^7.0.0`
+  - Async job model: `execute()` creates a query job → polls `job.getMetadata()` until `status.state === 'DONE'` → fetches with `job.getQueryResults({ autoPaginate: true })`; DDL returns `rowCount: 0`
+  - `stream()` uses `bq.createQueryStream()` async iterator for constant-memory streaming
+  - `explain()` leverages BigQuery dry-run (`dryRun: !options?.analyze`) for cost estimation without execution; real `EXPLAIN` plan returned when `analyze: true`
+  - Introspection: `getTables()` via `bq.dataset(datasetId).getTables()`; `getColumns()` via `dataset.table(table).getMetadata()` with BigQuery schema field mapping
+  - `capabilities()`: `transactions: false`, `asyncExecution: true`, `costEstimate: true`, `arrowNative: false`
+
+- **Redshift driver — `@maitredb/driver-redshift` (Workstream 4d)**
+  - New package `@maitredb/driver-redshift@0.4.0` using `@aws-sdk/client-redshift-data ^3.0.0` (stateless Data API, no JDBC)
+  - `execute()` sends `ExecuteStatementCommand`, polls `DescribeStatementCommand` until `FINISHED`/`FAILED`/`ABORTED`; supports both `ClusterIdentifier` (provisioned) and `WorkgroupName` (serverless), plus `DbUser` and `SecretArn`
+  - `fetchAllResults()` pages `GetStatementResultCommand`; parses Data API field union: `isNull` → null, `stringValue`, `longValue`, `doubleValue`, `booleanValue`
+  - `cancelQuery()` sends `CancelStatementCommand`
+  - Introspection: `getSchemas()` via `ListSchemasCommand`; `getTables()` via `ListTablesCommand`; `getColumns()` via `DescribeTableCommand`; `getIndexes()` via SQL fallback querying `pg_indexes`
+  - `capabilities()`: `transactions: false` (Data API limitation), `asyncExecution: true`, `cancelQuery: true`, `roles: true`
+
+- **Athena driver — `@maitredb/driver-athena` (Workstream 4e)**
+  - New package `@maitredb/driver-athena@0.4.0` using `@aws-sdk/client-athena ^3.0.0` (fully stateless, no TCP connection held)
+  - `connect()` requires `options.outputLocation` (S3 URI); creates `AthenaClient` with `region` from config or `AWS_REGION` environment variable
+  - `startAndWaitQuery()` sends `StartQueryExecutionCommand` with `QueryExecutionContext`, `ResultConfiguration.OutputLocation`, optional `WorkGroup` and `ResultReuseConfiguration`; polls `GetQueryExecutionCommand` checking `Status.State`; throws on `FAILED`/`CANCELLED`
+  - `fetchAllResults()` pages `GetQueryResultsCommand`; skips the header row in the first page by comparing values to column metadata names
+  - `cancelQuery()` sends `StopQueryExecutionCommand`
+  - `beginTransaction()` throws — Athena is stateless and does not support transactions
+  - Introspection: `getSchemas()` via `ListDatabasesCommand`; `getTables()` via `ListTableMetadataCommand` (with VIEW detection); `getColumns()` via `GetTableMetadataCommand`; `getIndexes()` returns empty (Athena/Presto has no traditional indexes)
+  - `explain()` runs `EXPLAIN <sql>` via Athena/Presto engine
+  - `capabilities()`: `transactions: false`, `asyncExecution: true`, `cancelQuery: true`, `schemas: true`, `arrowNative: false`
+
+- **CLI driver registration**
+  - All 5 new drivers registered lazily in `apps/cli/src/bootstrap.ts` via `getRegistry().registerFactory()` using runtime-dynamic imports so CLI type-checks do not require prebuilt `dist/index.d.ts` artifacts
+  - `apps/cli/package.json` now depends on all 11 driver packages (`workspace:*`)
+
+### Fixed
+
+- Tightened v0.4.0 integration against strict TypeScript by correcting AWS SDK command input typing, BigQuery constructor option typing, MongoDB write concern typing, Snowflake stream typing, and CLI lazy import module resolution
+- Corrected MongoDB `ObjectId` type inference so `objectid` maps to `unknown` rather than being caught by the broader `object` check
+- BigQuery execution now merges connection `config.options` overrides with stored native options, preserving per-connection query controls such as `maximumBytesBilled`
+
+### Tests
+
+- `packages/driver-snowflake/src/__tests__/snowflake-driver.test.ts` (23 tests, fully mocked): auth method selection (key-pair, OAUTH token, password fallback); connect failure; lifecycle; `execute()` SELECT / INSERT / DDL; `stream()` via Snowflake streaming API; `beginTransaction()` commit/rollback; `getSchemas`/`getTables`/`getColumns`/`getIndexes`/`getRoles`/`explain`; `mapNativeType()` coverage
+- `packages/driver-mongodb/src/__tests__/mongodb-driver.test.ts` (23 tests, fully mocked): `connect()`/`disconnect()`; `execute()` with JSON op (find, insertOne, deleteOne); SQL SELECT parse path; `stream()` cursor iteration; `beginTransaction()` commit/rollback; `getSchemas`/`getTables`/`getColumns`; `explain()`; `mapNativeType()` coverage
+- `packages/driver-bigquery/src/__tests__/bigquery-driver.test.ts` (21 tests, fully mocked): job poll loop; `execute()` SELECT/DDL; `stream()`; `explain()` dry-run vs analyze; `getTables`/`getColumns`; `mapNativeType()` coverage; `capabilities()` flags
+- `packages/driver-redshift/src/__tests__/redshift-driver.test.ts` (16 tests, fully mocked): Data API polling; field union type parsing; `cancelQuery()`; `getSchemas`/`getTables`/`getColumns`/`getIndexes`; `mapNativeType()` coverage
+- `packages/driver-athena/src/__tests__/athena-driver.test.ts` (19 tests, fully mocked): connect without `outputLocation` throws; `AthenaClient` region; `disconnect()` destroys client; polling `SUCCEEDED`/`FAILED`/`CANCELLED`; `NextToken` pagination; `stream()`; `cancelQuery()`; `beginTransaction()` throws; `getSchemas`/`getTables`/`getColumns`/`getIndexes`; `explain()`; `mapNativeType()` full Presto type coverage
+
+---
+
 ## [v0.3.0] — 2026-04-14
 
 ### Added
