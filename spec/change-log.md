@@ -3,6 +3,80 @@
 > Chronological record of all changes, improvements, and fixes.
 > Follows [Keep a Changelog](https://keepachangelog.com/) format.
 
+## [v0.6.0] — 2026-04-29
+
+### Added
+
+- **Governance package — `@maitredb/governance` (Agent Safety workstream)**
+  - New package `@maitredb/governance@0.6.0` with policy and safety primitives for agent-mode query execution
+  - `QueryClassifier` parses SQL into normalized statements and classifies operation metadata (`read`, `write`, `ddl`, `dcl`, `transaction`) plus risk patterns
+  - `PolicyEngine` evaluates agent-mode requests against allow/block rules (operation classes, schema/table patterns, approval requirements, and limits)
+  - `ApprovalManager` issues and validates short-lived, one-time approval tokens tied to connection/query hash/agent identity
+  - `AuditLogger` persists governance decisions to SQLite (`better-sqlite3`) using append-only controls for immutable decision history
+  - `HookRegistry` enables pre/post policy hooks for extension points and custom controls
+
+- **CLI agent-mode governance integration**
+  - `mdb query` now supports governance flags for agent operation: `--as agent`, `--policy`, `--agent-id`, `--dry-run`, `--approval-token`
+  - Agent-mode runs policy evaluation before execution and blocks unsafe operations with typed governance errors
+  - Dry-run mode can return approval-needed outcomes without executing SQL, including tokenized approval flow support
+  - Governance decisions (allowed/blocked/approval-required) are audited with connection, agent, operation class, and rationale metadata
+
+### Changed
+
+- **Governance error model alignment in core**
+  - Added `APPROVAL_REQUIRED (3007)` and `APPROVAL_EXPIRED (3008)` to `@maitredb/core` error taxonomy to support approval-gated execution flows
+
+### Tests
+
+- `packages/governance/src/__tests__/classifier.test.ts`: statement splitting, comment/literal handling, operation/risk classification
+- `packages/governance/src/__tests__/policy-engine.test.ts`: allow/block decisions, approval-required paths, policy validation behavior
+- `packages/governance/src/__tests__/approval-manager.test.ts`: token issue/validate/consume semantics, expiry, one-time usage constraints
+- `packages/governance/src/__tests__/audit-logger.test.ts`: SQLite audit persistence, append-only behavior, decision-querying
+- `apps/cli/src/__tests__/cli-e2e.test.ts`: end-to-end governance path covering blocked DDL, approval-required updates, dry-run token issuance, approved execution, and audit assertions
+
+### Verification
+
+- `pnpm --filter @maitredb/governance build`
+- `pnpm --filter @maitredb/governance test`
+- `pnpm --filter @maitredb/cli build`
+- `pnpm --filter @maitredb/cli test`
+- Workspace validation: `pnpm test` completed successfully (`36/36` tasks)
+
+---
+
+## [v0.5.0] — 2026-04-29
+
+### Added
+
+- **Wire package foundations — `@maitredb/wire`**
+  - Introduced `@maitredb/wire@0.5.0` package with TypeScript-first parser path and Rust napi-rs scaffold for Arrow-focused wire parsing evolution
+  - Added JS fallback parser and package structure to allow zero-install operation when native artifacts are unavailable
+  - Added optional native binding loading strategy by platform with graceful fallback behavior
+
+- **Prepared statement performance layer in core**
+  - Added prepared statement cache to `@maitredb/core` with bounded retention and reuse mechanics for repeat query plans
+  - Added worker-pool integration with in-process fallback path to keep execution resilient across environments
+  - Extended execution paths to reuse prepared handles where supported, reducing repeated prepare/parse overhead
+
+- **Driver prepared-statement integration**
+  - PostgreSQL and MySQL drivers updated to participate in prepared caching flows through core integration points
+  - Driver paths preserve streaming semantics while enabling cache-aware execution strategy
+
+### Changed
+
+- **Repository hygiene for wire native artifacts**
+  - Added `target/` to `.gitignore` to prevent Rust build artifacts from polluting workspace diffs
+  - Removed local `packages/wire/target` artifact directory from tracked change set
+
+### Tests
+
+- Added/expanded test coverage across `@maitredb/wire`, `@maitredb/core`, driver integrations, and CLI behavior for prepared/cache execution paths
+- Validation included package-level and workspace-level test runs to ensure no regressions in streaming behavior, type safety, and command execution
+
+### Verification
+
+- Workspace validation: `pnpm test` completed successfully (`36/36` tasks)
+
 ## [v0.4.0] — 2026-04-28
 
 ### Added

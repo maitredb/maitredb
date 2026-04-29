@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "maitredb": {
+      "command": "bash",
+      "args": [
+        "-lc",
+        "set -euo pipefail; if [ ! -d node_modules ] || [ ! -f packages/mcp/dist/index.js ]; then corepack pnpm install --frozen-lockfile; corepack pnpm --filter @maitredb/mcp build; fi; exec node packages/mcp/dist/index.js"
+      ]
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { Pool, types as pgTypes } from 'pg';
-import type { FieldDef, PoolClient, PoolConfig, QueryResult as PgQueryResult, QueryResultRow } from 'pg';
+import type { FieldDef, PoolClient, PoolConfig, QueryConfig, QueryResult as PgQueryResult, QueryResultRow } from 'pg';
 import Cursor from 'pg-cursor';
 import type {
   ColumnInfo,
@@ -26,13 +26,14 @@ import type {
   Transaction,
   TransactionOptions,
 } from '@maitredb/plugin-api';
-import { MaitreError, MaitreErrorCode } from '@maitredb/core';
+import { MaitreError, MaitreErrorCode, PreparedStatementCache } from '@maitredb/core';
 
 const STREAM_BATCH_SIZE = 1_000;
 
 /** PostgreSQL driver implemented via the native `pg` client. */
 export class PostgresDriver implements DriverAdapter {
   readonly dialect: 'postgresql' = 'postgresql';
+  private readonly preparedStatementCaches = new WeakMap<object, PreparedStatementCache>();
 
   constructor() {
     // Keep large numerics lossless.
@@ -100,7 +101,10 @@ export class PostgresDriver implements DriverAdapter {
   async execute(conn: Connection, query: string, params?: unknown[]): Promise<QueryResult> {
     const pool = this.getPool(conn);
     const startedAt = performance.now();
-    const result = await pool.query(query, params as any[] | undefined);
+    const prepared = this.toPreparedQuery(conn, query, params);
+    const result = prepared
+      ? await pool.query(prepared)
+      : await pool.query(query, params as any[] | undefined);
 
     return this.toQueryResult(result, performance.now() - startedAt);
   }
@@ -167,7 +171,10 @@ export class PostgresDriver implements DriverAdapter {
       id: randomUUID(),
       query: async (sql: string, params?: unknown[]): Promise<QueryResult> => {
         const startedAt = performance.now();
-        const result = await client.query(sql, params as any[] | undefined);
+        const prepared = this.toPreparedQuery(conn, sql, params);
+        const result = prepared
+          ? await client.query(prepared)
+          : await client.query(sql, params as any[] | undefined);
         return this.toQueryResult(result, performance.now() - startedAt);
       },
       commit: async (): Promise<void> => {
@@ -643,6 +650,31 @@ export class PostgresDriver implements DriverAdapter {
       application_name: options.applicationName,
       statement_timeout: options.statementTimeout,
     };
+  }
+
+  private toPreparedQuery(conn: Connection, query: string, params?: unknown[]): QueryConfig | undefined {
+    const options = (conn.config.options ?? {}) as PostgresOptions;
+    const cacheSize = options.preparedStatementCacheSize ?? 256;
+    if (cacheSize === 0 || !params || params.length === 0) return undefined;
+
+    const statement = this.getPreparedStatementCache(conn, cacheSize).getOrCreate(query);
+    if (!statement) return undefined;
+
+    return {
+      name: statement.name,
+      text: query,
+      values: params as any[],
+    };
+  }
+
+  private getPreparedStatementCache(conn: Connection, maxSize: number): PreparedStatementCache {
+    const native = conn.native as object;
+    let cache = this.preparedStatementCaches.get(native);
+    if (!cache) {
+      cache = new PreparedStatementCache({ maxSize, prefix: `mdb_pg_${conn.id.replace(/[^a-zA-Z0-9_]/g, '_')}` });
+      this.preparedStatementCaches.set(native, cache);
+    }
+    return cache;
   }
 
   private toQueryResult(result: PgQueryResult<QueryResultRow>, durationMs: number): QueryResult {

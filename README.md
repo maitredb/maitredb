@@ -54,6 +54,16 @@ pnpm --filter @maitredb/mcp build
 node apps/cli/dist/cli.js --help
 ```
 
+### Install as a GitHub Copilot CLI plugin (direct from GitHub)
+
+This repository now includes a `plugin.json` manifest, so you can install it directly from GitHub:
+
+```bash
+copilot plugin install sgoley/maitredb
+```
+
+The plugin wires in `.github/mcp.json` and starts the Maître d'B MCP server. On first launch it bootstraps dependencies and builds `@maitredb/mcp` automatically.
+
 ## Usage Patterns
 
 ### 1. CLI from source checkout

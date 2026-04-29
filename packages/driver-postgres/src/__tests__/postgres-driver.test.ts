@@ -10,8 +10,10 @@ type MockQueryResult = {
   fields?: Array<{ name: string; dataTypeID: number }>;
 };
 
+type MockQueryCall = { sql: string | object; params?: unknown[] };
+
 class MockClient {
-  readonly queryCalls: Array<{ sql: string; params?: unknown[] }> = [];
+  readonly queryCalls: MockQueryCall[] = [];
   readonly release = vi.fn(() => {});
 
   constructor(private readonly runQuery: (sql: string, params?: unknown[]) => Promise<MockQueryResult>) {}
@@ -19,7 +21,7 @@ class MockClient {
   query(sql: string, params?: unknown[]): Promise<MockQueryResult>;
   query(sql: object): object;
   query(sql: string | object, params?: unknown[]): Promise<MockQueryResult> | object {
-    if (typeof sql !== 'string') {
+    if (typeof sql !== 'string' && !('name' in sql)) {
       this.queryCalls.push({ sql: '[cursor]' });
       let offset = 0;
       const cursor = sql as { read: (count: number) => Promise<Record<string, unknown>[]>; close: () => Promise<void> };
@@ -34,7 +36,9 @@ class MockClient {
     }
 
     this.queryCalls.push({ sql, params });
-    return this.runQuery(sql, params);
+    const text = typeof sql === 'string' ? sql : String((sql as { text?: string }).text ?? '[prepared]');
+    const values = typeof sql === 'string' ? params : (sql as { values?: unknown[] }).values;
+    return this.runQuery(text, values);
   }
 }
 
@@ -45,7 +49,11 @@ class MockPool {
   readonly end = vi.fn(async () => {});
 
   constructor(private readonly runQuery: (sql: string, params?: unknown[]) => Promise<MockQueryResult>) {
-    this.query = vi.fn(async (sql: string, params?: unknown[]) => this.runQuery(sql, params));
+    this.query = vi.fn(async (sql: string | object, params?: unknown[]) => {
+      const text = typeof sql === 'string' ? sql : String((sql as { text?: string }).text ?? '[prepared]');
+      const values = typeof sql === 'string' ? params : (sql as { values?: unknown[] }).values;
+      return this.runQuery(text, values);
+    });
     this.connect = vi.fn(async () => {
       this.lastClient = new MockClient(this.runQuery);
       return this.lastClient;
@@ -60,6 +68,10 @@ function asConnection(pool: MockPool): Connection {
     config: { name: 'pg', type: 'postgresql' },
     native: pool as unknown,
   };
+}
+
+function preparedCallText(call: unknown): string | undefined {
+  return typeof call === 'object' && call !== null ? (call as { text?: string }).text : undefined;
 }
 
 describe('PostgresDriver', () => {
@@ -180,7 +192,27 @@ describe('PostgresDriver', () => {
       { name: 'payload', nativeType: 'bytea', type: 'binary' },
     ]);
     expect(result.durationMs).toBeGreaterThanOrEqual(0);
-    expect(pool.query).toHaveBeenCalledWith('SELECT id, name, payload FROM users WHERE id = $1', [42]);
+    const firstCall = pool.query.mock.calls[0]?.[0];
+    expect(preparedCallText(firstCall)).toBe('SELECT id, name, payload FROM users WHERE id = $1');
+    expect(firstCall).toMatchObject({
+      values: [42],
+      name: expect.stringMatching(/^mdb_pg_conn_1_/),
+    });
+  });
+
+  it('skips named prepared statements when the cache is disabled or SQL has multiple statements', async () => {
+    const driver = new PostgresDriver();
+    const pool = new MockPool(async () => ({ rows: [], rowCount: 0, fields: [] }));
+    const conn = {
+      ...asConnection(pool),
+      config: { name: 'pg', type: 'postgresql' as const, options: { preparedStatementCacheSize: 0 } },
+    };
+
+    await driver.execute(conn, 'SELECT id FROM users WHERE id = $1', [1]);
+    expect(pool.query).toHaveBeenLastCalledWith('SELECT id FROM users WHERE id = $1', [1]);
+
+    await driver.execute(asConnection(pool), 'SELECT $1; SELECT $2', [1, 2]);
+    expect(pool.query).toHaveBeenLastCalledWith('SELECT $1; SELECT $2', [1, 2]);
   });
 
   it('streams mapped rows', async () => {
@@ -259,6 +291,11 @@ describe('PostgresDriver', () => {
       'SELECT id, payload FROM users WHERE id = $1',
       'COMMIT',
     ]);
+    expect(pool.lastClient?.queryCalls[3]?.sql).toMatchObject({
+      text: 'SELECT id, payload FROM users WHERE id = $1',
+      values: [9],
+      name: expect.stringMatching(/^mdb_pg_conn_1_/),
+    });
     expect(result).toMatchObject({
       rowCount: 1,
       rows: [{ id: '9', payload: 'ff' }],

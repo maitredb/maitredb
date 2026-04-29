@@ -4,6 +4,7 @@ import type { RecordBatch } from 'apache-arrow';
 import type { AuditEntry } from './types.js';
 import { MaitreError, MaitreErrorCode } from './errors.js';
 import { rowsToRecordBatch, batchRows } from './arrow-utils.js';
+import { convertRowsToRecordBatchWithWorker, type WorkerPool } from './worker-pool.js';
 
 const DEFAULT_MAX_BUFFERED_ROWS = 10000;
 const SENSITIVE_SQL_KEY_PATTERN = 'password|passwd|pwd|secret|token|api[_-]?key|access[_-]?key|secret[_-]?key|client[_-]?secret|private[_-]?key|refresh[_-]?token';
@@ -36,6 +37,8 @@ export interface ExecutorOptions {
   history?: {
     record(entry: AuditEntry): Promise<void> | void;
   };
+  /** Optional worker pool for CPU-bound result format conversion. */
+  workerPool?: WorkerPool;
   connectionId?: string;
   connectionName?: string;
   caller?: 'human' | 'agent' | 'programmatic';
@@ -67,7 +70,9 @@ export class QueryExecutor {
       // Attach Arrow RecordBatch for non-Arrow drivers that returned plain rows
       if (result.rows.length > 0 && !result.batch) {
         try {
-          result.batch = rowsToRecordBatch(result.rows, result.fields);
+          result.batch = this.options.workerPool
+            ? await convertRowsToRecordBatchWithWorker(this.options.workerPool, result.rows, result.fields)
+            : rowsToRecordBatch(result.rows, result.fields);
         } catch {
           // Arrow conversion is best-effort; batch stays undefined
         }

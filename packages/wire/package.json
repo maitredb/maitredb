@@ -1,0 +1,36 @@
+{
+  "name": "@maitredb/wire",
+  "version": "0.5.0",
+  "description": "Wire protocol parsing hot path for Maître d'B",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "lint": "tsc --noEmit",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@maitredb/plugin-api": "workspace:*",
+    "apache-arrow": "^18.0.0"
+  },
+  "optionalDependencies": {
+    "@maitredb/wire-darwin-arm64": "0.5.0",
+    "@maitredb/wire-darwin-x64": "0.5.0",
+    "@maitredb/wire-linux-arm64-gnu": "0.5.0",
+    "@maitredb/wire-linux-x64-gnu": "0.5.0",
+    "@maitredb/wire-win32-x64-msvc": "0.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.2",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.1"
+  }
+}

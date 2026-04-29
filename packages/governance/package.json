@@ -1,7 +1,7 @@
 {
-  "name": "@maitredb/core",
-  "version": "0.0.1",
-  "description": "Connection manager, query executor, introspection",
+  "name": "@maitredb/governance",
+  "version": "0.6.0",
+  "description": "Governance and agent safety policies for Maître d'B",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -18,14 +18,16 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
-    "@maitredb/wire": "workspace:*",
-    "@maitredb/plugin-api": "workspace:*",
-    "apache-arrow": "^18.0.0",
-    "piscina": "^4.8.0"
+    "@maitredb/core": "workspace:*",
+    "@maitredb/plugin-api": "workspace:*"
+  },
+  "optionalDependencies": {
+    "better-sqlite3": "^11.9.1"
   },
   "devDependencies": {
-    "vitest": "^3.1.1",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^22.15.2",
     "typescript": "^5.8.3",
-    "@types/node": "^22.15.2"
+    "vitest": "^3.1.1"
   }
 }

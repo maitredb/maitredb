@@ -5,8 +5,10 @@ import { mkdirSync, rmSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 
 const exec = promisify(execFile);
+const require = createRequire(import.meta.url);
 
 const CLI = join(fileURLToPath(import.meta.url), '..', '..', '..', 'dist', 'cli.js');
 const TEST_HOME = join(tmpdir(), `mdb-e2e-${Date.now()}`);
@@ -17,6 +19,19 @@ function mdb(...args: string[]): Promise<{ stdout: string; stderr: string }> {
     env: { ...process.env, HOME: TEST_HOME },
     timeout: 10000,
   });
+}
+
+function auditRows(): Array<Record<string, unknown>> {
+  const Database = require('better-sqlite3') as new (path: string) => {
+    prepare(sql: string): { all(): Array<Record<string, unknown>> };
+    close(): void;
+  };
+  const db = new Database(join(TEST_HOME, '.maitredb', 'history.db'));
+  try {
+    return db.prepare('SELECT connection, agent_id, operation, allowed, blocked_reason, error_code FROM audit_log ORDER BY timestamp DESC').all();
+  } finally {
+    db.close();
+  }
 }
 
 describe('CLI e2e', () => {
@@ -153,6 +168,45 @@ describe('CLI e2e', () => {
     expect(result.rows).toHaveLength(1);
     expect(result.rows[0].connection).toBe('qdb');
     expect(result.rows[0].query).toContain('SELECT 1 as smoke_history');
+  });
+
+  it('enforces agent governance, approvals, and audit logging', async () => {
+    await mdb('connect', 'add', 'agentdb', '--type', 'sqlite', '--path', DB_PATH);
+    await mdb('query', 'agentdb', 'CREATE TABLE IF NOT EXISTS guarded (id INTEGER PRIMARY KEY, name TEXT)');
+    await mdb('query', 'agentdb', "INSERT OR REPLACE INTO guarded VALUES (1, 'pending')");
+
+    const allowedRead = await mdb('query', 'agentdb', 'SELECT * FROM guarded', '--as', 'agent', '--agent-id', 'cursor-v1', '--format', 'json');
+    expect(JSON.parse(allowedRead.stdout).rows[0].name).toBe('pending');
+
+    try {
+      await mdb('query', 'agentdb', 'DROP TABLE guarded', '--as', 'agent', '--agent-id', 'cursor-v1', '--format', 'json');
+      expect.unreachable('DROP should be blocked in agent mode');
+    } catch (err: unknown) {
+      const error = err as { stderr: string; code: number };
+      expect(error.code).toBe(2);
+      expect(error.stderr).toContain('OPERATION_BLOCKED');
+    }
+
+    try {
+      await mdb('query', 'agentdb', "UPDATE guarded SET name = 'blocked' WHERE id = 1", '--as', 'agent', '--agent-id', 'cursor-v1');
+      expect.unreachable('UPDATE should require approval in agent mode');
+    } catch (err: unknown) {
+      const error = err as { stderr: string; code: number };
+      expect(error.code).toBe(2);
+      expect(error.stderr).toContain('APPROVAL_REQUIRED');
+    }
+
+    const dryRun = await mdb('query', 'agentdb', "UPDATE guarded SET name = 'approved' WHERE id = 1", '--as', 'agent', '--agent-id', 'cursor-v1', '--dry-run');
+    const prepared = JSON.parse(dryRun.stdout) as { approvalToken: string };
+    expect(prepared.approvalToken).toMatch(/^token-/);
+
+    await mdb('query', 'agentdb', "UPDATE guarded SET name = 'approved' WHERE id = 1", '--as', 'agent', '--agent-id', 'cursor-v1', '--approval-token', prepared.approvalToken);
+    const updated = await mdb('query', 'agentdb', 'SELECT name FROM guarded WHERE id = 1', '--format', 'json');
+    expect(JSON.parse(updated.stdout).rows[0].name).toBe('approved');
+
+    const rows = auditRows();
+    expect(rows.some((row) => row.agent_id === 'cursor-v1' && row.operation === 'DROP' && row.allowed === 0)).toBe(true);
+    expect(rows.some((row) => row.agent_id === 'cursor-v1' && row.operation === 'SELECT' && row.allowed === 1)).toBe(true);
   });
 
   it('returns error for missing connection', async () => {

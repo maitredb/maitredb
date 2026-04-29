@@ -171,4 +171,40 @@ describe('QueryExecutor', () => {
     expect(first?.query).not.toContain('super-secret');
     expect(first?.query).not.toContain('abc123');
   });
+
+  it('uses the configured worker pool for Arrow conversion after execute', async () => {
+    const workerPool = {
+      runTask: vi.fn(async () => {
+        const { encodeRowsToArrowIPC } = await import('@maitredb/wire');
+        return encodeRowsToArrowIPC([{ id: 1, name: 'Ada' }], [
+          { name: 'id', nativeType: 'int4', type: 'integer' },
+          { name: 'name', nativeType: 'text', type: 'string' },
+        ]);
+      }),
+      close: vi.fn(async () => {}),
+    };
+    const adapter = makeAdapter(async () => ({
+      rows: [{ id: 1, name: 'Ada' }],
+      fields: [
+        { name: 'id', nativeType: 'int4', type: 'integer' },
+        { name: 'name', nativeType: 'text', type: 'string' },
+      ],
+      rowCount: 1,
+      durationMs: 0,
+    }));
+    const executor = new QueryExecutor(adapter, { workerPool });
+
+    const result = await executor.execute({ ...conn, config: { name: 'dev', type: 'sqlite' } }, 'SELECT id, name FROM users');
+
+    expect(workerPool.runTask).toHaveBeenCalledWith({
+      type: 'rows-to-arrow-ipc',
+      rows: [{ id: 1, name: 'Ada' }],
+      fields: [
+        { name: 'id', nativeType: 'int4', type: 'integer' },
+        { name: 'name', nativeType: 'text', type: 'string' },
+      ],
+    });
+    expect(result.batch?.numRows).toBe(1);
+    expect(result.batch?.getChild('name')?.get(0)).toBe('Ada');
+  });
 });

@@ -1,5 +1,27 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import type { Connection } from '@maitredb/plugin-api';
 import { MysqlDriver } from '../index.js';
+
+class MockMysqlPromisePool {
+  readonly execute = vi.fn(async () => [[{ id: 1 }], [{ name: 'id', columnType: 3, flags: 1 }]]);
+  readonly query = vi.fn(async () => [[{ id: 1 }], [{ name: 'id', columnType: 3, flags: 1 }]]);
+}
+
+class MockMysqlPool {
+  readonly promisePool = new MockMysqlPromisePool();
+  promise() {
+    return this.promisePool;
+  }
+}
+
+function asConnection(pool: MockMysqlPool, options: Record<string, unknown> = {}): Connection {
+  return {
+    id: 'mysql-conn',
+    dialect: 'mysql',
+    config: { name: 'mysql', type: 'mysql', options },
+    native: pool,
+  };
+}
 
 describe('MysqlDriver', () => {
   it('reports the expected capabilities', () => {
@@ -41,5 +63,38 @@ describe('MysqlDriver', () => {
   it('returns no standalone user-defined types', async () => {
     const driver = new MysqlDriver('mysql');
     await expect(driver.getTypes({} as never)).resolves.toEqual([]);
+  });
+
+  it('uses mysql2 execute for eligible parameterized statements', async () => {
+    const driver = new MysqlDriver('mysql');
+    const pool = new MockMysqlPool();
+
+    const result = await driver.execute(asConnection(pool), 'SELECT * FROM users WHERE id = ?', [1]);
+
+    expect(pool.promisePool.execute).toHaveBeenCalledWith('SELECT * FROM users WHERE id = ?', [1]);
+    expect(pool.promisePool.query).not.toHaveBeenCalled();
+    expect(result).toMatchObject({
+      rowCount: 1,
+      rows: [{ id: 1 }],
+      fields: [{ name: 'id', nativeType: '3', type: 'integer', nullable: false }],
+    });
+  });
+
+  it('uses query fallback when prepared caching is disabled or SQL is not eligible', async () => {
+    const driver = new MysqlDriver('mysql');
+    const disabledPool = new MockMysqlPool();
+    const multiPool = new MockMysqlPool();
+
+    await driver.execute(
+      asConnection(disabledPool, { cachePreparedStatements: false }),
+      'SELECT * FROM users WHERE id = ?',
+      [1],
+    );
+    await driver.execute(asConnection(multiPool), 'SELECT ?; SELECT ?', [1, 2]);
+
+    expect(disabledPool.promisePool.query).toHaveBeenCalledWith('SELECT * FROM users WHERE id = ?', [1]);
+    expect(disabledPool.promisePool.execute).not.toHaveBeenCalled();
+    expect(multiPool.promisePool.query).toHaveBeenCalledWith('SELECT ?; SELECT ?', [1, 2]);
+    expect(multiPool.promisePool.execute).not.toHaveBeenCalled();
   });
 });

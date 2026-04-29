@@ -1,0 +1,16 @@
+[package]
+name = "maitredb-wire"
+version = "0.5.0"
+edition = "2021"
+
+[lib]
+path = "src-rs/lib.rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+napi = { version = "2", default-features = false, features = ["napi8"] }
+napi-derive = "2"
+arrow = "54"
+
+[build-dependencies]
+napi-build = "2"

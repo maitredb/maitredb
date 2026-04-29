@@ -1,0 +1,17 @@
+{
+  "name": "maitredb",
+  "description": "Maître d'B MCP server and database tooling for Copilot CLI.",
+  "version": "0.0.1",
+  "author": {
+    "name": "Scott Goley"
+  },
+  "repository": "https://github.com/sgoley/maitredb",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "database",
+    "sql",
+    "copilot"
+  ],
+  "mcpServers": ".github/mcp.json"
+}

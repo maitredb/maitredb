@@ -30,7 +30,7 @@ import type {
   Transaction,
   TransactionOptions,
 } from '@maitredb/plugin-api';
-import { MaitreError, MaitreErrorCode } from '@maitredb/core';
+import { MaitreError, MaitreErrorCode, PreparedStatementCache } from '@maitredb/core';
 
 type MysqlDialect = 'mysql' | 'mariadb';
 
@@ -45,6 +45,7 @@ type QueryRows = RowDataPacket[] | RowDataPacket[][] | ResultSetHeader | ResultS
 export class MysqlDriver implements DriverAdapter {
   /** Dialect identity registered in the plugin registry. */
   readonly dialect: MysqlDialect;
+  private readonly preparedStatementCaches = new WeakMap<object, PreparedStatementCache>();
 
   constructor(dialect: MysqlDialect = 'mysql') {
     this.dialect = dialect;
@@ -122,9 +123,10 @@ export class MysqlDriver implements DriverAdapter {
     const startedAt = performance.now();
     const pool = this.getPool(conn);
 
-    const [rows, fields] = params && params.length > 0
+    const shouldPrepare = this.shouldUsePreparedStatements(conn, query, params);
+    const [rows, fields] = shouldPrepare
       ? await pool.promise().execute<QueryRows>(query, params as any[])
-      : await pool.promise().query<QueryRows>(query);
+      : await pool.promise().query<QueryRows>(query, params as any[] | undefined);
 
     const normalized = this.normalizeExecuteResult(rows, fields ?? []);
     return {
@@ -190,9 +192,10 @@ export class MysqlDriver implements DriverAdapter {
       id: randomUUID(),
       query: async (sql: string, params?: unknown[]): Promise<QueryResult> => {
         const startedAt = performance.now();
-        const [rows, fields] = params && params.length > 0
+        const shouldPrepare = this.shouldUsePreparedStatements(conn, sql, params);
+        const [rows, fields] = shouldPrepare
           ? await client.execute<QueryRows>(sql, params as any[])
-          : await client.query<QueryRows>(sql);
+          : await client.query<QueryRows>(sql, params as any[] | undefined);
 
         const normalized = this.normalizeExecuteResult(rows, fields ?? []);
         return {
@@ -601,7 +604,8 @@ export class MysqlDriver implements DriverAdapter {
   private toPoolOptions(config: ConnectionConfig): PoolOptions {
     const driverOptions = (config.options ?? {}) as MysqlOptions;
     const pool = config.pool ?? {};
-    const poolOptions: PoolOptions & { acquireTimeout?: number } = {
+    const preparedCacheSize = getPreparedStatementCacheSize(config);
+    const poolOptions: PoolOptions & { acquireTimeout?: number; maxPreparedStatements?: number } = {
       host: config.host,
       port: config.port,
       user: config.user,
@@ -618,9 +622,29 @@ export class MysqlDriver implements DriverAdapter {
       ssl: toMysqlSsl(config.ssl),
       supportBigNumbers: true,
       bigNumberStrings: true,
+      maxPreparedStatements: preparedCacheSize,
     };
 
     return poolOptions;
+  }
+
+  private shouldUsePreparedStatements(conn: Connection, query: string, params?: unknown[]): boolean {
+    if (!params || params.length === 0) return false;
+
+    const cacheSize = getPreparedStatementCacheSize(conn.config);
+    if (cacheSize === 0) return false;
+
+    return this.getPreparedStatementCache(conn, cacheSize).getOrCreate(query) !== undefined;
+  }
+
+  private getPreparedStatementCache(conn: Connection, maxSize: number): PreparedStatementCache {
+    const native = conn.native as object;
+    let cache = this.preparedStatementCaches.get(native);
+    if (!cache) {
+      cache = new PreparedStatementCache({ maxSize, prefix: `mdb_mysql_${conn.id.replace(/[^a-zA-Z0-9_]/g, '_')}` });
+      this.preparedStatementCaches.set(native, cache);
+    }
+    return cache;
   }
 
   private async ping(pool: Pool): Promise<void> {
@@ -718,6 +742,12 @@ function toMysqlSsl(ssl: ConnectionConfig['ssl']): PoolOptions['ssl'] {
     key: ssl.key,
     rejectUnauthorized: ssl.rejectUnauthorized ?? (ssl.mode === 'verify-ca' || ssl.mode === 'verify-full'),
   };
+}
+
+function getPreparedStatementCacheSize(config: ConnectionConfig): number {
+  const driverOptions = (config.options ?? {}) as MysqlOptions & { preparedStatementCacheSize?: number };
+  if (driverOptions.cachePreparedStatements === false) return 0;
+  return Math.max(0, driverOptions.preparedStatementCacheSize ?? 256);
 }
 
 function toMysqlIsolationLevel(level: NonNullable<TransactionOptions['isolationLevel']>): string {

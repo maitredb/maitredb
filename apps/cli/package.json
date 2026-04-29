@@ -17,6 +17,7 @@
   "dependencies": {
     "@maitredb/cache": "workspace:*",
     "@maitredb/core": "workspace:*",
+    "@maitredb/governance": "workspace:*",
     "@maitredb/driver-mysql": "workspace:*",
     "@maitredb/driver-postgres": "workspace:*",
     "@maitredb/plugin-api": "workspace:*",
