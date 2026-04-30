@@ -1,11 +1,14 @@
 {
   "mcpServers": {
     "maitredb": {
+      "type": "stdio",
       "command": "bash",
       "args": [
         "-lc",
-        "set -euo pipefail; if [ ! -d node_modules ] || [ ! -f packages/mcp/dist/index.js ]; then corepack pnpm install --frozen-lockfile; corepack pnpm --filter @maitredb/mcp build; fi; exec node packages/mcp/dist/index.js"
-      ]
+        "set -euo pipefail; if command -v corepack >/dev/null 2>&1; then PNPM='corepack pnpm'; elif command -v pnpm >/dev/null 2>&1; then PNPM='pnpm'; else echo 'maitredb Copilot plugin requires pnpm or corepack to bootstrap from source.' >&2; exit 127; fi; if [ ! -d node_modules ] || [ ! -f packages/mcp/dist/index.js ]; then $PNPM install --frozen-lockfile; $PNPM --filter @maitredb/mcp build; fi; exec node packages/mcp/dist/index.js"
+      ],
+      "tools": ["*"],
+      "cwd": "."
     }
   }
 }

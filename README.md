@@ -62,7 +62,20 @@ This repository now includes a `plugin.json` manifest, so you can install it dir
 copilot plugin install sgoley/maitredb
 ```
 
-The plugin wires in `.github/mcp.json` and starts the Maître d'B MCP server. On first launch it bootstraps dependencies and builds `@maitredb/mcp` automatically.
+The plugin wires in `.github/mcp.json` and starts the Maître d'B MCP server. On first launch it bootstraps dependencies and builds `@maitredb/mcp` automatically. Source installs require either `pnpm` or `corepack` to be available on `PATH`.
+
+Useful plugin checks:
+
+```bash
+# Reinstall after local or repository changes because Copilot CLI caches plugin contents
+copilot plugin install sgoley/maitredb
+
+# Confirm the plugin is installed
+copilot plugin list
+
+# In an interactive Copilot CLI session, confirm the MCP tools are available
+/mcp
+```
 
 ## Usage Patterns
 
